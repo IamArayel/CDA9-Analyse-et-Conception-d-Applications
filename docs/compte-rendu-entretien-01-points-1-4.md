@@ -45,7 +45,7 @@ suite.
 | Q04 | Proposez-vous différentes formules (sortie découverte 2h, coucher de soleil, privatisation journée) ? | Formule « forfait » à 4 ou 12 personnes (identiques en pratique) et formule « privatisation » (sans tarif préférentiel). Les suppléments (ex. champagne) restent personnalisables et vendus uniquement par téléphone. |
 | Q05 | Quels sont les créneaux horaires fixes par jour ? Varient-ils selon la saison ou les jours de la semaine ? | 3 départs/jour à 7h, 10h, 14h, pour des sorties d'environ 3h. Saison baleines du 15 juin au 31 octobre (sinon sortie « Cétacés dauphins », mêmes créneaux) ; la saison change la nature de la sortie, pas les horaires. |
 | Q06 | Quel est le délai d'escale/nettoyage nécessaire entre deux sorties pour un même bateau ? | Sortie baleines : 2h30 ; sortie dauphins : 2h ; 30 min à 1h de préparation du bateau ensuite. Privatisation = une demi-journée, souvent l'après-midi (sunset). |
-| Q07 | Quels sont les tarifs (adulte, enfant, bébé, groupe, privatisation complète) ? | Baleines : 65 € adulte / 40 € enfant. Dauphins : 50 € adulte / 30 € enfant. Privatisation : 600 € (*Ti Kap*) / 1 100 € (*Le Grand Bleu*). Tarifs révisés chaque année, saisis en back-office par l'armateur. *(tarif bébé non chiffré — sans réponse)* |
+| Q07 | Quels sont les tarifs (adulte, enfant, bébé, groupe, privatisation complète) ? | Baleines : 65 € adulte / 40 € enfant. Dauphins : 50 € adulte / 30 € enfant. Privatisation : 600 € (*Ti Kap*) / 1 100 € (*Le Grand Bleu*). Tarifs révisés chaque année, saisis en back-office par l'armateur. |
 | Q08 | Quelle est la taille maximale d'un groupe en ligne ? Comment gérer les modifications de taille de groupe après réservation ? | Réponse partielle : en ligne, le client voit les places disponibles par bateau et choisit lui-même son bateau ; toute modification après réservation reste « à la discrétion de l'armateur » — règle non formalisée. |
 | Q09 | Jusqu'à combien de temps avant le départ un client peut-il réserver en ligne ? | Jusqu'à 12h avant le départ (12h la veille si départ l'après-midi ou le lendemain). |
 | Q10 | Souhaitez-vous le paiement de la totalité à la commande ou le versement d'un acompte ? | Paiement de la totalité au moment de la réservation, sur le site. |
@@ -65,6 +65,7 @@ suite.
 | Q24 | **Intégrations —** Utilisez-vous un logiciel comptable ou de caisse particulier avec lequel l'application doit communiquer ? | — *(question envoyée par e-mail, réponse en attente)* |
 | Q25 | **Gestion des durées —** La privatisation est-elle possible aussi le matin, ou uniquement l'après-midi ? | — *(question envoyée par e-mail, réponse en attente)* |
 | Q26 | **Grille tarifaire —** Quelle est la tranche d'âge d'un "enfant" | — *(question envoyée par e-mail, réponse en attente)* |
+| Q27 | **Backoffice —** Quelles fonctions/actions sont demandées/nécessaires (export PDF, annulation, modification créneaux (jours fériés, etc), tarifs, noms/nombre des bateaux, message sur la page d'accueil), qui y a accès et qui a droit de modifier quelles infos ? | — *(question envoyée par e-mail, réponse en attente)* |
 
 Une question posée et **restée sans réponse** figure quand même ici, avec
 « sans réponse » : c'est une trace, et elle sert au §8.
