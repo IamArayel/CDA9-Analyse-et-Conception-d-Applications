@@ -1,4 +1,4 @@
-# Projet Ti Baleine — équipe `<NOM>`
+# Projet Ti Baleine — équipe `Le Trio`
 
 Repository de mission. Il contient l'analyse, la conception, les tests et le code.
 Il est aussi le support du dossier de projet.
