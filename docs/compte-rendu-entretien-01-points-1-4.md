@@ -1,15 +1,16 @@
-# Compte rendu d'entretien n° 1 — synthèse des points 1 à 4
+# Compte rendu d'entretien n° 1 — synthèse des points 1 à 8
 
 **Date :** …
 **Durée :** …
 **Interlocuteur :** le commanditaire (armateur, Ti Baleine)
 **Présents pour l'équipe :** …
 
-> Ce document synthétise uniquement les points 1 à 4 de la trame « Questions au
-> client » (flotte/capacités, créneaux/prestations, tarification, paiement/
-> annulation), au format du gabarit `compte-rendu-entretien-01.md`. Les points 5 à
-> 8 (météo, communication, exploitation quotidienne, intégrations techniques)
-> restent à synthétiser séparément — voir §9.
+> Ce document reprend, au format du gabarit `compte-rendu-entretien-01.md`, les
+> points 1 à 4 de la trame « Questions au client » (flotte/capacités, créneaux/
+> prestations, tarification, paiement/annulation) — déjà échangés en entretien —
+> ainsi que les points 5 à 8 (météo, communication, exploitation quotidienne,
+> intégrations techniques). Les questions des points 5 à 8 n'ont pas encore de
+> réponse : ce fichier est envoyé au client, qui complétera par e-mail.
 
 ---
 
@@ -51,6 +52,20 @@ suite.
 | Q11 | Avez-vous déjà un contrat monétique/banque ou un prestataire privilégié (Stripe, PayPal, etc.) ? | Non, aucun prestataire de paiement en ligne actuellement ; un TPE bancaire classique est utilisé sur place. |
 | Q12 | Le paiement doit-il être intégralement en ligne ou une partie en espèces ? | Intégralement en ligne, carte bancaire uniquement — ni espèces, ni virement, ni chèque. |
 | Q13 | Quelles sont les conditions de remboursement en cas d'annulation par le client ? | Barème dégressif : remboursement à 100 % au-delà de J-7 ; 25 % de commission retenue entre J-7 et J-48h ; 50 % retenue entre J-48h et J-24h. *(le traitement des annulations à moins de 24h, et la possibilité de reporter plutôt qu'annuler, restent sans réponse)* |
+| Q14 | **Météo —** Qui prend la décision d'annuler un créneau, et comment s'effectue le choix entre report de date et remboursement intégral ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q15 | **Météo —** Souhaitez-vous déclencher l'annulation d'un créneau en un clic et informer automatiquement tous les passagers impactés ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q16 | **Météo —** Comment le client doit-il pouvoir choisir un nouveau créneau en cas d'annulation météo (lien dédié, avoir, contact direct) ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q17 | **Communication —** Souhaitez-vous conserver WhatsApp (API WhatsApp Business) en parallèle des e-mails/SMS pour les confirmations, rappels et alertes météo ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q18 | **Communication —** À quel moment envoyer un rappel de sortie aux clients (ex. J-1, avec consignes d'embarquement et lieu de rendez-vous) ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q19 | **Communication —** Comment les clients sont-ils avertis d'une annulation ou d'une modification ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q20 | **Exploitation —** Qui va manipuler l'outil au quotidien (capitaine sur smartphone, personne au guichet/bureau) ? Plusieurs types de compte (admin, salariés…) ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q21 | **Exploitation —** Avez-vous besoin d'une vue « Planning du jour » imprimable ou consultable sur mobile pour vérifier la liste des passagers à l'embarquement ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q22 | **Exploitation —** Devez-vous pouvoir ajouter manuellement des réservations prises sur place ou au téléphone, pour bloquer des places dans le système ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q23 | **Intégrations —** Avez-vous déjà un site web (WordPress, Shopify…) sur lequel intégrer le module de réservation, ou faut-il concevoir la plateforme de A à Z ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q24 | **Intégrations —** Utilisez-vous un logiciel comptable ou de caisse particulier avec lequel l'application doit communiquer ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q25 | **Gestion des durées —** La privatisation est-elle possible aussi le matin, ou uniquement l'après-midi ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q26 | **Grille tarifaire —** Un passager est considéré « enfant » jusqu'à quel âge ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q27 | **Grille tarifaire —** Quel est l'âge minimum accepté à bord ? | — *(question envoyée par e-mail, réponse en attente)* |
 
 Une question posée et **restée sans réponse** figure quand même ici, avec
 « sans réponse » : c'est une trace, et elle sert au §8.
@@ -140,12 +155,13 @@ Formulées, pas juste évoquées. Priorisées : le prochain passage est court.
 Relire le brief initial et lister les sujets qu'il contient et que l'entretien n'a
 pas touchés. C'est là que se cachent les découvertes tardives et coûteuses.
 
-- Les points 5 à 8 de la trame « Questions au client » : gestion des aléas
-  météo et annulations à l'initiative de l'armateur, canaux de communication et
-  notifications (WhatsApp/e-mail/SMS), exploitation quotidienne et profils
-  utilisateurs (accès admin, planning imprimable, saisie manuelle), intégrations
-  et environnement technique existant (site web, outil de caisse). Volontairement
-  hors périmètre de cette synthèse — à traiter dans un complément dédié.
+- Les points 5 à 8 (Q14 à Q24) sont désormais posés au client, mais **sans
+  réponse à ce stade** : ils lui sont envoyés par e-mail (météo/annulations
+  armateur, communication/notifications, exploitation quotidienne, intégrations
+  techniques). Ce compte rendu sera complété dès réception des réponses.
+- Q25 à Q27, ajoutées après coup, sont sans réponse elles aussi : la
+  privatisation le matin, l'âge maximum du tarif « enfant » et l'âge minimum
+  accepté à bord.
 - Le tarif « bébé », mentionné dans la question posée mais jamais chiffré par le
   client.
 - Le traitement d'une annulation dans les dernières 24h avant le départ, et
