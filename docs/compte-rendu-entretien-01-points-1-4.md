@@ -64,8 +64,7 @@ suite.
 | Q23 | **Intégrations —** Avez-vous déjà un site web (WordPress, Shopify…) sur lequel intégrer le module de réservation, ou faut-il concevoir la plateforme de A à Z ? | — *(question envoyée par e-mail, réponse en attente)* |
 | Q24 | **Intégrations —** Utilisez-vous un logiciel comptable ou de caisse particulier avec lequel l'application doit communiquer ? | — *(question envoyée par e-mail, réponse en attente)* |
 | Q25 | **Gestion des durées —** La privatisation est-elle possible aussi le matin, ou uniquement l'après-midi ? | — *(question envoyée par e-mail, réponse en attente)* |
-| Q26 | **Grille tarifaire —** Un passager est considéré « enfant » jusqu'à quel âge ? | — *(question envoyée par e-mail, réponse en attente)* |
-| Q27 | **Grille tarifaire —** Quel est l'âge minimum accepté à bord ? | — *(question envoyée par e-mail, réponse en attente)* |
+| Q26 | **Grille tarifaire —** Quelle est la tranche d'âge d'un "enfant" | — *(question envoyée par e-mail, réponse en attente)* |
 
 Une question posée et **restée sans réponse** figure quand même ici, avec
 « sans réponse » : c'est une trace, et elle sert au §8.
@@ -159,7 +158,7 @@ pas touchés. C'est là que se cachent les découvertes tardives et coûteuses.
   réponse à ce stade** : ils lui sont envoyés par e-mail (météo/annulations
   armateur, communication/notifications, exploitation quotidienne, intégrations
   techniques). Ce compte rendu sera complété dès réception des réponses.
-- Q25 à Q27, ajoutées après coup, sont sans réponse elles aussi : la
+- Q25 à Q26, ajoutées après coup, sont sans réponse elles aussi : la
   privatisation le matin, l'âge maximum du tarif « enfant » et l'âge minimum
   accepté à bord.
 - Le tarif « bébé », mentionné dans la question posée mais jamais chiffré par le
