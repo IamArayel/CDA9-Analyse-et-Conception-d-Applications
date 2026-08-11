@@ -64,6 +64,7 @@ suite.
 | Q16 | **Divers (résout CR-01, ambiguïté §6 n°1) —** À quel moment le seuil de jauge minimale (6 personnes) est-il vérifié ? | Contrôle 24h avant le départ ; si moins de 6 personnes, la sortie est annulée et les clients sont remboursés. *(voir l'incohérence avec CR-01/Q09 — fermeture des réservations à midi, et non à J-12h — au §6)* |
 | Q17 | **Divers (résout CR-01, ambiguïté §6 n°4) —** Un client peut-il reporter sa réservation à moins de 24h du départ ? | Oui, sous réserve de disponibilité. |
 | Q18 | **Divers —** Faut-il demander des informations particulières aux clients lors de la réservation ? | Non, aucune information particulière à demander. |
+| Q19 | **Paiement (complément CR-01/Q11) —** Entre Stripe, PayPal et l'offre de paiement en ligne de votre banque, le Crédit Agricole, lequel souhaitez-vous retenir comme prestataire de paiement ? | Le moins cher des trois sera retenu ; pas de préférence de principe entre Stripe, PayPal et le Crédit Agricole. |
 
 Une question posée et **restée sans réponse** figure quand même ici, avec
 « sans réponse » : c'est une trace, et elle sert au §8. Ici, toutes les
@@ -101,6 +102,12 @@ de disponibilité. Ces deux réponses, mises côte à côte avec ce qui était d
 consigné, font toutefois apparaître une nouvelle incohérence de calendrier —
 voir §6.
 
+Sur le paiement, le client a précisé le critère resté ouvert au premier
+rendez-vous (CR-01/Q11) : il ne fixe pas par avance un prestataire de
+paiement en ligne, mais retiendra celui qui revient le moins cher, en
+comparant Stripe, PayPal et l'offre de paiement en ligne de sa banque, le
+Crédit Agricole.
+
 ## 4. Parties prenantes identifiées
 
 | Personne / rôle | Ce qu'elle fait | Comment on l'a découverte |
@@ -120,6 +127,7 @@ voir §6.
 | 5 | Le contrôle de la jauge minimale (6 personnes) a lieu à J-24h ; en dessous, annulation et remboursement | « 24H avant contrôle du nombre de personnes, si - de 6 personnes = pas de sortie (annulation et remboursement) » | oui — lève CR-01, ambiguïté §6 n°1 ; voir cependant l'incohérence au §6 |
 | 6 | Un client peut reporter sa réservation même à moins de 24h du départ, sous réserve de disponibilité | « Le client peut reporter sa résa même 24H avant, sous réserve de disponibilité » | oui — lève CR-01, ambiguïté §6 n°4 |
 | 7 | Le gérant valide chaque annulation météo lui-même ; pas de déclenchement automatique en un clic | « il doit être maitre de l'annulation » | oui, mais **contredit la formulation initiale de US09** — voir §8 |
+| 8 | Le prestataire de paiement en ligne est choisi selon le critère du coût le plus bas, en comparant Stripe, PayPal et l'offre en ligne du Crédit Agricole | « le moins cher entre Stripe, Paypal ou mon Crédit Agricole » | oui — répond à CR-01/Q11 |
 
 ## 6. Ambiguïtés détectées
 

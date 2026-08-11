@@ -92,7 +92,7 @@ nécessaire à ces trois usages).
 | ID | Exigence | Priorité | Source |
 |---|---|---|---|
 | REQ-017 | Le paiement de la totalité du montant est exigé en ligne, par carte bancaire, au moment de la réservation. Aucun acompte, et aucun autre moyen de paiement (espèces, virement, chèque) n'est accepté en ligne. | Indispensable | [CR-01/Q10](./compte-rendu-entretien-01-points-1-4.md#2-questions-posées-et-réponses-obtenues), [Q12](./compte-rendu-entretien-01-points-1-4.md#2-questions-posées-et-réponses-obtenues), [§5-7](./compte-rendu-entretien-01-points-1-4.md#5-règles-métier-découvertes) |
-| REQ-018 | Aucun prestataire de paiement en ligne n'est en place à ce jour ; il reste entièrement à choisir. | Indispensable *(préalable au reste)* | [CR-01/Q11](./compte-rendu-entretien-01-points-1-4.md#2-questions-posées-et-réponses-obtenues) |
+| REQ-018 | Aucun prestataire de paiement en ligne n'est en place à ce jour. Le choix se fera entre trois options — Stripe, PayPal, ou l'offre de paiement en ligne de la banque du client (Crédit Agricole) — en retenant celle dont le coût est le plus bas ; le client n'impose aucune des trois par principe. | Indispensable *(préalable au reste)* | [CR-01/Q11](./compte-rendu-entretien-01-points-1-4.md#2-questions-posées-et-réponses-obtenues) ; [CR-02/Q19](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues), [§5-8](./compte-rendu-entretien-02-points-5-8.md#5-règles-métier-découvertes) |
 
 ## 7. Annulation et report à l'initiative du client
 
