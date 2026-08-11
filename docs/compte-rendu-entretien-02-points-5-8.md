@@ -65,6 +65,7 @@ suite.
 | Q17 | **Divers (résout CR-01, ambiguïté §6 n°4) —** Un client peut-il reporter sa réservation à moins de 24h du départ ? | Oui, sous réserve de disponibilité. |
 | Q18 | **Divers —** Faut-il demander des informations particulières aux clients lors de la réservation ? | Non, aucune information particulière à demander. |
 | Q19 | **Paiement (complément CR-01/Q11) —** Entre Stripe, PayPal et l'offre de paiement en ligne de votre banque, le Crédit Agricole, lequel souhaitez-vous retenir comme prestataire de paiement ? | Le moins cher des trois sera retenu ; pas de préférence de principe entre Stripe, PayPal et le Crédit Agricole. |
+| Q20 | **Annulation et report (complément CR-01/Q13, CR-02/Q17) —** Quand un client annule ou reporte lui-même sa réservation, comment cela se passe-t-il concrètement : en autonomie sur la plateforme, ou en passant par vous ? | Par téléphone avec moi, aussi bien pour l'annulation avec remboursement que pour le report — comme pour les annulations météo, je reste l'interlocuteur direct du client. |
 
 Une question posée et **restée sans réponse** figure quand même ici, avec
 « sans réponse » : c'est une trace, et elle sert au §8. Ici, toutes les
@@ -108,6 +109,11 @@ paiement en ligne, mais retiendra celui qui revient le moins cher, en
 comparant Stripe, PayPal et l'offre de paiement en ligne de sa banque, le
 Crédit Agricole.
 
+L'annulation avec remboursement (CR-01/Q13) et le report (CR-02/Q17), lorsque
+c'est le client qui en est à l'initiative, suivent le même principe que les
+annulations météo : aucun des deux ne se fait en autonomie sur la plateforme,
+les deux passent par un appel téléphonique avec le gérant.
+
 ## 4. Parties prenantes identifiées
 
 | Personne / rôle | Ce qu'elle fait | Comment on l'a découverte |
@@ -128,6 +134,7 @@ Crédit Agricole.
 | 6 | Un client peut reporter sa réservation même à moins de 24h du départ, sous réserve de disponibilité | « Le client peut reporter sa résa même 24H avant, sous réserve de disponibilité » | oui — lève CR-01, ambiguïté §6 n°4 |
 | 7 | Le gérant valide chaque annulation météo lui-même ; pas de déclenchement automatique en un clic | « il doit être maitre de l'annulation » | oui, mais **contredit la formulation initiale de US09** — voir §8 |
 | 8 | Le prestataire de paiement en ligne est choisi selon le critère du coût le plus bas, en comparant Stripe, PayPal et l'offre en ligne du Crédit Agricole | « le moins cher entre Stripe, Paypal ou mon Crédit Agricole » | oui — répond à CR-01/Q11 |
+| 9 | L'annulation avec remboursement et le report de réservation, à l'initiative du client, sont organisés par téléphone avec le gérant, et non en autonomie sur la plateforme | « par téléphone avec moi, aussi bien pour l'annulation que pour le report » | oui — précise CR-01/Q13 et CR-02/Q17 |
 
 ## 6. Ambiguïtés détectées
 

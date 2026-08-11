@@ -73,7 +73,8 @@ nécessaire à ces trois usages).
 | REQ-006 | Le client peut réserver une privatisation, qui bloque un bateau entier sur un créneau, aussi bien le matin (brunch) que l'après-midi (coucher de soleil). | Indispensable | [CR-01/Q03](./compte-rendu-entretien-01-points-1-4.md#2-questions-posées-et-réponses-obtenues) ; [CR-02/Q01](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues) |
 | REQ-007 | Un seul bateau à la fois peut être engagé sur une sortie baleines, faute d'un second naturaliste disponible ; les deux bateaux peuvent en revanche être utilisés en même temps pour des sorties dauphins. | Indispensable | [CR-02/Q10](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues), [§5-4](./compte-rendu-entretien-02-points-5-8.md#5-règles-métier-découvertes) |
 | REQ-008 | L'accès à une sortie est interdit aux enfants de moins de 4 ans. | Indispensable | [CR-02/Q02](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues) |
-| REQ-009 | Aucune information particulière n'est demandée au client au moment de la réservation, au-delà de ce qui est nécessaire pour réserver et payer. | Indispensable | [CR-02/Q18](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues) |
+| REQ-009 | Lors de la réservation, le client fournit : nom, prénom, e-mail, numéro de téléphone, nombre d'adultes et d'enfants, date et heure du créneau choisi, et type de sortie correspondant à la saison. Aucune information supplémentaire n'est demandée. | Indispensable | [CR-02/Q18](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues) (le client a exclu toute information particulière) ; liste précise des champs *déduite* par l'équipe — ce sont les informations minimales pour identifier le client, le contacter et composer le créneau |
+| REQ-035 | Le site de réservation s'adapte à la taille de l'écran utilisé par le client, qu'il réserve depuis un ordinateur, une tablette ou un téléphone mobile. | Indispensable | *Déduit* — le client vise une réservation « directement en ligne » ([CR-01, §1](./compte-rendu-entretien-01-points-1-4.md#1-ce-que-le-client-a-dit)) sans avoir précisé les appareils visés ; l'équipe retient un accès utilisable sur les principaux types d'appareils, non discuté explicitement avec le client |
 | REQ-010 | Trois créneaux de départ sont proposés chaque jour, à 7h, 10h et 14h, pour des sorties d'une durée d'environ 3 heures. | Indispensable | [CR-01/Q05](./compte-rendu-entretien-01-points-1-4.md#2-questions-posées-et-réponses-obtenues) |
 | REQ-011 | Du 15 juin au 31 octobre, les créneaux proposent des sorties dauphins ainsi que des sorties baleines ; en dehors de cette période, les mêmes créneaux proposent uniquement des sorties dauphins. | Indispensable | [CR-01/Q05](./compte-rendu-entretien-01-points-1-4.md#2-questions-posées-et-réponses-obtenues), [§7-4](./compte-rendu-entretien-01-points-1-4.md#7-contraintes-évoquées) |
 | REQ-012 | Deux formules sont proposées à la réservation : un forfait standard et une privatisation (sans tarif préférentiel). | Indispensable | [CR-01/Q04](./compte-rendu-entretien-01-points-1-4.md#2-questions-posées-et-réponses-obtenues), [§5-2](./compte-rendu-entretien-01-points-1-4.md#5-règles-métier-découvertes), [§5-3](./compte-rendu-entretien-01-points-1-4.md#5-règles-métier-découvertes) |
@@ -98,8 +99,8 @@ nécessaire à ces trois usages).
 
 | ID | Exigence | Priorité | Source |
 |---|---|---|---|
-| REQ-019 | En cas d'annulation par le client, le montant remboursé suit un barème dégressif : 100 % au-delà de 7 jours avant le départ ; 25 % de commission retenue entre 7 jours et 48 heures avant le départ ; 50 % de commission retenue entre 48 heures et 24 heures avant le départ. | Indispensable | [CR-01/Q13](./compte-rendu-entretien-01-points-1-4.md#2-questions-posées-et-réponses-obtenues), [§5-8](./compte-rendu-entretien-01-points-1-4.md#5-règles-métier-découvertes) |
-| REQ-020 | Le client peut reporter sa réservation à une autre date, y compris à moins de 24 heures du départ, sous réserve de disponibilité. | Indispensable | [CR-02/Q17](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues), [§5-6](./compte-rendu-entretien-02-points-5-8.md#5-règles-métier-découvertes) |
+| REQ-019 | En cas d'annulation par le client, le montant remboursé suit un barème dégressif : 100 % au-delà de 7 jours avant le départ ; 25 % de commission retenue entre 7 jours et 48 heures avant le départ ; 50 % de commission retenue entre 48 heures et 24 heures avant le départ. La demande d'annulation et son remboursement sont organisés par téléphone avec le gérant, et non en autonomie sur le site. | Indispensable | [CR-01/Q13](./compte-rendu-entretien-01-points-1-4.md#2-questions-posées-et-réponses-obtenues), [§5-8](./compte-rendu-entretien-01-points-1-4.md#5-règles-métier-découvertes) ; [CR-02/Q20](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues), [§5-9](./compte-rendu-entretien-02-points-5-8.md#5-règles-métier-découvertes) |
+| REQ-020 | Le client peut reporter sa réservation à une autre date, y compris à moins de 24 heures du départ, sous réserve de disponibilité. Ce report est organisé par téléphone avec le gérant, et non en autonomie sur le site. | Indispensable | [CR-02/Q17](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues), [§5-6](./compte-rendu-entretien-02-points-5-8.md#5-règles-métier-découvertes) ; [Q20](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues), [§5-9](./compte-rendu-entretien-02-points-5-8.md#5-règles-métier-découvertes) |
 
 ## 8. Annulation météo à l'initiative du gérant
 
@@ -120,6 +121,7 @@ nécessaire à ces trois usages).
 | REQ-030 | L'espace de gestion ne permet pas de modifier le contenu présenté aux clients (messages de la page d'accueil ou autre contenu), ni la composition de la flotte, ni les créneaux. | Indispensable *(délimite le périmètre)* | [CR-02/Q03](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues), [§5-3](./compte-rendu-entretien-02-points-5-8.md#5-règles-métier-découvertes) |
 | REQ-031 | L'accès à l'espace de gestion est réservé à un compte unique, celui du gérant. | Indispensable | [CR-02/Q03](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues), [Q10](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues) |
 | REQ-033 | La flotte comprend deux bateaux à fond de verre : le Ti Kap (12 places) et Le Grand Bleu (24 places). Cette composition n'est pas modifiable depuis l'espace de gestion pour cette version. | Indispensable | [CR-01/Q01](./compte-rendu-entretien-01-points-1-4.md#2-questions-posées-et-réponses-obtenues) ; [CR-02/Q03](./compte-rendu-entretien-02-points-5-8.md#2-questions-posées-et-réponses-obtenues) |
+| REQ-034 | La connexion à l'espace de gestion se fait avec une adresse e-mail et un mot de passe. Le mot de passe doit compter au moins 8 caractères, dont au moins une majuscule, une minuscule, un chiffre et un caractère spécial. | Indispensable | *Déduit* — aucune règle de sécurité pour l'accès au compte unique de gestion (REQ-031) n'a été discutée avec le client ; règle minimale retenue par l'équipe |
 
 ## 10. Communication - compléments souhaitables
 
@@ -187,7 +189,14 @@ maintenant reviendrait à inventer une fonctionnalité.
 
 Chaque exigence de ce document cite sa source sous la forme `CR-0n/Qnn` (une
 question posée en entretien) ou `CR-0n/§5-n` (une règle métier reformulée
-dans le compte rendu correspondant). Aucune exigence n'est marquée « déduit »
-dans cette version : tout ce qui figure aux sections 4 à 11 a été dit
-explicitement par le client.
+dans le compte rendu correspondant). Trois exigences sont marquées « déduit »,
+faute d'avoir été discutées explicitement avec le client, chacune avec sa
+justification dans la colonne Source :
+
+- `REQ-009` — la liste précise des champs du formulaire de réservation (le
+  client a seulement exclu toute information particulière, CR-02/Q18) ;
+- `REQ-034` — la règle de mot de passe de l'espace de gestion ;
+- `REQ-035` — l'adaptation du site aux différents écrans.
+
+Toutes les autres exigences ont été dites explicitement par le client.
 
