@@ -10,7 +10,7 @@
 > trame « Questions au client » (météo/annulations armateur, communication,
 > exploitation quotidienne, intégrations techniques), envoyés par e-mail après
 > le premier rendez-vous (voir
-> [`compte-rendu-entretien-01-points-1-4.md`](./compte-rendu-entretien-01-points-1-4.md)),
+> [`compte-rendu-entretien-01.md`](./compte-rendu-entretien-01.md)),
 > ainsi que trois questions complémentaires posées après coup sur les points
 > 1 à 4 (privatisation le matin, tranche d'âge « enfant », fonctions du
 > back-office).
