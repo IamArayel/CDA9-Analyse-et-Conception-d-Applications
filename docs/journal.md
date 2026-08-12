@@ -43,11 +43,47 @@ décoratif : c'est ce qui permet de distinguer un arbitrage d'un acquiescement.
 
 ---
 
-## J1 — <date>
+## J1 — 2026-08-10
 
-**Présents.**
+**Présents.** Client + équipe complète de développeurs.
 
 **Décisions.**
+- Premier entretien client mené avec le gérant de Ti Baleine, couvrant les huit
+  thèmes prévus (flotte et capacités, créneaux et prestations, tarification et
+  règles de réservation, paiement et annulation, aléas météo, communication,
+  exploitation quotidienne, intégrations techniques) — consigné dans
+  `compte-rendu-entretien-01.md` et `compte-rendu-entretien-02.md`.
+- Flotte figée à 2 bateaux : *Ti Kap* (12 places) et *Grand Bleu* (24 places),
+  un seul bateau affecté aux sorties baleines (un seul naturaliste), les deux
+  aux sorties dauphins.
+- Jauges de réservation actées : 2 personnes minimum pour réserver, 6 minimum
+  pour maintenir un départ (sortie annulée sinon, avec report ou remboursement
+  proposé par le gérant).
+- Grille horaire actée : 3 départs/jour (7h, 10h, 14h), sorties d'environ 3h
+  (2h30 baleines, 2h dauphins), saison baleines du 15 juin au 31 octobre
+  (sorties dauphins le reste de l'année, sur les mêmes créneaux), 30 min à 1h
+  de battement entre deux sorties, privatisation sur demi-journée (matin ou
+  après-midi/sunset).
+- Tarifs de référence actés (révisables chaque année par le gérant) : baleines
+  65 €/adulte, 40 €/enfant ; dauphins 50 €/adulte, 30 €/enfant ; privatisation
+  600 € (*Ti Kap*) / 1100 € (*Grand Bleu*) ; tranche d'âge « enfant » fixée à
+  4–11 ans (sortie interdite avant 4 ans, tarif adulte dès 12 ans).
+- Réservation en ligne fermée à J-12h (midi) avant le départ, y compris pour un
+  départ le lendemain matin ; paiement intégral en ligne par carte bancaire
+  uniquement (aucun espèces/chèque/virement, aucun prestataire de paiement
+  retenu à ce stade).
+- Politique d'annulation client actée : remboursement total à plus de 7 jours,
+  25 % de commission retenue entre 7 jours et 48h, 50 % entre 48h et 24h.
+- Annulation météo : décision et arbitrage (report vs remboursement) laissés
+  au gérant, par téléphone — pas d'automatisation de la décision elle-même ;
+  rappel client automatisé à J-1 (météo + consignes) ; WhatsApp conservé en
+  parallèle du nouvel outil.
+- Un seul compte d'accès (le gérant/admin) ; planning papier suffisant sur le
+  terrain ; pas de site existant (page Facebook seulement), pas de logiciel
+  comptable à intégrer, pas de charte graphique définie.
+- Treize user stories rédigées (US01 à US13), réparties en 4 épiques :
+  réservation/paiement client, gestion du planning et des réservations,
+  aléas météo et annulations, configuration et paramétrage du système.
 
 **Critiques de l'IA acceptées.**
 - Aucune : l'IA n'intervient pas en J1.
@@ -59,14 +95,87 @@ décoratif : c'est ce qui permet de distinguer un arbitrage d'un acquiescement.
 - Sans objet.
 
 **Ce qui a été généré aujourd'hui.**
-- Rien.
+- `compte-rendu-entretien-01.md` (commits `b8b4a9b`, `09d8e22`, `ce4e7c2`,
+  `489214a`)
+- `compte-rendu-entretien-02.md` (commit `b9cbfed`)
+- US01 à US13 (consignées dans la page Notion J1 pour le moment)
 
 **Questions ouvertes pour le client.**
--
+- Modalités précises de modification de la taille d'un groupe après
+  réservation : réponse du client non tranchée (« pas encore de réponse »
+  explicitement notée dans le compte rendu).
+- Critère de répartition des passagers entre les deux bateaux quand plusieurs
+  choix sont possibles : réponse du client jugée floue par l'équipe.
+
+## J2 — 2026-08-11
+
+**Présents.** Client + équipe complète de développeurs.
+
+**Décisions.**
+- Rédaction du cahier des charges initial de « Ti Baleine » à partir du compte
+  rendu d'entretien n°1 : espace admin (gestion des tarifs révisés chaque
+  année, système de réservation baleines/dauphins, export PDF des plannings à
+  la demi-journée), page d'accueil (présentation des deux bateaux + moteur de
+  réservation), formulaire de réservation (email, nom, prénom, téléphone,
+  nombre d'adultes/enfants, date, type de sortie), rappel des modalités de
+  validation (2 pers. min. pour réserver / 6 pers. min. pour maintenir la
+  sortie) et de la politique d'annulation (J-7, J-7→48h, 48h→24h), génération
+  de facture PDF/mail.
+- Choix de stack technique actés en réunion (formalisés depuis dans
+  `docs/adr/ADR-001-stack.md`, commit `84d54cf`) :
+  - Symfony/PHP (pratiqué par 3 membres de l'équipe), tests via PHPUnit
+    (`php bin/phpunit`).
+  - Prestataire de paiement Stripe, retenu après comparaison avec PayPal et
+    l'offre de paiement en ligne du Crédit Agricole (génération de facture,
+    coût le plus bas des trois solutions étudiées, conforme au souhait du
+    client de tout gérer en CB en ligne) ; aucune donnée de paiement sensible
+    stockée côté dev.
+  - SGBD MySQL (ORM Symfony adapté au relationnel, pas de données de paiement
+    sensibles à traiter côté application).
+  - Hébergement mutualisé Hostinger (150 €/48 mois ≈ 2,99 €/mois, nom de
+    domaine offert la 1ʳᵉ année, 20 Go SSD, sauvegardes hebdomadaires).
+  - RGPD : durée de conservation des données fixée à 3 mois minimum avant
+    suppression.
+  - Point de vigilance consigné par l'équipe : si le client reprend en charge
+    le paiement de bout en bout, réévaluer PostgreSQL pour le traitement de
+    données sensibles.
+- Première ébauche du modèle de données (tables clients, réservations,
+  utilisateur/admin, bateaux, créneaux, sorties, tarifs).
+- Échéance d'équipe actée : tenir le planning « jusqu'à vendredi prochain »
+  (mention explicite de la page Notion J2).
+
+**Critiques de l'IA acceptées.**
+- Sans objet documenté : aucune trace d'intervention de l'agent IA pour cette
+  journée (pas de trailer `Generated-by` sur les commits du jour, page Notion
+  source muette sur le sujet) — à confirmer ou compléter par l'équipe si des
+  échanges ont eu lieu.
+
+**Critiques de l'IA refusées, et pourquoi.**
+- Sans objet documenté (voir ci-dessus).
+
+**Erreurs produites par l'IA et détectées.**
+- Sans objet documenté (voir ci-dessus).
+
+**Ce qui a été généré aujourd'hui.**
+- `docs/cahier-des-charges.md`, v1 (commits `8d76bc8`, `4c504d2`, `a6c22c1`,
+  `3090d10`, `832a1bf`)
+- `docs/cahier-des-charges.pdf` (commit `77b43a5`)
+- `docs/cle-cahier-des-charges.md` (commit `e4a45ad`)
+- `compte-rendu-entretien-02.md` mis à jour sur les exigences de paiement en
+  ligne (commit `4c504d2`)
+
+**Questions ouvertes pour le client.**
+- Modalités de l'espace de connexion : identifiant par email ou téléphone ?
+  Règles de longueur/complexité du mot de passe ?
+- Jours de fermeture de l'entreprise : non mentionnés dans le cahier des
+  charges — en existe-t-il, et si oui sont-ils modifiables, et par qui ?
+- Le calendrier des créneaux est-il modifiable, et selon quelles modalités ?
+- Faut-il ajouter un formulaire de contact pour les demandes de renseignement
+  (point noté « oublié de demander » par l'équipe) ?
 
 ## J3 — 2026-08-12
 
-**Présents.** …
+**Présents.** Client + équipe complète de développeurs.
 
 **Décisions.**
 - Troisième entretien client mené (jours de fermeture, langues, message de
@@ -120,7 +229,6 @@ décoratif : c'est ce qui permet de distinguer un arbitrage d'un acquiescement.
 - `docs/cahier-des-charges.md` (v2 → v3)
 - `specs/booking.md`, `specs/admin.md`, `specs/cancel.md`,
   `specs/non-fonctionnel.md` (mis à jour)
-- `docs/uml/domain.puml`, `docs/uml/use-cases.puml` (mis à jour)
 - `docs/traceability.md` (régénéré)
 
 **Questions ouvertes pour le client.**
