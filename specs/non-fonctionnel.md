@@ -1,8 +1,8 @@
 # Spécifications — NFR (exigences transverses non fonctionnelles)
 
 **Domaine :** `NFR`
-**Source :** `docs/cahier-des-charges.md` (v2), §10 « Exigences non
-fonctionnelles »
+**Source :** `docs/cahier-des-charges.md` (v3), §10 « Exigences non
+fonctionnelles », complété par `docs/compte-rendu-entretien-03.md` (CR-03)
 
 Ces exigences sont transverses aux trois cas d'usage Must have plutôt que
 rattachées à un seul domaine. Elles sont pour la plupart marquées
@@ -25,12 +25,17 @@ dizaines de réservations simultanées en période de pointe.
 
 ## SPEC-NFR-02 — Langue
 
-**Exigences :** REQ-102
+**Exigences :** REQ-040, REQ-102
 
-**Description.** Site en français uniquement pour cette version.
+**Description.** Site disponible en français et en anglais, au choix du
+client — *révisé en v3 (`CR-03/Q02`) : la v2 retenait par défaut le
+français seul, faute d'avoir posé la question au client.* Voir
+`specs/booking.md`, spécification dédiée au bilinguisme du parcours de
+réservation.
 
-**Critère de vérification.** Absence de contenu traduit dans la première
-version livrée.
+**Critère de vérification.** Aucun contenu du site, y compris les messages
+automatiques (`REQ-025`), ne reste non traduit dans l'une des deux langues
+livrées.
 
 ## SPEC-NFR-03 — Hébergement et coût
 
