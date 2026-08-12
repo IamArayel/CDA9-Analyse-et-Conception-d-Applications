@@ -1,8 +1,9 @@
 # Spécifications — CANCEL (annulation météo, à l'initiative du gérant)
 
 **Domaine :** `CANCEL`
-**Source :** `docs/cahier-des-charges.md` (v2), cas d'usage Must have
-« annuler un créneau météo et informer les clients concernés »
+**Source :** `docs/cahier-des-charges.md` (v3), cas d'usage Must have
+« annuler un créneau météo et informer les clients concernés », complété
+par `docs/compte-rendu-entretien-03.md` (CR-03) et `docs/impact-CR-001.md`.
 
 L'annulation d'un **créneau** pour raison météo est décidée par le gérant.
 Elle ne doit pas être confondue avec l'annulation/le report d'**une
@@ -63,6 +64,31 @@ créneau (`SPEC-CANCEL-01`).
   s'accordent directement par téléphone sur un remplacement — aucune
   procédure automatisée de désaccord n'est prévue dans l'application.
 
+**Note (v3).** La matérialisation de l'avoir — un code de réduction
+unique, saisi par le client au moment de payer une réservation future
+(`REQ-050`) — est désormais spécifiée dans `specs/booking.md`, plutôt que
+laissée à un simple choix enregistré sans mécanique définie.
+
+## SPEC-CANCEL-05 — Message de rappel automatisé à J-1
+
+**Exigences :** REQ-025, REQ-042
+
+**Description.** Ajoutée en v3, sur confirmation du contenu et de
+l'automatisation par le client (`CR-03/Q03`) — voir `docs/impact-CR-001.md`.
+Un message type, incluant les conditions météo prévues et la liste des
+affaires à prévoir, est envoyé automatiquement par le site à chaque client
+inscrit, par défaut 24 heures avant sa sortie. Le gérant peut personnaliser
+cet horaire d'envoi depuis l'espace de gestion.
+
+**Critères d'acceptation.**
+- Étant donné une réservation confirmée pour une sortie à venir, quand
+  l'horaire d'envoi configuré (par défaut J-1) est atteint, alors le
+  message type est envoyé automatiquement au client, sans action manuelle
+  du gérant.
+- Étant donné l'espace de gestion, quand le gérant modifie l'horaire
+  d'envoi du message de rappel, alors les prochains envois respectent le
+  nouvel horaire.
+
 ---
 
 ## Hors périmètre applicatif
@@ -81,10 +107,6 @@ non couvertes, sans qu'elles ne deviennent des specs applicatives :
   connue et appliquée manuellement par le gérant au moment du
   remboursement, hors de toute automatisation applicative pour cette
   version.
-- **REQ-025** (Should) — le message de rappel à J-1 n'est pas spécifié
-  dans cette itération : son contenu exact reste à définir avec le client
-  (cf. CdC §11, question 2). Pas de `SPEC` détaillée ni de `CASE` tant que
-  le contenu n'est pas validé.
 - **REQ-027** (Should) — WhatsApp comme canal de secours reste un usage
   manuel du gérant en dehors de l'outil ; aucune intégration technique
   WhatsApp n'est prévue dans cette version.
