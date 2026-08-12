@@ -1,8 +1,9 @@
 # Spécifications — BOOKING (réservation en ligne)
 
 **Domaine :** `BOOKING`
-**Source :** `docs/cahier-des-charges.md` (v2), cas d'usage Must have « réserver
-et payer une sortie en ligne »
+**Source :** `docs/cahier-des-charges.md` (v3), cas d'usage Must have « réserver
+et payer une sortie en ligne », complété par `docs/compte-rendu-entretien-03.md`
+(CR-03) et `docs/impact-CR-001.md`.
 
 Chaque spécification cite au moins une exigence (`REQ-xxx`) du cahier des
 charges. Les critères d'acceptation sont écrits pour être directement
@@ -24,7 +25,10 @@ gérant n'a pas d'écran de saisie manuelle d'une nouvelle réservation dans
 l'espace de gestion (cf. `specs/admin.md`).
 
 **Règles.**
-- Nombre total de participants (adultes + enfants) ≥ 2 (REQ-001).
+- Nombre total de participants (adultes + enfants) ≥ 1 (REQ-001) : une
+  réservation individuelle d'une seule place est acceptée, sans minimum de
+  personnes — *corrigé en v3 : la v1/v2 imposait à tort un minimum de 2
+  personnes, sur une lecture trop stricte de CR-01/Q02 (voir CR-03/Q04)*.
 - L'accès est interdit aux enfants de moins de 4 ans (REQ-008) — **règle
   affichée en avertissement sur le site**, pas un contrôle de saisie : en
   l'absence de champ d'âge par enfant, l'application ne peut pas valider
@@ -39,7 +43,8 @@ l'espace de gestion (cf. `specs/admin.md`).
 
 **Critères d'acceptation.**
 - Étant donné un formulaire avec un seul participant au total, quand le
-  client valide, alors la réservation est refusée (minimum 2 personnes).
+  client valide, alors la réservation est acceptée (aucun minimum de
+  personnes n'est imposé à une réservation individuelle).
 - Étant donné le formulaire de réservation, quand le client consulte les
   conditions d'accès (avant ou pendant la réservation), alors un
   avertissement clair indique que l'accès est interdit aux enfants de
@@ -53,11 +58,14 @@ l'espace de gestion (cf. `specs/admin.md`).
 
 ## SPEC-BOOKING-02 — Créneaux et types de sortie proposés selon la saison
 
-**Exigences :** REQ-010, REQ-011
+**Exigences :** REQ-010, REQ-011, REQ-038
 
 **Description.** Trois créneaux par jour (7h, 10h, 14h), sorties d'environ
 3 heures. Les sorties dauphins sont proposées toute l'année ; les sorties
-baleines uniquement du 15 juin au 31 octobre.
+baleines uniquement du 15 juin au 31 octobre. Aucun créneau n'est proposé
+le 25 décembre ni le 1ᵉʳ janvier, jours de fermeture (REQ-038) ; les
+horaires d'ouverture et jours de fermeture, modifiables depuis l'espace de
+gestion, sont spécifiés en `specs/admin.md` (`SPEC-ADMIN-04`).
 
 **Critères d'acceptation.**
 - Étant donné une date hors saison baleines (ex. 1er décembre), quand le
@@ -65,6 +73,9 @@ baleines uniquement du 15 juin au 31 octobre.
   proposée sur les 3 créneaux.
 - Étant donné une date en saison (ex. 1er août), quand le client consulte
   les créneaux, alors dauphins et baleines sont tous deux proposés.
+- Étant donné le 25 décembre ou le 1ᵉʳ janvier, quand le client consulte
+  les créneaux de ce jour, alors aucun créneau n'est proposé à la
+  réservation.
 
 ## SPEC-BOOKING-03 — Capacité, seuil minimal et places disponibles en temps réel
 
@@ -158,6 +169,73 @@ l'application.
   effectue le parcours complet (consultation des places → formulaire →
   paiement), alors ce parcours reste utilisable sans défilement horizontal
   ni élément inaccessible, y compris en connexion mobile standard (4G).
+
+## SPEC-BOOKING-09 — Achat et usage d'un bon cadeau
+
+**Exigences :** REQ-043, REQ-044, REQ-045, REQ-046, REQ-047, REQ-048, REQ-049
+
+**Description.** Ajoutée en v3 — voir `docs/impact-CR-001.md`. Un bon
+cadeau est acheté sur la plateforme pour un type de sortie déterminé
+(baleines, dauphins ou privatisation) ; il est utilisable, exclusivement
+sur la plateforme, par son bénéficiaire (potentiellement une personne
+différente de l'acheteur), pendant 1 an à compter de l'achat, une seule
+fois. Au moment de payer une réservation du type correspondant, le
+bénéficiaire renseigne le code du bon : si le prix de la sortie dépasse le
+montant du bon, il paie la différence en carte bancaire (REQ-017) ; si le
+bon dépasse le prix, le surplus est perdu, sans remboursement.
+L'exclusivité plateforme (aucun achat ni usage par téléphone) est une
+hypothèse d'équipe non confirmée par le client — voir `CR-03, §8`.
+
+**Critères d'acceptation.**
+- Étant donné un client qui achète un bon cadeau pour un type de sortie
+  donné, quand le paiement est confirmé, alors un code unique est généré,
+  rattaché à ce type de sortie et à une date d'expiration à 1 an.
+- Étant donné un bon cadeau valide et non utilisé, quand son bénéficiaire
+  saisit le code au paiement d'une réservation du même type de sortie,
+  alors le montant du bon est déduit du montant dû.
+- Étant donné un bon cadeau dont le montant est inférieur au prix de la
+  sortie réservée, quand le paiement est finalisé, alors la différence est
+  exigée en carte bancaire.
+- Étant donné un bon cadeau dont le montant est supérieur au prix de la
+  sortie réservée, quand le paiement est finalisé, alors aucun
+  remboursement du surplus n'est proposé ni effectué.
+- Étant donné un bon cadeau déjà utilisé une fois, quand son code est
+  ressaisi pour une nouvelle réservation, alors il est refusé.
+- Étant donné un bon cadeau dont la date d'expiration (1 an après l'achat)
+  est dépassée, quand son code est saisi, alors il est refusé.
+- Étant donné un bon cadeau rattaché à un type de sortie, quand son code
+  est saisi pour réserver un autre type de sortie, alors il est refusé.
+
+## SPEC-BOOKING-10 — Saisie d'un code d'avoir au paiement
+
+**Exigences :** REQ-050
+
+**Description.** Ajoutée en v3 — voir `docs/impact-CR-001.md`. Un avoir
+accordé par le gérant après une annulation météo (`specs/cancel.md`,
+`SPEC-CANCEL-04`) prend la forme d'un code de réduction unique, distinct
+d'un bon cadeau (`SPEC-BOOKING-09`) : sa valeur est décidée au cas par cas
+par le gérant, sans type de sortie imposé ni durée de validité fixée par
+une règle client.
+
+**Critères d'acceptation.**
+- Étant donné un code d'avoir valide, quand le client le saisit au moment
+  de payer une réservation future, alors son montant est déduit du montant
+  dû, selon les mêmes règles de différentiel et de surplus qu'un bon
+  cadeau (`SPEC-BOOKING-09`).
+- Étant donné un code d'avoir déjà utilisé, quand il est ressaisi, alors il
+  est refusé.
+
+## SPEC-BOOKING-11 — Site bilingue français/anglais
+
+**Exigences :** REQ-040, REQ-102
+
+**Critères d'acceptation.**
+- Étant donné un client sur le site, quand il choisit la langue anglaise,
+  alors l'ensemble du parcours de réservation (places disponibles,
+  formulaire, paiement) s'affiche en anglais, sans contenu resté en
+  français.
+- Étant donné un client sur le site, quand il n'exprime aucun choix de
+  langue, alors le français reste la langue par défaut.
 
 ---
 
