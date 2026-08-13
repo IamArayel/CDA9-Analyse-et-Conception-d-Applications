@@ -773,37 +773,40 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 
 - `REQ-043` : achat d'un bon cadeau sur la plateforme.
 - `REQ-044` : validité d'un an à compter de l'achat.
-- `REQ-045` : bon rattaché à un type de sortie déterminé à l'achat.
+- `REQ-045` : montant libre, aucun rattachement à un type de sortie.
 - `REQ-046` : code saisi au moment de réserver, exclusivement sur la plateforme.
-- `REQ-047` : différence payée en carte si le prix dépasse le bon.
-- `REQ-048` : surplus perdu si le bon dépasse le prix.
+- `REQ-047` : différence payée en carte si le montant total dépasse le bon.
+- `REQ-048` : surplus perdu si le bon dépasse le montant total.
 - `REQ-049` : usage unique.
 
 **Statut :** revue IA faite
-**Version :** v1
+**Version :** v2
 
 ### Règle
 
-Un bon cadeau est un code unique, valable un an à compter de son achat,
-rattaché à un type de sortie, utilisable une seule fois sur la plateforme et
-déduit du montant dû sans remboursement du surplus.
+Un bon cadeau est un code unique portant un montant libre choisi à l'achat,
+valable un an, utilisable une seule fois sur la plateforme et déduit du
+montant total d'une réservation sans remboursement du surplus.
 
-> Un bon cadeau de 100 € pour une sortie baleines appliqué à une réservation
-> de 170 € laisse 70 € à payer par carte ; appliqué à une réservation de
-> 65 €, il est intégralement consommé et les 35 € restants sont perdus.
+> Un bon cadeau de 100 € appliqué à une réservation de 170 € laisse 70 € à
+> payer par carte ; appliqué à une réservation de 65 €, il est intégralement
+> consommé et les 35 € restants sont perdus.
 
 ### Portée
 
-Couvre l'achat d'un bon cadeau, sa validité et son application au montant dû.
-Ne couvre ni le prix d'achat du bon, ni les avoirs.
+Couvre l'achat d'un bon cadeau, sa validité et son application au montant
+total dû. Ne couvre ni le calcul de ce montant, ni les avoirs.
 
 - Ne couvre pas le code d'avoir émis après une annulation météo :
   `SPEC-BOOKING-10`.
-- Ne couvre pas le calcul du prix de la sortie réservée :
+- Ne couvre pas le calcul du montant de la réservation :
   `SPEC-BOOKING-06`.
 - Ne couvre pas l'encaissement du solde : `SPEC-BOOKING-07`.
-- Ne couvre pas le prix d'achat d'un bon cadeau, non tranché par le client :
-  voir « Ce qui n'est pas défini ».
+
+Le bon cadeau n'impose **aucune** condition sur la réservation à laquelle il
+s'applique : ni type de sortie, ni formule, ni composition du groupe. La
+règle inverse, en vigueur jusqu'en v3, a été retirée par le client lors de
+l'échange oral du 2026-08-13 (`impact-CR-002.md`).
 
 L'exclusivité plateforme, pour l'achat comme pour l'usage, est une hypothèse
 d'équipe issue de `CR-03` §6, ambiguïté 1.
@@ -811,12 +814,12 @@ d'équipe issue de `CR-03` §6, ambiguïté 1.
 ### Scénarios nominaux
 
 ```gherkin
-Étant donné un client qui achète un bon cadeau de 100 € pour une sortie baleines
+Étant donné un client qui achète un bon cadeau d'un montant de 100 €
 Quand son paiement est confirmé
 Alors un code unique lui est délivré
-Et ce code est rattaché à la sortie baleines et expire un an plus tard
+Et ce code expire un an plus tard
 Étant donné ce code, non utilisé
-Et une réservation baleines de 170 €
+Et une réservation de 170 €, quel qu'en soit le type de sortie
 Quand le bénéficiaire saisit le code au paiement
 Alors 100 € sont déduits
 Et 70 € restent à payer par carte bancaire
@@ -827,50 +830,54 @@ Et le code ne peut plus servir
 
 | # | Situation | Comportement attendu |
 |---|---|---|
-| 1 | bon d'un montant exactement égal au prix de la sortie | rien à payer par carte, réservation confirmée, cf. `SPEC-BOOKING-07` |
-| 2 | bon inférieur au prix | différence exigée par carte |
-| 3 | bon supérieur au prix | surplus perdu, aucun remboursement ni avoir résiduel |
+| 1 | bon d'un montant exactement égal au montant total | rien à payer par carte, réservation confirmée, cf. `SPEC-BOOKING-07` |
+| 2 | bon inférieur au montant total | différence exigée par carte |
+| 3 | bon supérieur au montant total | surplus perdu, aucun remboursement ni avoir résiduel |
 | 4 | code saisi le jour anniversaire de l'achat | accepté : la validité court jusqu'à la fin du jour anniversaire |
 | 5 | code saisi le lendemain du jour anniversaire | refusé |
 | 6 | code déjà utilisé une fois | refusé |
-| 7 | code saisi pour un autre type de sortie que celui du bon | refusé |
+| 7 | code saisi sur une réservation baleines, dauphins ou privatisée | accepté dans les trois cas : le bon n'est rattaché à aucun type de sortie |
 | 8 | code inexistant ou mal saisi | refusé, sans indiquer si le code existe |
 | 9 | bon cadeau et code d'avoir saisis sur la même réservation | refusé : les deux dispositifs ne se cumulent pas |
 | 10 | code présenté par téléphone au gérant | refusé : achat et usage passent exclusivement par la plateforme |
 | 11 | réservation payée avec un bon cadeau puis annulée pour raison météo | voir la rubrique suivante |
-| 12 | sortie devenue plus chère depuis l'achat du bon | le bon garde son montant, la différence est payée par carte |
+| 12 | tarifs augmentés depuis l'achat du bon | sans effet : le bon vaut son montant, la différence est payée par carte |
+| 13 | montant d'achat très faible ou très élevé | voir la rubrique suivante : aucune borne n'a été fixée par le client |
 
 ### Ce qui n'est pas défini
 
-Assumé au 2026-08-12, à reposer au client (`CR-03` §8, questions 1, 3 et 4).
+Assumé au 2026-08-13, à reposer au client (`CR-03` §8 questions 1 et 3,
+cahier des charges §11 questions 8 et 10).
 
-- Prix d'achat d'un bon cadeau : montant libre choisi par l'acheteur, ou
-  tarif standard d'une sortie au moment de l'achat ? Non tranché. Le
-  formulaire d'achat ne peut pas être spécifié tant que ce point n'est pas
-  réglé ; hypothèse de travail retenue en attendant : montant égal au tarif
-  en vigueur du type de sortie choisi.
+- Bornes du montant d'achat : le client a demandé un montant libre sans
+  fixer de minimum, de maximum ni de pas d'arrondi. Hypothèse retenue :
+  montant entier compris entre 10 € et 1 100 €, borne haute alignée sur le
+  forfait de privatisation le plus élevé.
 - Sort d'un bon cadeau consommé sur une réservation ensuite annulée pour
   raison météo : le client n'a pas envisagé le cas. Hypothèse retenue : le
   gérant délivre un code d'avoir d'un montant équivalent, faute de pouvoir
   rembourser un moyen de paiement qui n'est pas de l'argent.
 - Cumul avec un code d'avoir : non abordé par le client. Hypothèse retenue :
-  dispositifs mutuellement exclusifs.
+  dispositifs mutuellement exclusifs. Depuis la v4 du cahier des charges,
+  cette exclusion n'est plus étayée par une différence de comportement entre
+  les deux dispositifs.
 - Usage exceptionnel par téléphone : hypothèse d'équipe de l'exclusion
   stricte, à confirmer.
 
 ### Critères d'acceptation
 
-- [ ] AC-1 : l'achat confirmé d'un bon cadeau délivre un code unique,
-      rattaché au type de sortie choisi et daté d'une expiration à un an.
-- [ ] AC-2 : un code valide et non utilisé déduit son montant du montant dû
-      d'une réservation du même type de sortie.
-- [ ] AC-3 : lorsque le prix dépasse le montant du bon, la différence est
-      exigée par carte bancaire.
-- [ ] AC-4 : lorsque le montant du bon dépasse le prix, aucun remboursement
-      ni avoir résiduel n'est produit.
+- [ ] AC-1 : l'achat confirmé d'un bon cadeau délivre un code unique portant
+      le montant choisi par l'acheteur et daté d'une expiration à un an.
+- [ ] AC-2 : un code valide et non utilisé déduit son montant du montant
+      total d'une réservation, quel que soit son type de sortie.
+- [ ] AC-3 : lorsque le montant total dépasse le montant du bon, la
+      différence est exigée par carte bancaire.
+- [ ] AC-4 : lorsque le montant du bon dépasse le montant total, aucun
+      remboursement ni avoir résiduel n'est produit.
 - [ ] AC-5 : un code déjà utilisé est refusé.
 - [ ] AC-6 : un code dont l'expiration est dépassée est refusé.
-- [ ] AC-7 : un code saisi pour un autre type de sortie est refusé.
+- [ ] AC-7 : aucun écran de l'achat ne demande de choisir un type de sortie
+      ni une catégorie de tarif.
 - [ ] AC-8 : un bon cadeau et un code d'avoir ne peuvent pas être appliqués à
       la même réservation.
 
@@ -880,10 +887,12 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 
 | Remarque de l'IA | Décision | Motif |
 |---|---|---|
-| Le prix d'achat d'un bon cadeau n'est défini nulle part, ce qui rend le formulaire d'achat non spécifiable | acceptée | tracé dans « Ce qui n'est pas défini », avec l'hypothèse de travail et le renvoi à la question 4 du prochain entretien |
+| Le prix d'achat d'un bon cadeau n'est défini nulle part, ce qui rend le formulaire d'achat non spécifiable | acceptée | tranché en v2 : le montant est libre, la question 9 du §11 du cahier des charges est close |
 | Une réservation payée par bon cadeau puis annulée pour météo n'a pas de règle de remboursement | acceptée | cas limite 11 et hypothèse de l'avoir équivalent ajoutés ; le point n'était couvert ni par la spécification d'annulation, ni par celle du paiement |
 | « Valable 1 an » ne dit pas si le jour anniversaire est inclus | acceptée | cas limites 4 et 5 ajoutés |
 | Un message distinguant « code inexistant » de « code déjà utilisé » facilite le sondage de codes | acceptée | cas limite 8 aligné sur un refus indifférencié |
+| Un montant libre sans borne autorise un bon de 3 € comme de 5 000 € | acceptée | cas limite 13 et hypothèse de bornage ajoutés en v2, question 10 ouverte au §11 du cahier des charges |
+| Le bon cadeau et l'avoir ayant désormais les mêmes règles, les fusionner en un seul dispositif | refusée pour l'instant | la fusion est défendable et tracée en `impact-CR-002.md` §8, mais elle relève d'une décision client, pas d'une simplification unilatérale ; deux dispositifs distincts restent l'hypothèse en vigueur tant que la question 8 du §11 est ouverte |
 | Créditer le surplus non consommé sous forme d'avoir | refusée | le client a explicitement dit que le surplus est perdu sans remboursement ; la spécification suit la règle métier même si elle est défavorable au bénéficiaire |
 
 ## SPEC-BOOKING-10 - Saisie d'un code d'avoir au paiement
@@ -891,37 +900,43 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 **Exigences :**
 
 - `REQ-050` : avoir délivré sous forme de code de réduction unique saisi au paiement.
+- `REQ-051` : validité d'un an à compter de la date d'émission.
 
 **Statut :** revue IA faite
-**Version :** v1
+**Version :** v2
 
 ### Règle
 
 Un code d'avoir, émis par le gérant à la suite d'une annulation météo, est
-déduit une seule fois du montant dû d'une réservation future, quel que soit
-le type de sortie.
+valable un an à compter de son émission et déduit une seule fois du montant
+total d'une réservation future, quel que soit le type de sortie.
 
 > Un avoir de 130 € appliqué à une réservation de 170 € laisse 40 € à payer
 > par carte bancaire, et le code ne peut plus servir.
 
 ### Portée
 
-Couvre l'application d'un code d'avoir au paiement d'une réservation. Ne
-couvre ni la décision d'accorder un avoir, ni son montant.
+Couvre l'application d'un code d'avoir au paiement d'une réservation et sa
+durée de validité. Ne couvre ni la décision d'accorder un avoir, ni son
+montant.
 
 - Ne couvre pas la décision d'accorder un avoir ni son enregistrement :
   `SPEC-CANCEL-04`.
 - Ne couvre pas le bon cadeau, dispositif distinct : `SPEC-BOOKING-09`.
 - Ne couvre pas l'encaissement du solde : `SPEC-BOOKING-07`.
 
-Un avoir se distingue d'un bon cadeau sur trois points : sa valeur est
-décidée au cas par cas par le gérant, il n'est rattaché à aucun type de
-sortie, et il n'est pas vendu.
+Depuis la v4 du cahier des charges, un avoir ne se distingue plus d'un bon
+cadeau que par **son origine** : il est accordé par le gérant après une
+annulation météo, alors que le bon cadeau est vendu. Montant libre, validité
+d'un an, usage unique, imputation sur le montant total et perte du surplus
+sont désormais identiques pour les deux dispositifs. Le maintien de deux
+dispositifs séparés est une hypothèse d'équipe, tracée en question 8 du §11
+du cahier des charges.
 
 ### Scénarios nominaux
 
 ```gherkin
-Étant donné un code d'avoir de 130 €, valide et non utilisé
+Étant donné un code d'avoir de 130 €, émis il y a trois mois et non utilisé
 Et une réservation dauphins de 170 €
 Quand le client saisit le code au moment de payer
 Alors 130 € sont déduits du montant dû
@@ -933,38 +948,43 @@ Et le code est marqué comme utilisé
 
 | # | Situation | Comportement attendu |
 |---|---|---|
-| 1 | avoir inférieur au prix | différence exigée par carte |
-| 2 | avoir supérieur au prix | surplus perdu, aligné sur le traitement du bon cadeau |
-| 3 | avoir exactement égal au prix | rien à payer par carte, réservation confirmée |
+| 1 | avoir inférieur au montant total | différence exigée par carte |
+| 2 | avoir supérieur au montant total | surplus perdu, aligné sur le traitement du bon cadeau |
+| 3 | avoir exactement égal au montant total | rien à payer par carte, réservation confirmée |
 | 4 | code déjà utilisé | refusé |
 | 5 | code saisi sur un type de sortie différent de la sortie annulée à l'origine | accepté : un avoir n'est rattaché à aucun type de sortie |
 | 6 | code d'avoir et bon cadeau sur la même réservation | refusé : dispositifs non cumulables |
-| 7 | avoir émis puis créneau de remplacement annulé à son tour | un nouvel avoir est émis par le gérant, cf. `SPEC-CANCEL-04` |
-| 8 | code d'avoir ancien | voir la rubrique suivante |
+| 7 | avoir émis puis créneau de remplacement annulé à son tour | un nouvel avoir est émis par le gérant, avec une nouvelle date d'émission et donc une nouvelle échéance, cf. `SPEC-CANCEL-04` |
+| 8 | code saisi le jour anniversaire de l'émission | accepté : la validité court jusqu'à la fin du jour anniversaire, aligné sur le bon cadeau |
+| 9 | code saisi le lendemain du jour anniversaire | refusé |
+| 10 | avoir sur le point d'expirer | voir la rubrique suivante : aucun rappel n'est prévu |
 
 ### Ce qui n'est pas défini
 
-Assumé au 2026-08-12, à reposer au client (`CR-03` §8, question 3).
+Assumé au 2026-08-13, à reposer au client (cahier des charges §11,
+question 8).
 
-- Durée de validité d'un avoir : aucune règle client, contrairement au bon
-  cadeau. Hypothèse retenue : pas d'expiration, l'avoir compensant une sortie
-  annulée par l'entreprise.
+- Information du client sur l'expiration de son avoir : le client a fixé la
+  durée sans dire si un rappel doit être envoyé. Hypothèse retenue : aucun
+  rappel automatique, la date d'expiration figure sur le message qui
+  communique le code.
 - Fractionnement d'un avoir sur plusieurs réservations : non abordé.
   Hypothèse retenue : usage unique, comme le bon cadeau, le surplus étant
   perdu.
 - Distinction définitive entre avoir et bon cadeau : hypothèse d'équipe de
-  deux dispositifs séparés, à confirmer.
+  deux dispositifs séparés, désormais fondée sur la seule origine du code.
 
 ### Critères d'acceptation
 
-- [ ] AC-1 : un code d'avoir valide déduit son montant du montant dû.
-- [ ] AC-2 : lorsque le prix dépasse le montant de l'avoir, la différence est
-      exigée par carte bancaire.
+- [ ] AC-1 : un code d'avoir valide déduit son montant du montant total dû.
+- [ ] AC-2 : lorsque le montant total dépasse le montant de l'avoir, la
+      différence est exigée par carte bancaire.
 - [ ] AC-3 : un code d'avoir déjà utilisé est refusé.
 - [ ] AC-4 : un code d'avoir est accepté quel que soit le type de sortie
       réservé.
 - [ ] AC-5 : un code d'avoir et un bon cadeau ne peuvent pas être appliqués à
       la même réservation.
+- [ ] AC-6 : un code d'avoir émis il y a plus d'un an est refusé.
 
 ### Revue IA
 
@@ -973,9 +993,10 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 | Remarque de l'IA | Décision | Motif |
 |---|---|---|
 | Le traitement du surplus d'un avoir n'était pas écrit, alors qu'il l'est pour le bon cadeau | acceptée | cas limite 2 ajouté, aligné sur le bon cadeau et signalé comme hypothèse |
-| Aucune durée de validité n'est fixée : le code pourrait ressurgir des années plus tard | acceptée | hypothèse d'absence d'expiration écrite plutôt que laissée implicite, et rattachée à la question 3 du prochain entretien |
-| La différence entre avoir et bon cadeau n'était pas explicite dans la spécification elle-même | acceptée | trois critères distinctifs ajoutés à la portée |
-| Fixer une durée de validité d'un an par symétrie avec le bon cadeau | refusée | l'avoir compense une annulation décidée par l'entreprise ; lui imposer une péremption non demandée par le client serait défavorable au client sans fondement métier |
+| Aucune durée de validité n'est fixée : le code pourrait ressurgir des années plus tard | acceptée | tranché en v2 par le client : validité d'un an, cas limites 8 et 9 et critère AC-6 ajoutés |
+| La différence entre avoir et bon cadeau n'était pas explicite dans la spécification elle-même | acceptée | portée réécrite en v2 : il ne reste qu'un seul critère distinctif, l'origine du code |
+| Un avoir expirant à un an peut pénaliser un client dont l'entreprise a annulé la sortie | acceptée comme risque, non corrigée | la règle est désormais une demande explicite du client (2026-08-13) ; le risque est tracé en `impact-CR-002.md` §8 plutôt que corrigé unilatéralement |
+| ~~Fixer une durée de validité d'un an par symétrie avec le bon cadeau~~ | *refusée en v1, devenue sans objet en v2* | le motif du refus était l'absence de règle client ; le client a depuis demandé cette durée |
 
 ## SPEC-BOOKING-11 - Parcours de réservation bilingue français et anglais
 
