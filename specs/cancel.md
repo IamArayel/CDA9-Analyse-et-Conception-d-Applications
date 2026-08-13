@@ -1,7 +1,7 @@
 # Spécifications - CANCEL (annulation météo, à l'initiative du gérant)
 
 **Domaine :** `CANCEL`
-**Source :** `docs/cahier-des-charges.md` (v3), cas d'usage Must have
+**Source :** `docs/cahier-des-charges.md` (v4), cas d'usage Must have
 « annuler un créneau météo et informer les clients concernés », complété par
 `docs/compte-rendu-entretien-03.md` (CR-03) et `docs/impact-CR-001.md`.
 **Gabarit :** `docs/cle-specification.md` ; chaque spécification en reprend

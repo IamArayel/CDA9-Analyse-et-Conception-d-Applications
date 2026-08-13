@@ -1,9 +1,11 @@
 # Spécifications - BOOKING (réservation en ligne)
 
 **Domaine :** `BOOKING`
-**Source :** `docs/cahier-des-charges.md` (v3), cas d'usage Must have
+**Source :** `docs/cahier-des-charges.md` (v4), cas d'usage Must have
 « réserver et payer une sortie en ligne », complété par
-`docs/compte-rendu-entretien-03.md` (CR-03) et `docs/impact-CR-001.md`.
+`docs/compte-rendu-entretien-03.md` (CR-03) et `docs/impact-CR-001.md`,
+puis par `docs/compte-rendu-entretien-04.md` (CR-04) et
+`docs/impact-CR-002.md` pour le bon cadeau et l'avoir.
 **Gabarit :** `docs/cle-specification.md` ; chaque spécification en reprend
 les sept rubriques, dans le même ordre.
 

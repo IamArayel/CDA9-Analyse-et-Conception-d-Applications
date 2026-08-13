@@ -1,7 +1,7 @@
 # Spécifications - ADMIN (espace de gestion du gérant)
 
 **Domaine :** `ADMIN`
-**Source :** `docs/cahier-des-charges.md` (v3), cas d'usage Must have
+**Source :** `docs/cahier-des-charges.md` (v4), cas d'usage Must have
 « modifier les tarifs et suivre le planning sans ressaisie manuelle »,
 complété par `docs/compte-rendu-entretien-03.md` (CR-03) et
 `docs/impact-CR-001.md`.

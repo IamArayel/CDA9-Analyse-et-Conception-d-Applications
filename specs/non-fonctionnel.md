@@ -1,7 +1,7 @@
 # Spécifications - NFR (exigences transverses non fonctionnelles)
 
 **Domaine :** `NFR`
-**Source :** `docs/cahier-des-charges.md` (v3), §10 « Exigences non
+**Source :** `docs/cahier-des-charges.md` (v4), §10 « Exigences non
 fonctionnelles », complété par `docs/compte-rendu-entretien-03.md` (CR-03).
 **Gabarit :** `docs/cle-specification.md` ; chaque spécification en reprend
 les sept rubriques, dans le même ordre.
