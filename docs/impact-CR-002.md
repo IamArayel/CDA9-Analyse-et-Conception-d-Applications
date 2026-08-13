@@ -2,7 +2,8 @@
 
 **Demande du client :** révision du fonctionnement du bon cadeau et de la durée
 de validité de l'avoir, formulée oralement lors d'un point de suivi.
-**Reçue le :** 2026-08-13, entretien oral (compte rendu à formaliser en CR-04).
+**Reçue le :** 2026-08-13, entretien oral, formalisé en
+[`compte-rendu-entretien-04.md`](./compte-rendu-entretien-04.md) (CR-04).
 **Rédigée par :** l'équipe, avec revue critique de l'IA.
 
 ---
@@ -160,4 +161,5 @@ Ce que la demande touche sans que le client l'ait envisagé.
 | 2 | Mettre à jour `specs/booking.md` : `SPEC-BOOKING-09` et `SPEC-BOOKING-10` | équipe |
 | 3 | Mettre à jour `docs/uml/domain.puml` : `BonCadeau` allégé, `Avoir` daté | équipe |
 | 4 | Régénérer `docs/traceability.md` via `./tools/traceability.sh` | équipe |
-| 5 | Formaliser le compte rendu de l'entretien oral du 2026-08-13 en `CR-04`, et y reposer la question de la fusion bon cadeau / avoir | équipe |
+| 5 | Formaliser le compte rendu de l'entretien oral du 2026-08-13 en `CR-04`, et y reposer la question de la fusion bon cadeau / avoir | équipe, **fait** |
+| 6 | Faire relire `CR-04` par la personne ayant mené l'échange, pour lever l'ambiguïté 2 de son §6 sur l'origine des réponses `Q04` et `Q05` | équipe |
