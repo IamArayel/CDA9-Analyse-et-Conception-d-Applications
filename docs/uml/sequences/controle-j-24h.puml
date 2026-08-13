@@ -1,0 +1,120 @@
+@startuml controle-j-24h
+' Séquence — Contrôle automatique à 24 heures du départ
+' Vocabulaire client (cf. cahier-des-charges.md §13 Glossaire).
+' Réalise SPEC-BOOKING-03 (seuil de 6 inscrits) et SPEC-CANCEL-05
+' (message de rappel), qui se déclenchent au même moment.
+'
+' C'est le SEUL automatisme du système : aucun acteur humain ne
+' l'initie. L'annulation météo, elle, reste toujours manuelle
+' (SPEC-CANCEL-02).
+
+title Contrôle automatique à 24 heures du départ
+
+participant "Planificateur\ndu site" as Planif
+participant "Site Ti Baleine" as Site
+participant "Prestataire de paiement" as Paiement
+actor "Client inscrit" as Client
+actor "Gérant" as Gerant
+
+note over Planif
+  Déclenché sans action humaine, 24 heures
+  avant l'heure de départ du créneau
+  — SPEC-BOOKING-03
+  Heure locale de l'exploitation
+  — SPEC-BOOKING-04
+end note
+
+Planif -> Site : contrôle la sortie à J-24h
+activate Site
+Site -> Site : compte les réservations confirmées
+note right of Site
+  Seules les réservations payées comptent :
+  une réservation en attente de paiement ne
+  décompte aucune place — SPEC-BOOKING-03
+end note
+
+alt sortie privatisée
+  Site -> Site : maintient la sortie
+  note right of Site
+    Le seuil de 6 ne s'applique pas à une
+    privatisation, le bateau étant payé en
+    entier — SPEC-BOOKING-03, cas limite 8
+    Hypothèse d'équipe, à confirmer
+  end note
+
+else moins de 6 inscrits
+  Site -> Site : passe la sortie à l'état « annulé »
+  note right of Site
+    Seul cas d'annulation automatique du
+    système — SPEC-BOOKING-03, AC-4
+    L'état d'annulation est unique, quelle que
+    soit l'origine — SPEC-CANCEL-02
+  end note
+
+  loop pour chaque client inscrit
+    Site -> Paiement : demande le remboursement intégral
+    activate Paiement
+    Paiement --> Client : remboursement intégral
+    deactivate Paiement
+  end
+
+  Site -->> Client : le créneau n'est plus proposé
+  note right of Site
+    Des inscriptions ultérieures ne rétablissent
+    pas une sortie déjà annulée
+    — SPEC-BOOKING-03, cas limite 4
+  end note
+  Site -> Site : n'envoie aucun message de rappel
+  note right of Site
+    Aucun rappel pour un créneau annulé
+    — SPEC-CANCEL-05, AC-4
+  end note
+
+else 6 inscrits ou plus
+  Site -> Site : maintient la sortie
+  note right of Site
+    Exactement 6 inscrits suffisent
+    — SPEC-BOOKING-03, AC-5
+  end note
+end
+
+opt sortie maintenue
+  Site -> Site : compose le message type\navec la prévision météo du jour
+  note right of Site
+    La prévision est saisie par le gérant dans
+    l'espace de gestion : aucune interrogation
+    d'un service météo externe
+    — SPEC-CANCEL-05
+  end note
+
+  loop pour chaque réservation confirmée
+    Site -> Client : message de rappel\n(météo prévue, affaires à prévoir)
+    note right of Site
+      Envoyé à l'horaire configuré, 24 heures
+      avant le départ par défaut
+      — SPEC-CANCEL-05, AC-1, AC-2
+      Rédigé dans la langue choisie à la
+      réservation — SPEC-NFR-02
+    end note
+  end
+
+  opt échec d'envoi
+    Site -> Gerant : signale l'échec dans l'espace de gestion
+    note right of Site
+      Adresse invalide par exemple
+      — SPEC-CANCEL-05, cas limite 4
+    end note
+  end
+end
+deactivate Site
+
+note over Site
+  Une réservation confirmée après cet horaire
+  déclenche l'envoi immédiatement
+  — SPEC-CANCEL-05, AC-5
+  Les réservations restent possibles jusqu'à
+  l'heure de fermeture du créneau
+  — SPEC-BOOKING-04
+end note
+
+@enduml

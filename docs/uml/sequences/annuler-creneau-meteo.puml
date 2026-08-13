@@ -1,0 +1,123 @@
+@startuml annuler-creneau-meteo
+' Séquence — Annuler un créneau pour raison météo (UC7, UC6, UC8, UC9)
+' Vocabulaire client (cf. cahier-des-charges.md §13 Glossaire).
+' Réalise SPEC-CANCEL-01 à 04, SPEC-ADMIN-01.
+' L'application ne décide rien et n'envoie rien : elle rend le créneau
+' indisponible et garde la trace du choix convenu au téléphone.
+
+title Annuler un créneau pour raison météo
+
+actor "Gérant" as Gerant
+participant "Site Ti Baleine" as Site
+actor "Client inscrit" as Client
+participant "Prestataire de paiement" as Paiement
+
+Gerant -> Site : se connecte à l'espace de gestion
+activate Site
+note right of Site
+  Compte unique, seul utilisateur de l'espace
+  de gestion — SPEC-ADMIN-01
+end note
+
+Gerant -> Site : consulte le créneau à venir
+Site --> Gerant : liste des clients inscrits\n(nom, contact, nombre de participants)
+note right of Site
+  Consultation sans effet de bord : elle ne
+  déclenche aucune annulation — SPEC-CANCEL-01
+  Les réservations non payées ne sont pas
+  listées — SPEC-CANCEL-01
+end note
+
+Gerant -> Site : décide d'annuler pour raison météo
+note right of Site
+  Décision toujours manuelle : aucune règle
+  météo automatisée — SPEC-CANCEL-02
+  L'annulation porte sur le créneau entier,
+  tous bateaux confondus — SPEC-CANCEL-02
+end note
+Site -> Site : passe la sortie à l'état « annulé »
+Site --> Gerant : liste des clients à contacter
+deactivate Site
+
+Site -->> Client : le créneau disparaît des créneaux réservables
+note right of Site
+  Mise à jour sans rechargement manuel.
+  Un client engagé dans le paiement voit sa
+  transaction interrompue, sans débit
+  — SPEC-CANCEL-03
+  Aucun message de rappel n'est envoyé pour
+  un créneau annulé — SPEC-CANCEL-05
+end note
+
+loop pour chaque client inscrit
+  Gerant -> Client : appelle le client
+  note over Gerant, Client
+    Le téléphone est le seul canal d'annonce.
+    Aucun e-mail automatique : le gérant garde
+    la main sur ce contact — SPEC-CANCEL-03
+  end note
+
+  alt le client choisit un report
+    Client --> Gerant : accepte une autre date
+    Gerant -> Site : enregistre « report »
+    activate Site
+    Site -> Site : contrôle la disponibilité\ndu créneau de remplacement
+    note right of Site
+      Un report vers un créneau complet est
+      refusé, une autre date est proposée
+      — SPEC-CANCEL-04, AC-5
+      Aucun complément n'est demandé si le
+      tarif a changé — SPEC-CANCEL-04
+    end note
+    deactivate Site
+
+  else le client choisit un avoir
+    Client --> Gerant : demande un avoir
+    Gerant -> Site : enregistre « avoir » et son montant
+    activate Site
+    Site -> Site : délivre un code d'avoir
+    note right of Site
+      Montant décidé au cas par cas par le
+      gérant — SPEC-CANCEL-04
+      Valable 1 an à compter de l'émission
+      (v4) — REQ-051, SPEC-BOOKING-10
+    end note
+    Site --> Client : code d'avoir
+    deactivate Site
+
+  else le client choisit un remboursement
+    Client --> Gerant : demande un remboursement
+    Gerant -> Site : enregistre « remboursement »
+    activate Site
+    deactivate Site
+    Gerant -> Paiement : déclenche le remboursement
+    activate Paiement
+    Paiement --> Client : remboursement intégral
+    deactivate Paiement
+    note over Gerant, Paiement
+      L'annulation est à l'initiative de
+      l'entreprise : le barème dégressif ne
+      s'applique pas, le remboursement est
+      intégral — SPEC-CANCEL-04, AC-3
+      L'application n'exécute pas le
+      remboursement, elle en garde la trace
+    end note
+
+  else le client est injoignable
+    Gerant -> Site : aucun choix enregistré
+    note right of Site
+      Le choix reste « en attente » et le client
+      apparaît comme restant à contacter
+      — SPEC-CANCEL-04, AC-2
+    end note
+  end
+end
+
+note over Site
+  Le gérant peut corriger un choix tant que le
+  remboursement n'est pas exécuté — SPEC-CANCEL-04
+  Si le créneau de report est annulé à son tour,
+  le cycle recommence — SPEC-CANCEL-04
+end note
+
+@enduml

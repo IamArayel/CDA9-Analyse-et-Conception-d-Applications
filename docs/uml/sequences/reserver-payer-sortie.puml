@@ -1,0 +1,124 @@
+@startuml reserver-payer-sortie
+' Séquence — Réserver et payer une sortie (UC2, UC1, UC3, UC11)
+' Vocabulaire client (cf. cahier-des-charges.md §13 Glossaire).
+' Réalise SPEC-BOOKING-01 à 04, 06, 07, 09, 10.
+' Le gérant n'intervient à aucun moment : le site est l'unique point
+' d'entrée d'une nouvelle réservation (REQ-036).
+
+title Réserver et payer une sortie
+
+actor "Client" as Client
+participant "Site Ti Baleine" as Site
+participant "Prestataire de paiement" as Paiement
+
+Client -> Site : choisit une date
+activate Site
+Site --> Client : créneaux ouverts, types de sortie\net places restantes
+note right of Site
+  Aucun créneau un jour de fermeture,
+  baleines seulement du 15/06 au 31/10
+  — SPEC-BOOKING-02
+  Places restantes en temps réel
+  — SPEC-BOOKING-03
+end note
+deactivate Site
+
+Client -> Site : renseigne les 8 informations demandées
+activate Site
+Site -> Site : contrôle la saisie et la capacité du créneau
+note right of Site
+  Au moins un participant, au moins un adulte
+  si un enfant est déclaré — SPEC-BOOKING-01
+  Demande supérieure aux places restantes refusée
+  — SPEC-BOOKING-03
+end note
+
+alt saisie invalide, créneau complet ou fermé
+  Site --> Client : refus, avec le motif
+  note right of Site
+    Créneau de 14h fermé à midi le jour même,
+    7h et 10h à midi la veille — SPEC-BOOKING-04
+  end note
+else saisie valide
+  Site -> Site : crée la réservation\nà l'état « en attente de paiement »
+  Site -> Site : calcule le montant à partir du Tarif
+  note right of Site
+    Tarif adulte x nombre d'adultes
+    + tarif enfant x nombre d'enfants,
+    ou forfait si privatisation
+    — SPEC-BOOKING-05, SPEC-BOOKING-06
+    Aucune place n'est décomptée à ce stade
+    — SPEC-BOOKING-03
+  end note
+  Site --> Client : récapitulatif et montant dû
+  deactivate Site
+
+  opt le client dispose d'un code
+    Client -> Site : saisit un bon cadeau ou un code d'avoir
+    activate Site
+    Site -> Site : contrôle le code et déduit son montant
+    note right of Site
+      Un seul dispositif par réservation,
+      bon cadeau et avoir non cumulables
+      — SPEC-BOOKING-09, SPEC-BOOKING-10
+      Montant libre, aucune contrainte de type
+      de sortie (v4) — REQ-045
+      Surplus perdu si le code dépasse le total
+      — SPEC-BOOKING-09
+    end note
+    Site --> Client : montant restant dû
+    deactivate Site
+  end
+
+  alt montant restant dû nul
+    Client -> Site : valide
+    activate Site
+    Site -> Site : passe la réservation à « confirmée »,\ndécompte les places et marque le code utilisé
+    note right of Site
+      Un code couvrant tout le prix confirme
+      directement, sans paiement carte
+      — SPEC-BOOKING-07, AC-6
+    end note
+    Site --> Client : confirmation de réservation
+    deactivate Site
+
+  else montant restant dû supérieur à zéro
+    Client -> Site : valide le paiement
+    activate Site
+    Site -> Paiement : demande l'encaissement du solde
+    activate Paiement
+    Paiement --> Site : résultat de la transaction
+    deactivate Paiement
+    note right of Site
+      Paiement intégral par carte, délégué au
+      prestataire ; aucune donnée de carte
+      n'est stockée — SPEC-BOOKING-07
+    end note
+
+    alt paiement refusé, abandonné, ou abouti après l'heure limite
+      Site --> Client : réservation non confirmée
+      note right of Site
+        Aucune place décomptée, aucun débit
+        — SPEC-BOOKING-07, AC-2
+        Un paiement qui aboutit après la fermeture
+        du créneau est refusé sans débit
+        — SPEC-BOOKING-04, AC-3
+        Le code éventuellement saisi reste utilisable
+      end note
+
+    else paiement confirmé dans les délais
+      Site -> Site : passe la réservation à « confirmée »,\ndécompte les places et marque le code utilisé
+      Site --> Client : confirmation de réservation
+      note right of Site
+        Le décompte des places est visible par les
+        autres clients sans rechargement
+        — SPEC-BOOKING-03, AC-7
+        Un message de rappel sera envoyé avant le
+        départ — SPEC-CANCEL-05
+      end note
+    end
+    deactivate Site
+  end
+end
+
+@enduml

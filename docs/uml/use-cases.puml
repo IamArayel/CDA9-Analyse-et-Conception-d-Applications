@@ -35,7 +35,7 @@ UC2 ..> UC3 : <<include>>
 UC3 --> Stripe
 
 Beneficiaire --> UC2
-UC2 ..> UC11 : <<extend>>
+UC11 ..> UC2 : <<extend>>
 UC11 ..> UC3 : <<include>>
 
 Gerant --> UC4
@@ -46,7 +46,7 @@ Gerant --> UC8
 Gerant --> UC12
 Gerant --> UC13
 UC7 ..> UC6 : <<include>>
-UC7 ..> UC8 : <<extend>>
+UC8 ..> UC7 : <<extend>>
 UC4 ..> UC9 : <<include>>
 UC5 ..> UC9 : <<include>>
 UC6 ..> UC9 : <<include>>
