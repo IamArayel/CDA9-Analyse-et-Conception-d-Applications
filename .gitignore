@@ -430,3 +430,4 @@ FodyWeavers.xsd
 
 # Propres au projet
 docs/uml/*.png 
+docs/uml/sequences/*.png
