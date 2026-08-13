@@ -1,0 +1,150 @@
+@startuml domain
+' Diagramme de classes du domaine — Ti Baleine
+' Concepts métier uniquement : aucun contrôleur, repository ni classe
+' technique. Vocabulaire client (cf. cahier-des-charges.md §13 Glossaire).
+' Les règles métier sensibles sont notées avec la spécification qui les porte.
+
+hide circle
+skinparam classAttributeIconSize 0
+
+class Bateau {
+  nom
+  capacité
+}
+note bottom of Bateau
+  Flotte de référence : Ti Kap (12),
+  Le Grand Bleu (24) — SPEC-BOOKING-03
+  Bateaux existants non modifiables ; le gérant
+  peut en créer un nouveau (v3) — SPEC-ADMIN-05
+end note
+
+class Créneau {
+  date
+  heure
+}
+note bottom of Créneau
+  3 créneaux/jour : 7h, 10h, 14h — SPEC-BOOKING-02
+  Aucun créneau les jours de fermeture — SPEC-BOOKING-02
+end note
+
+class Horaires {
+  joursFermeture
+  heureOuverture
+  heureFermeture
+}
+note bottom of Horaires
+  25 déc. et 1er janvier fermés par défaut,
+  modifiable par le gérant (v3) — SPEC-ADMIN-04
+end note
+
+class Sortie {
+  typeSortie
+  formule
+  statut
+}
+note bottom of Sortie
+  Capacité jamais dépassée — SPEC-BOOKING-03
+  Maintenue à partir de 6 inscrits, contrôle à J-24h — SPEC-BOOKING-03
+  Un seul bateau à la fois pour une sortie Baleines — SPEC-BOOKING-03
+  Dauphins toute l'année, Baleines 15/06-31/10 — SPEC-BOOKING-02
+  Fermeture des réservations selon le créneau — SPEC-BOOKING-04
+end note
+
+class Réservation {
+  nomClient
+  prénomClient
+  email
+  téléphone
+  nombreAdultes
+  nombreEnfants
+  montant
+  statut
+}
+note bottom of Réservation
+  Peut porter sur une seule personne, aucun
+  minimum imposé (v3) — SPEC-BOOKING-01
+  Aucun champ d'âge individuel par enfant — SPEC-BOOKING-01
+  Paiement intégral requis pour confirmation — SPEC-BOOKING-07
+  Le montant dû peut être réduit par un bon
+  cadeau ou un avoir (v3) — SPEC-BOOKING-09,
+  SPEC-BOOKING-10
+end note
+
+class BonCadeau {
+  code
+  montant
+  dateAchat
+  dateExpiration
+  statut
+}
+note bottom of BonCadeau
+  Ajouté en v3 — impact-CR-001.md
+  Valable 1 an, usage unique, achat et usage
+  exclusivement sur la plateforme — SPEC-BOOKING-09
+  Montant libre, choisi par l'acheteur : ni type
+  de sortie, ni catégorie adulte ou enfant
+  (REQ-045, v4) — impact-CR-002.md
+  Déduit du montant total de la réservation ;
+  solde payé par carte, surplus perdu.
+end note
+
+class Avoir {
+  code
+  montant
+  dateEmission
+  dateExpiration
+  statut
+}
+note bottom of Avoir
+  Ajouté en v3 — impact-CR-001.md
+  Code de réduction unique, valeur décidée au
+  cas par cas par le gérant après une annulation
+  météo — SPEC-BOOKING-10, SPEC-CANCEL-04
+  Valable 1 an à compter de l'émission
+  (REQ-051, v4) — impact-CR-002.md
+  Ne se distingue plus d'un BonCadeau que par
+  son origine : fusion à trancher avec le client
+  (cahier des charges §11, question 8).
+end note
+
+class Tarif {
+  typeSortie
+  prixAdulte
+  prixEnfant
+  prixPrivatisation
+}
+note bottom of Tarif
+  Modifiable par le gérant, ~1 fois/an — SPEC-ADMIN-02
+end note
+
+class Gérant {
+  email
+  motDePasse
+}
+note bottom of Gérant
+  Compte unique, seul utilisateur de l'espace
+  de gestion — SPEC-ADMIN-01
+end note
+
+class ChoixAnnulation {
+  type
+}
+note bottom of ChoixAnnulation
+  Report, avoir ou remboursement, enregistré
+  après contact téléphonique — SPEC-CANCEL-04
+end note
+
+Bateau "1" -- "0..*" Sortie : est affectée à >
+Créneau "1" -- "0..*" Sortie : programme >
+Tarif "1" -- "0..*" Sortie : s'applique selon type >
+Sortie "1" -- "0..*" Réservation : reçoit >
+Sortie "1" -- "0..*" ChoixAnnulation : donne lieu à (si annulée) >
+BonCadeau "0..1" -- "0..1" Réservation : réduit le montant de >
+Avoir "0..1" -- "0..1" Réservation : réduit le montant de >
+Gérant ..> Sortie : annule pour raison météo\n(SPEC-CANCEL-02)
+Gérant ..> Tarif : modifie\n(SPEC-ADMIN-02)
+Gérant ..> Horaires : modifie\n(SPEC-ADMIN-04)
+Gérant ..> Bateau : crée (v3)\n(SPEC-ADMIN-05)
+Gérant ..> Avoir : accorde après une annulation météo\n(SPEC-CANCEL-04)
+
+@enduml

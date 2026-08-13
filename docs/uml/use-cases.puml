@@ -1,0 +1,115 @@
+@startuml use-cases
+' Diagramme de cas d'utilisation — Ti Baleine
+' Vocabulaire client (cf. cahier-des-charges.md §13 Glossaire).
+' Chaque cas cite la/les spécifications qu'il réalise (specs/*.md).
+
+left to right direction
+
+actor "Client" as Client
+actor "Gérant" as Gerant
+actor "Prestataire de paiement\n(Stripe)" as Stripe
+
+actor "Bénéficiaire d'un\nbon cadeau" as Beneficiaire
+
+rectangle "Ti Baleine" {
+  usecase "Consulter les places disponibles" as UC1
+  usecase "Réserver une sortie" as UC2
+  usecase "Payer en ligne" as UC3
+  usecase "Se connecter à l'espace de gestion" as UC9
+  usecase "Modifier les tarifs" as UC4
+  usecase "Exporter le planning des réservations" as UC5
+  usecase "Visualiser les clients inscrits sur un créneau" as UC6
+  usecase "Annuler un créneau (météo)" as UC7
+  usecase "Enregistrer le choix d'un client\n(report, avoir, remboursement)" as UC8
+  usecase "Acheter un bon cadeau" as UC10
+  usecase "Utiliser un bon cadeau ou\nun code d'avoir au paiement" as UC11
+  usecase "Modifier les horaires d'ouverture\net les jours de fermeture" as UC12
+  usecase "Créer un nouveau bateau" as UC13
+}
+
+Client --> UC1
+Client --> UC2
+Client --> UC10
+UC2 ..> UC1 : <<include>>
+UC2 ..> UC3 : <<include>>
+UC3 --> Stripe
+
+Beneficiaire --> UC2
+UC2 ..> UC11 : <<extend>>
+UC11 ..> UC3 : <<include>>
+
+Gerant --> UC4
+Gerant --> UC5
+Gerant --> UC6
+Gerant --> UC7
+Gerant --> UC8
+Gerant --> UC12
+Gerant --> UC13
+UC7 ..> UC6 : <<include>>
+UC7 ..> UC8 : <<extend>>
+UC4 ..> UC9 : <<include>>
+UC5 ..> UC9 : <<include>>
+UC6 ..> UC9 : <<include>>
+UC7 ..> UC9 : <<include>>
+UC8 ..> UC9 : <<include>>
+UC12 ..> UC9 : <<include>>
+UC13 ..> UC9 : <<include>>
+
+note right of UC1
+  SPEC-BOOKING-03
+end note
+
+note right of UC2
+  SPEC-BOOKING-01
+  SPEC-BOOKING-02
+  SPEC-BOOKING-04
+  SPEC-BOOKING-05
+  SPEC-BOOKING-06
+end note
+
+note right of UC3
+  SPEC-BOOKING-07
+end note
+
+note right of UC9
+  SPEC-ADMIN-01
+end note
+
+note right of UC4
+  SPEC-ADMIN-02
+end note
+
+note right of UC5
+  SPEC-ADMIN-03
+end note
+
+note right of UC6
+  SPEC-CANCEL-01
+end note
+
+note right of UC7
+  SPEC-CANCEL-02
+  SPEC-CANCEL-03
+end note
+
+note right of UC8
+  SPEC-CANCEL-04
+end note
+
+note right of UC10
+  SPEC-BOOKING-09 (v3)
+end note
+
+note right of UC11
+  SPEC-BOOKING-09, SPEC-BOOKING-10 (v3)
+end note
+
+note right of UC12
+  SPEC-ADMIN-04 (v3)
+end note
+
+note right of UC13
+  SPEC-ADMIN-05 (v3)
+end note
+
+@enduml
