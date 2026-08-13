@@ -5,8 +5,8 @@
 - [Arnaud Maxime](mailto:arnaudmaxime.bidel@gmail.com)
 - [Anthony Dégeilh](mailto:anthony.degeilh@gmail.com)
 
-**Version :** v3 — 2026-08-12
-**Sources :** [`compte-rendu-entretien-01.md`](./compte-rendu-entretien-01.md) (CR-01), [`compte-rendu-entretien-02.md`](./compte-rendu-entretien-02.md) (CR-02), [`compte-rendu-entretien-03.md`](./compte-rendu-entretien-03.md) (CR-03), échange oral du 2026-08-11, analyse d'impact [`impact-CR-001.md`](./impact-CR-001.md).
+**Version :** v4 — 2026-08-13
+**Sources :** [`compte-rendu-entretien-01.md`](./compte-rendu-entretien-01.md) (CR-01), [`compte-rendu-entretien-02.md`](./compte-rendu-entretien-02.md) (CR-02), [`compte-rendu-entretien-03.md`](./compte-rendu-entretien-03.md) (CR-03), échanges oraux du 2026-08-11 et du 2026-08-13, analyses d'impact [`impact-CR-001.md`](./impact-CR-001.md) et [`impact-CR-002.md`](./impact-CR-002.md).
 
 Ce document formalise le **problème compris**, pas la solution. Aucun nom de
 technologie, aucun nom de framework, aucune structure de base de données ici
@@ -261,16 +261,27 @@ client en fin de troisième entretien, sans avoir été demandée — voir
 [CR-03/Q07](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues)
 et l'analyse d'impact [impact-CR-001.md](./impact-CR-001.md).
 
+Révisée en v4 : le client est revenu sur le fonctionnement du bon cadeau lors
+d'un échange oral le 2026-08-13. `REQ-045` est **inversée** (montant libre,
+plus aucun rattachement à un type de sortie), `REQ-047` et `REQ-048` sont
+précisées sur le montant total de la réservation, et `REQ-051` est ajoutée
+(validité d'un an pour l'avoir). Voir l'analyse d'impact
+[impact-CR-002.md](./impact-CR-002.md). Conséquence à trancher avec le
+client : bon cadeau et avoir n'ont plus de différence de comportement, seule
+leur origine les distingue (voir [§11](#11-questions-restées-ouvertes),
+question 8).
+
 | ID | Exigence | Priorité | Persona | Source |
 |---|---|---|---|---|
 | REQ-043 | Le client peut acheter, sur la plateforme, un bon cadeau utilisable à tout moment sur le site. | Must | Client | [CR-03/Q07](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues) |
 | REQ-044 | Un bon cadeau est valable 1 an à compter de sa date d'achat ; passé ce délai, il n'est plus utilisable. | Must | Client | [CR-03/Q07](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues) |
-| REQ-045 | Un bon cadeau est spécifique à un type de sortie déterminé à l'achat (sortie baleines, sortie dauphins, ou privatisation) ; il n'est utilisable que pour ce type de sortie. | Must | Client | [CR-03/Q07](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues) |
+| REQ-045 | Un bon cadeau porte un montant libre, choisi par l'acheteur au moment de l'achat. Il n'est rattaché ni à un type de sortie, ni à une catégorie de tarif adulte ou enfant, et reste utilisable sur n'importe quelle réservation. | Must | Client | Échange oral du 2026-08-13, analyse d'impact [`impact-CR-002.md`](./impact-CR-002.md) ; *remplace en v4 la règle inverse issue de [CR-03/Q07](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues), qui rattachait le bon à un type de sortie déterminé à l'achat* |
 | REQ-046 | Le bénéficiaire d'un bon cadeau renseigne son code au moment de réserver, exclusivement sur la plateforme (achat et usage), pour l'appliquer au paiement de sa réservation ; aucune réservation par téléphone n'accepte un bon cadeau. | Must | Client | [CR-03/Q07](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues) ; *l'exclusion stricte du téléphone est une hypothèse d'équipe non confirmée par le client — voir [CR-03, §6-1](./compte-rendu-entretien-03.md#6-ambiguïtés-détectées), [§8](./compte-rendu-entretien-03.md#8-questions-à-poser-au-prochain-entretien)* |
-| REQ-047 | Si le prix de la sortie réservée est supérieur au montant du bon cadeau, le bénéficiaire paie la différence en carte bancaire, selon les mêmes règles de paiement que le reste (REQ-017). | Must | Client | [CR-03/Q07](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues) |
-| REQ-048 | Si le montant du bon cadeau est supérieur au prix de la sortie réservée, la différence n'est pas remboursée : le surplus est perdu. | Must | Client | [CR-03/Q07](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues) |
+| REQ-047 | Si le montant total de la réservation est supérieur au montant du bon cadeau, le bénéficiaire paie la différence en carte bancaire, selon les mêmes règles de paiement que le reste (REQ-017). | Must | Client | [CR-03/Q07](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues) ; *« prix de la sortie » précisé en « montant total de la réservation » en v4, échange oral du 2026-08-13* |
+| REQ-048 | Si le montant du bon cadeau est supérieur au montant total de la réservation, la différence n'est pas remboursée : le surplus est perdu. | Must | Client | [CR-03/Q07](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues) ; *même précision qu'en REQ-047* |
 | REQ-049 | Un bon cadeau est à usage unique : une fois utilisé pour une réservation, son code ne peut pas être réemployé. | Must | Client | [CR-03/Q07](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues) |
 | REQ-050 | Un avoir accordé par le gérant (à la suite d'une annulation météo, REQ-023) est délivré sous forme d'un code de réduction unique, que le client saisit au moment de payer une réservation future. | Must | Gérant, Client | [CR-03/Q05](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues) |
+| REQ-051 | Un avoir est valable 1 an à compter de sa date d'émission par le gérant ; passé ce délai, il n'est plus utilisable. | Must | Gérant, Client | Échange oral du 2026-08-13, analyse d'impact [`impact-CR-002.md`](./impact-CR-002.md) |
 
 ## 10. Exigences non fonctionnelles
 
@@ -302,8 +313,9 @@ l'hypothèse soit écrite. Une hypothèse non écrite est une erreur en attente.
 | 5 | Les modalités précises de connexion à l'espace de gestion (identifiant, règle de mot de passe) conviennent-elles au gérant ? | [CR-02/Q03](./compte-rendu-entretien-02.md#2-questions-posées-et-réponses-obtenues), [Q10](./compte-rendu-entretien-02.md#2-questions-posées-et-réponses-obtenues) | Compte unique confirmé ; règle de mot de passe non discutée | Connexion par e-mail et mot de passe (REQ-034/REQ-104), à reconfirmer avec le client |
 | 6 | Un bon cadeau peut-il être acheté ou utilisé par téléphone à titre exceptionnel, y compris par le gérant lui-même ? | [CR-03, §8](./compte-rendu-entretien-03.md#8-questions-à-poser-au-prochain-entretien) | en attente | Exclusion stricte du téléphone pour l'achat et l'usage d'un bon cadeau (REQ-046) |
 | 7 | Le formulaire de création d'un nouveau bateau depuis l'espace de gestion doit-il inclure les types de sorties compatibles, ou seulement un nom et une capacité ? | [CR-03, §8](./compte-rendu-entretien-03.md#8-questions-à-poser-au-prochain-entretien) | en attente | Formulaire limité à nom + capacité (REQ-041), tout bateau créé habilité à tous les types de sortie |
-| 8 | L'avoir (valeur libre décidée au cas par cas par le gérant) et le bon cadeau (montant fixé à l'achat, spécifique à un type de sortie) sont-ils bien deux dispositifs séparés, ou un mécanisme de code unique ? | [CR-03, §8](./compte-rendu-entretien-03.md#8-questions-à-poser-au-prochain-entretien) | en attente | Traités comme deux dispositifs distincts, non cumulables sur une même réservation (REQ-046, REQ-050) |
-| 9 | Le prix d'achat d'un bon cadeau correspond-il au tarif standard d'une sortie au moment de l'achat, ou le client peut-il choisir un montant libre ? | [CR-03, §8](./compte-rendu-entretien-03.md#8-questions-à-poser-au-prochain-entretien) | en attente | Non tranché ; nécessaire avant de spécifier le formulaire d'achat d'un bon cadeau (REQ-043) |
+| 8 | L'avoir et le bon cadeau sont-ils bien deux dispositifs séparés, ou un mécanisme de code unique ? **Question devenue critique en v4** : depuis l'échange du 2026-08-13, les deux portent un montant libre, expirent à un an, s'imputent sur le montant total et sont à usage unique. Seule leur origine les distingue (vendu au client contre accordé par le gérant). | [CR-03, §8](./compte-rendu-entretien-03.md#8-questions-à-poser-au-prochain-entretien), relancée le 2026-08-13 | en attente | Maintenus comme deux dispositifs distincts, non cumulables sur une même réservation (REQ-046, REQ-050) ; une classe unique porteuse d'un attribut d'origine reste la solution de repli si le client confirme l'équivalence |
+| 9 | ~~Le prix d'achat d'un bon cadeau correspond-il au tarif standard d'une sortie au moment de l'achat, ou le client peut-il choisir un montant libre ?~~ | [CR-03, §8](./compte-rendu-entretien-03.md#8-questions-à-poser-au-prochain-entretien) | **répondue le 2026-08-13** : montant libre choisi par l'acheteur (REQ-045) | *sans objet* |
+| 10 | Le montant d'un bon cadeau est-il borné (minimum, maximum, arrondi) ? Question ouverte par la réponse à la question 9 : un montant libre sans borne autorise aussi bien 3 € que 5 000 €. | Non posée, identifiée le 2026-08-13 | en attente | Montant entier, compris entre 10 € et le forfait de privatisation le plus élevé (1 100 €, REQ-014), à confirmer |
 
 ## 12. Validation client
 
@@ -312,6 +324,7 @@ l'hypothèse soit écrite. Une hypothèse non écrite est une erreur en attente.
 | v1 | — | non | Rédigée à partir de CR-01 et CR-02, sans relecture client formelle |
 | v2 | 2026-08-11 | non | Intègre les réponses orales du client du 2026-08-11 (compte-rendu à formaliser) et reformate le document selon le template d'équipe |
 | v3 | 2026-08-12 | non | Intègre les réponses du troisième entretien ([CR-03](./compte-rendu-entretien-03.md)) : corrige REQ-001, ajoute REQ-038 à REQ-050 (jours de fermeture, horaires, bilinguisme, création de bateau, bons cadeaux, avoir), documenté dans [impact-CR-001.md](./impact-CR-001.md) |
+| v4 | 2026-08-13 | non | Intègre l'échange oral du 2026-08-13 : REQ-045 inversée (bon cadeau à montant libre, sans type de sortie), REQ-047 et REQ-048 précisées sur le montant total, REQ-051 ajoutée (avoir valable 1 an), question 9 du §11 répondue et question 10 ouverte, documenté dans [impact-CR-002.md](./impact-CR-002.md). Compte rendu de l'entretien à formaliser en CR-04 |
 
 ## 13. Glossaire
 
@@ -322,8 +335,8 @@ Définitions en langage courant, telles qu'utilisées par le client.
 - **Forfait** : la formule de réservation standard.
 - **Privatisation** : réservation qui bloque un bateau entier sur un créneau, sans réduction de tarif.
 - **Report** : déplacement d'une réservation existante vers une autre date, à la différence d'une annulation qui met fin à la réservation.
-- **Avoir** : montant crédité au client, utilisable pour une réservation future, proposé comme alternative au remboursement ; matérialisé par un code de réduction unique, saisi au paiement.
-- **Bon cadeau** : code acheté sur le site, offert ou utilisé plus tard par son bénéficiaire pour réserver une sortie d'un type déterminé à l'achat (baleines, dauphins ou privatisation), valable 1 an, à usage unique.
+- **Avoir** : montant crédité au client par le gérant, utilisable pour une réservation future, proposé comme alternative au remboursement ; matérialisé par un code de réduction unique, saisi au paiement, valable 1 an à compter de son émission.
+- **Bon cadeau** : code acheté sur le site pour un montant libre, offert ou utilisé plus tard par son bénéficiaire pour réserver n'importe quelle sortie, valable 1 an, à usage unique.
 - **Espace de gestion** : la partie de l'outil réservée au gérant, pour modifier les tarifs, obtenir le planning des réservations, gérer les horaires d'ouverture et créer un nouveau bateau.
 
 ## 14. Traçabilité
