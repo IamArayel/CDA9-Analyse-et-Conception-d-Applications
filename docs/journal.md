@@ -239,3 +239,113 @@ décoratif : c'est ce qui permet de distinguer un arbitrage d'un acquiescement.
 - Les questions déjà en attente au §11 du cahier des charges (budget,
   format de facture, durée de conservation des données, modalités de
   connexion à l'espace de gestion).
+
+
+## J4 — 2026-08-13
+
+**Présents.** Client + équipe complète de développeurs.
+
+**Décisions.**
+- Diagrammes de cas d'utilisation et de classes du domaine produits en
+  PlantUML, sources versionnées et images générées laissées hors du dépôt,
+  conformément à `docs/uml/README.md`.
+- Support de présentation du J4 préparé sur les deux parcours sensibles,
+  réservation et annulation, avec un déroulé minuté de 30 minutes.
+- **Le client revient sur le bon cadeau** lors d'un échange oral : montant
+  libre choisi à l'achat, plus aucun rattachement à un type de sortie ni à
+  une catégorie de tarif adulte ou enfant, imputation sur le montant total
+  de la réservation. Le solde se paie par carte, le surplus reste perdu.
+- Le client tranche deux points en suspens : l'avoir est lui aussi valable
+  un an, et une réservation porte toujours sur une seule sortie, sans
+  regroupement de plusieurs sorties en une commande.
+- Chaîne descendue dans l'ordre du README avant toute modification de
+  spécification : `impact-CR-002.md`, puis cahier des charges v4
+  (`REQ-045` inversée, `REQ-047`/`REQ-048` précisées, `REQ-051` ajoutée),
+  puis `SPEC-BOOKING-09` et `SPEC-BOOKING-10` en v2, puis
+  `domain.puml`, puis régénération de la matrice.
+- `REQ-045` est **inversée plutôt que supprimée**, identifiant conservé :
+  l'historique du changement reste lisible et la matrice ne perd pas la
+  trace de l'exigence.
+- Fusion de `BonCadeau` et `Avoir` **non tranchée** : les deux classes
+  restent séparées tant que le client n'a pas répondu.
+
+**Critiques de l'IA acceptées.**
+- Un montant libre sans borne autorise aussi bien un bon de 3 € qu'un bon de
+  5 000 € → cas limite 13 et hypothèse de bornage ajoutés, question 10
+  ouverte au §11 (`specs/booking.md`, `docs/cahier-des-charges.md`).
+- Depuis la validité d'un an accordée à l'avoir, `BonCadeau` et `Avoir`
+  n'ont plus qu'une seule différence, leur origine → la question 8 du §11
+  cesse d'être une question de vocabulaire et devient une décision de
+  conception, requalifiée comme telle et tracée en `impact-CR-002.md` §8.
+- Le mot « panier » employé par le client n'existe pas au glossaire et
+  pouvait impliquer une classe de commande au-dessus de `Réservation` →
+  question posée au client, qui a confirmé qu'une réservation porte sur une
+  seule sortie ; aucune classe ajoutée.
+- `REQ-045` citait « privatisation » comme un type de sortie alors que
+  c'est une formule, facturée au forfait par bateau → signalé, devenu sans
+  objet avec l'inversion de l'exigence, mais la même confusion reste à
+  surveiller ailleurs.
+- La règle de non-cumul entre bon cadeau et avoir n'est plus étayée par une
+  différence de comportement → maintenue faute de règle client contraire,
+  mais explicitement signalée comme arbitraire dans `impact-CR-002.md` §8.
+
+**Critiques de l'IA refusées, et pourquoi.**
+- Fusionner `BonCadeau` et `Avoir` en une classe unique porteuse d'un
+  attribut d'origine → refusé, car la fusion est défendable techniquement
+  mais reste une décision métier : deux dispositifs distincts étaient
+  l'hypothèse de départ du client (`CR-03` §6), et l'équipe ne s'autorise
+  pas à la lever seule. Le repli est documenté, la question reposée.
+- Avant l'échange avec le client, l'IA proposait que la catégorie d'un bon
+  cadeau fixe seulement son prix sans contraindre son usage → refusé par
+  l'équipe, qui a imposé la contrainte à l'utilisation. Arbitrage devenu
+  sans objet quelques heures plus tard, le client ayant supprimé la notion
+  de catégorie.
+
+**Erreurs produites par l'IA et détectées.**
+- L'IA a affirmé qu'interdire à un bon « enfant » de réduire une réservation
+  d'adultes obligerait à décomposer le montant en lignes par participant, ce
+  qui était faux → repéré en reformulant la règle comme une condition
+  d'éligibilité : `Réservation` porte déjà `nombreAdultes` et
+  `nombreEnfants`, il suffisait d'exiger au moins un participant de la
+  catégorie du bon → règle corrigée sans toucher au modèle, avant que le
+  client ne rende le point caduc.
+- En réécrivant `SPEC-BOOKING-09` et `SPEC-BOOKING-10`, l'IA a cité
+  `REQ-045` et `REQ-051` dans les tableaux de revue IA, placés après des
+  renvois `cf. SPEC-BOOKING-07` et `cf. SPEC-CANCEL-04` → deux paires
+  fausses sont apparues dans la matrice (`SPEC-BOOKING-07 → REQ-045`,
+  `SPEC-CANCEL-04 → REQ-051`), repérées en comparant la matrice régénérée à
+  celle d'un worktree sur `HEAD` (78 ruptures contre 72) → identifiants
+  retirés de ces lignes, conformément à la convention en tête de
+  `specs/booking.md`. **C'est exactement le piège déjà consigné au J3** :
+  `tools/traceability.sh` rattache une exigence au dernier `SPEC-xxx-nn`
+  rencontré, y compris quand ce n'est qu'un renvoi en prose.
+- Constat annexe sur l'outillage : `tools/traceability.sh` ne reconnaît
+  comme source qu'un motif `CR-nn/Qnn` ou le mot « déduit ». `REQ-045` et
+  `REQ-051`, d'abord sourcées sur « l'échange oral du 2026-08-13 », étaient
+  donc signalées en rupture à tort → corrigé en formalisant l'entretien en
+  `compte-rendu-entretien-04.md` et en réécrivant les deux sources en
+  `CR-04/Q01`, `CR-04/Q02` et `CR-04/Q04`.
+
+**Ce qui a été généré aujourd'hui.**
+- `docs/uml/domain.puml`, `docs/uml/use-cases.puml` (nouveaux)
+- `docs/impact-CR-002.md`, `docs/compte-rendu-entretien-04.md` (nouveaux)
+- `docs/cahier-des-charges.md` (v3 → v4)
+- `specs/booking.md` (`SPEC-BOOKING-09` et `SPEC-BOOKING-10` en v2)
+- `docs/traceability.md` (régénéré)
+- Support de présentation du J4 (hors dépôt)
+
+**Questions ouvertes pour le client.**
+- Bon cadeau et avoir sont-ils encore deux dispositifs, alors qu'ils ne
+  diffèrent plus que par leur origine ? (§11, question 8)
+- Le montant d'un bon cadeau est-il borné, et selon quel arrondi ?
+  (§11, question 10, ouverte par la réponse du client lui-même)
+- Que rend-on lorsqu'une réservation payée par bon cadeau est annulée pour
+  raison météo ? Hypothèse en vigueur : un avoir de montant équivalent.
+- `CR-04` doit être relu par la personne ayant mené l'échange : deux
+  réponses y ont été rapportées sous forme d'arbitrages, et si elles
+  relèvent d'une décision d'équipe, `REQ-051` doit être marquée `déduit`
+  plutôt que sourcée `CR-04/Q04` (`CR-04` §6, ambiguïté 2).
+- Les questions déjà en attente au §11 du cahier des charges (budget,
+  format de facture, durée de conservation des données, modalités de
+  connexion à l'espace de gestion, usage téléphonique d'un bon cadeau,
+  champs du formulaire de création d'un bateau).
