@@ -73,9 +73,20 @@ la suite.
 | Q13 | **Messages :** L'alerte de la veille remplace-t-elle le message de rappel, qui annonce déjà la météo prévue ? | Non. Les deux messages partent, à quelques heures d'intervalle |
 | Q14 | **Périmètre :** L'alerte vaut-elle aussi pour une privatisation ? Et une sortie annulée faute de 6 inscrits déclenche-t-elle le même message ? | Oui pour la privatisation. **Sans réponse** pour l'annulation au seuil de 6 inscrits : le cas n'a pas été abordé |
 | Q15 | **Contenu :** Quel est le texte exact des messages, en français et en anglais ? | **Sans réponse** : reste à définir avec le gérant |
+| Q16 | **Horaires :** l'heure d'envoi de l'alerte (18h) et le délai de confirmation (2 heures) sont-ils figés, ou réglables depuis l'espace de gestion ? | Réglables, comme l'horaire du message de rappel. 18h et 2 heures ne sont que des valeurs par défaut |
+| Q17 | **Annulation :** jusqu'à quelle heure pouvez-vous annuler un créneau ? | Jusqu'à l'heure de départ. Une annulation décidée après le repère des 2 heures envoie le message immédiatement au lieu de le programmer |
+| Q18 | **Coordonnées :** faut-il contrôler les coordonnées à la saisie, puisqu'un message non délivré relève de la responsabilité du client ? | Oui, contrôle par le formulaire : une expression régulière sur l'e-mail, et le retrait des points, tirets et espaces du numéro de téléphone avant enregistrement |
+| Q19 | **Alerte :** une alerte sur un créneau où naviguent deux bateaux porte-t-elle sur les deux ? | Oui, sur le créneau entier : si la météo est mauvaise pour un bateau, elle l'est aussi pour l'autre |
+| Q20 | **Annulation :** le message de confirmation part-il aussi aux clients ayant réservé après l'envoi de l'alerte ? | Oui, à tout client inscrit au moment de l'annulation |
+| Q21 | **SMS :** quel prestataire d'envoi retenir, et sous quel numéro les messages partent-ils ? | Aucun changement : l'entreprise conserve le forfait et le numéro dont elle dispose aujourd'hui |
 
-Deux questions restent donc sans réponse complète, `Q14` pour sa seconde
-moitié et `Q15`. Elles sont reprises au §8.
+Deux questions restent sans réponse complète, `Q14` pour sa seconde moitié et
+`Q15`. Elles sont reprises au §8.
+
+**Second passage du 2026-08-14.** Les questions `Q16` à `Q21` ont été posées
+et répondues dans la journée, après la première rédaction de ce compte rendu.
+Elles confirment les **cinq hypothèses d'équipe** du §6, sans en infirmer
+aucune, et tranchent l'envoi des SMS.
 
 ## 3. Ce que nous avons compris
 
@@ -147,6 +158,11 @@ les propos **tels que rapportés par l'équipe**, et non une transcription.
 | 12 | Un client qui renonce à une sortie mise en alerte est remboursé intégralement, même si la sortie part finalement | « le client alerté qui préfère annuler est remboursé intégralement, le risque d'annulation étant à l'initiative du gérant » | oui |
 | 13 | Le remboursement est exécuté par Stripe après validation du gérant, et la communication associée est celle de Stripe | « le remboursement est géré par Stripe suite à la validation du gérant » | oui |
 | 14 | Le budget de l'exercice est illimité | « le budget pour l'exercice est illimité » | oui, à lire comme une réponse de contexte pédagogique et non comme un engagement d'exploitation |
+| 15 | L'heure d'envoi de l'alerte et le délai de confirmation sont réglables depuis l'espace de gestion | « réglables, comme l'horaire du message de rappel » | oui (`Q16`) |
+| 16 | Le gérant peut annuler un créneau jusqu'à son heure de départ | « jusqu'à l'heure de départ » | oui (`Q17`) |
+| 17 | Les coordonnées sont contrôlées à la saisie : expression régulière sur l'e-mail, normalisation du numéro de téléphone | « regex email + retrait des points, tirets ou espaces du numéro » | oui (`Q18`) |
+| 18 | Une alerte porte sur le créneau entier, les deux bateaux compris | « si la météo est mauvaise pour un bateau, elle l'est aussi pour l'autre » | oui (`Q19`) |
+| 19 | L'entreprise conserve son forfait et son numéro actuels pour l'envoi des SMS | « pas de changement » | oui (`Q21`), sous réserve du §6 ambiguïté 6 |
 
 ## 6. Ambiguïtés détectées
 
@@ -155,11 +171,17 @@ ambiguïté détectée mais non levée reste une ambiguïté : elle va au §8.
 
 | # | Formulation | Lectures possibles | Levée ? |
 |---|---|---|---|
-| 1 | « la veille à 18h » et « 2h avant » (Q01) | (a) horaires figés dans l'outil (b) valeurs par défaut réglables depuis l'espace de gestion, comme l'horaire du message de rappel | non, **hypothèse d'équipe : lecture (b)**, par cohérence avec `REQ-042` ; question 1 du §8 |
-| 2 | « possible d'annuler le jour même » (Q01) | (a) jusqu'au repère des 2h, au-delà duquel plus rien n'est annulable dans l'outil (b) jusqu'à l'heure de départ, un message partant alors immédiatement au lieu d'être programmé | non, **hypothèse d'équipe : lecture (b)** ; question 2 du §8 |
-| 3 | « c'est la faute du client » (Q04) | (a) constat de responsabilité, sans conséquence applicative (b) implique au minimum de contrôler le format du numéro de mobile à la saisie, faute de quoi la règle est inapplicable | non, **hypothèse d'équipe : lecture (b)**, contrôle de forme du mobile ajouté au formulaire |
-| 4 | « le gérant provoque l'alerte sur chaque créneau » (Q08) | (a) l'alerte porte sur le créneau entier, donc sur les deux bateaux qui y naviguent (b) l'alerte peut viser un seul bateau du créneau | non, **hypothèse d'équipe : lecture (a)**, alignée sur celle déjà retenue pour l'annulation |
-| 5 | Portée du message de confirmation (Q01, Q06) | (a) seuls les clients présents au moment de l'alerte le reçoivent (b) tout client inscrit au moment de l'annulation le reçoit, y compris celui qui a réservé après l'alerte | non, **hypothèse d'équipe : lecture (b)**, la seule qui protège le client réservant le matin même une sortie de 14h |
+| 1 | « la veille à 18h » et « 2h avant » (Q01) | (a) horaires figés dans l'outil (b) valeurs par défaut réglables depuis l'espace de gestion, comme l'horaire du message de rappel | **oui, levée par `Q16`** : lecture (b), l'hypothèse d'équipe est confirmée |
+| 2 | « possible d'annuler le jour même » (Q01) | (a) jusqu'au repère des 2h, au-delà duquel plus rien n'est annulable dans l'outil (b) jusqu'à l'heure de départ, un message partant alors immédiatement au lieu d'être programmé | **oui, levée par `Q17`** : lecture (b), l'hypothèse d'équipe est confirmée |
+| 3 | « c'est la faute du client » (Q04) | (a) constat de responsabilité, sans conséquence applicative (b) implique au minimum de contrôler le format du numéro de mobile à la saisie, faute de quoi la règle est inapplicable | **oui, levée par `Q18`** : lecture (b), avec deux contrôles précisés, une expression régulière sur l'e-mail et la normalisation du numéro |
+| 4 | « le gérant provoque l'alerte sur chaque créneau » (Q08) | (a) l'alerte porte sur le créneau entier, donc sur les deux bateaux qui y naviguent (b) l'alerte peut viser un seul bateau du créneau | **oui, levée par `Q19`** : lecture (a), justifiée par le client, la météo ne distinguant pas les bateaux |
+| 5 | Portée du message de confirmation (Q01, Q06) | (a) seuls les clients présents au moment de l'alerte le reçoivent (b) tout client inscrit au moment de l'annulation le reçoit, y compris celui qui a réservé après l'alerte | **oui, levée par `Q20`** : lecture (b), l'hypothèse d'équipe est confirmée |
+
+**Ambiguïté nouvelle, ouverte par `Q21`.**
+
+| # | Formulation | Lectures possibles | Levée ? |
+|---|---|---|---|
+| 6 | « on reste sur le forfait et le numéro actuels » (Q21) | (a) les SMS partent d'une passerelle d'envoi affichant le nom ou le numéro de l'entreprise, l'abonnement du gérant restant inchangé pour ses appels (b) les SMS partent littéralement du téléphone du gérant, ce qu'une application hébergée ne sait pas déclencher seule | non, **hypothèse d'équipe : lecture (a)**. La lecture (b) rendrait impossible l'envoi automatique demandé en `Q01` et ramènerait le gérant à écrire ses messages à la main, exactement ce qu'il veut arrêter. Question 1 du §8 |
 
 ## 7. Contraintes évoquées
 
@@ -177,8 +199,9 @@ Formulées, pas juste évoquées. Priorisées : le prochain passage est court.
 
 | Priorité | Question | Pourquoi elle compte |
 |---|---|---|
-| 1 | L'heure d'envoi de l'alerte (18h) et le délai de confirmation (2h avant) sont-ils figés, ou réglables depuis l'espace de gestion comme l'horaire du message de rappel ? | Détermine si deux valeurs entrent dans la configuration de l'espace de gestion ou dans le code ; §6, ambiguïté 1 |
-| 1 | Jusqu'à quelle heure pouvez-vous annuler un créneau, et qu'envoie-t-on si vous décidez après le repère des deux heures ? | Sans borne, la règle des deux heures n'est pas spécifiable ; §6, ambiguïté 2 |
+| 1 | Confirmez-vous que les SMS partent d'une passerelle d'envoi affichant le nom de l'entreprise, votre abonnement mobile restant inchangé ? Les envoyer depuis votre téléphone supposerait de les écrire à la main. | §6, ambiguïté 6. Seul point restant qui puisse faire tomber l'envoi automatique demandé en `Q01` |
+| 2 | ~~L'heure d'envoi de l'alerte et le délai de confirmation sont-ils réglables ?~~ | **répondue le 2026-08-14 (`Q16`)** : réglables, 18h et 2 heures étant des valeurs par défaut |
+| 2 | ~~Jusqu'à quelle heure pouvez-vous annuler un créneau ?~~ | **répondue le 2026-08-14 (`Q17`)** : jusqu'à l'heure de départ, message immédiat au-delà du repère des 2 heures |
 | 2 | Une sortie annulée faute d'atteindre 6 inscrits déclenche-t-elle le même message de confirmation ? | Resté sans réponse en `Q14`. Ce sont aujourd'hui les seules annulations automatiques de l'outil, et elles n'ont aucun message associé |
 | 2 | Un client qui renonce après une alerte peut-il aussi demander un report ou un avoir, ou seulement le remboursement intégral ? | Il annule de sa propre initiative, ce qui ouvre le triptyque, mais vous lui accordez un remboursement intégral ; les deux règles se rencontrent sans que le résultat soit écrit |
 | 2 | Le montant d'un avoir accordé après une annulation client suit-il le barème dégressif, par exemple la moitié du montant payé à moins de 48 heures, ou vaut-il la totalité de la somme versée ? | L'avoir est désormais rattaché à l'annulation client, à laquelle s'applique une retenue. Sans réponse, l'écran de validation en back-office n'est pas spécifiable |
