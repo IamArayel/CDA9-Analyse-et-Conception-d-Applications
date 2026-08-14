@@ -1,11 +1,14 @@
 # Spécifications - BOOKING (réservation en ligne)
 
 **Domaine :** `BOOKING`
-**Source :** `docs/cahier-des-charges.md` (v4), cas d'usage Must have
+**Source :** `docs/cahier-des-charges.md` (v5), cas d'usage Must have
 « réserver et payer une sortie en ligne », complété par
 `docs/compte-rendu-entretien-03.md` (CR-03) et `docs/impact-CR-001.md`,
 puis par `docs/compte-rendu-entretien-04.md` (CR-04) et
-`docs/impact-CR-002.md` pour le bon cadeau et l'avoir.
+`docs/impact-CR-002.md` pour le bon cadeau et l'avoir, enfin par
+`docs/compte-rendu-entretien-05.md` (CR-05), `docs/impact-CR-003.md` et
+[`adr/ADR-003`](../docs/adr/ADR-003-concurrence-derniere-place.md) pour
+l'immobilisation des places et le numéro de mobile.
 **Gabarit :** `docs/cle-specification.md` ; chaque spécification en reprend
 les sept rubriques, dans le même ordre.
 
@@ -52,7 +55,7 @@ de traçabilité ne les signale pas comme non couvertes.
 
 - `REQ-001` : réservation possible pour une personne seule ou pour un groupe.
 - `REQ-008` : accès interdit aux enfants de moins de 4 ans.
-- `REQ-009` : liste exhaustive des informations demandées.
+- `REQ-009` : liste exhaustive des informations demandées, dont le mobile.
 - `REQ-015` : tarif enfant de 4 à 11 ans, adulte à partir de 12 ans.
 - `REQ-036` : le site est l'unique point d'entrée d'une nouvelle réservation.
 
@@ -64,9 +67,9 @@ de traçabilité ne les signale pas comme non couvertes.
 Une réservation est créée dès lors que les huit informations demandées sont
 fournies et qu'elle porte sur au moins un participant.
 
-> Un client qui renseigne nom, prénom, e-mail, téléphone, nombre d'adultes,
-> nombre d'enfants, créneau et type de sortie, pour une seule place, obtient
-> une réservation à l'état « en attente de paiement ».
+> Un client qui renseigne nom, prénom, e-mail, numéro de mobile, nombre
+> d'adultes, nombre d'enfants, créneau et type de sortie, pour une seule
+> place, obtient une réservation à l'état « en attente de paiement ».
 
 ### Portée
 
@@ -107,7 +110,8 @@ Et aucun âge individuel d'enfant ne lui a été demandé
 | 2 | 0 adulte, 0 enfant | refusé : au moins un participant est requis |
 | 3 | 0 adulte, 2 enfants | refusé : au moins un adulte est requis dès qu'un enfant est déclaré, voir la rubrique suivante |
 | 4 | enfant de moins de 4 ans dans le groupe | non détectable par l'application ; l'avertissement d'interdiction est affiché avant la validation |
-| 5 | e-mail ou téléphone au format invalide | refusé, avec indication du champ concerné |
+| 5 | e-mail au format invalide | refusé, avec indication du champ concerné |
+| 9 | numéro fixe, ou mobile au format invalide | refusé : le numéro porte l'envoi des SMS, cf. `SPEC-CANCEL-05` |
 | 6 | champ obligatoire vide | refusé, avec indication du champ concerné |
 | 7 | nombre de participants supérieur à la capacité du plus grand bateau | refusé au titre de la capacité, cf. `SPEC-BOOKING-03` |
 | 8 | client rappelant le gérant pour réserver par téléphone | aucune saisie possible : le gérant le renvoie vers le site |
@@ -119,9 +123,14 @@ Assumé au 2026-08-12.
 - Réservation composée uniquement d'enfants : le client n'a jamais évoqué de
   mineur non accompagné. Hypothèse retenue : refusée, au moins un adulte est
   requis dès qu'un enfant est déclaré.
-- Format attendu du numéro de téléphone (national ou international) : non
-  discuté. Hypothèse retenue : format libre, non vide, contrôlé sur sa forme
-  générale seulement.
+- Format attendu du numéro de mobile : non discuté. Hypothèse retenue,
+  révisée le 2026-08-14, un format international contrôlé à la saisie. Le
+  client considère qu'un message non délivré relève de la responsabilité de
+  celui qui a mal saisi ses coordonnées ; cette position n'est tenable que si
+  l'application vérifie au moins la forme du numéro.
+- Consentement explicite à recevoir des SMS : non abordé par le client.
+  Hypothèse retenue : une mention au formulaire, sans case à cocher
+  supplémentaire. Question 14 du §11 du cahier des charges.
 - Acceptation de conditions générales ou d'une mention RGPD au moment de la
   réservation : non demandée par le client. Hypothèse retenue : une case
   d'acceptation est nécessaire, sa formulation reste à valider.
@@ -138,6 +147,8 @@ Assumé au 2026-08-12.
 - [ ] AC-5 : l'avertissement d'interdiction d'accès aux enfants de moins de
       4 ans est visible avant la validation du formulaire.
 - [ ] AC-6 : aucun écran ne demande l'âge individuel d'un enfant.
+- [ ] AC-7 : un numéro qui n'est pas un mobile valide est refusé à la
+      saisie.
 
 ### Revue IA
 
@@ -148,6 +159,7 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 | Une réservation de 2 enfants et 0 adulte satisfait toutes les règles écrites alors qu'elle est absurde | acceptée | cas limite 3, AC-3 et hypothèse d'équipe ajoutés |
 | L'interdiction d'accès aux moins de 4 ans est présentée comme une règle applicative alors qu'aucune donnée ne permet de la vérifier | acceptée | la règle est explicitement qualifiée d'avertissement affiché, et AC-5 porte sur l'affichage, pas sur un contrôle de saisie |
 | « Réservation valide » n'était pas rattachée à un état observable | acceptée | l'état « en attente de paiement » est nommé dans la règle et en AC-1 |
+| Depuis que le numéro porte l'envoi des SMS, un format libre rend la règle « c'est la faute du client » inapplicable | acceptée | cas limite 9 et AC-7 ajoutés : le format du mobile est contrôlé à la saisie |
 | Ajouter un champ d'âge par enfant pour rendre la règle des 4 ans vérifiable | refusée | le client a explicitement exclu toute information supplémentaire ; collecter une donnée non demandée irait aussi contre la minimisation retenue en NFR sur les données personnelles |
 
 ## SPEC-BOOKING-02 - Créneaux et types de sortie proposés selon la saison
@@ -248,13 +260,15 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 - `REQ-004` : places restantes visibles au moment de réserver.
 - `REQ-007` : un seul bateau engagé à la fois sur une sortie baleines.
 - `REQ-033` : capacités de la flotte existante, 12 et 24 places.
+- `REQ-059` : places immobilisées 15 minutes le temps du paiement.
 
 **Statut :** revue IA faite
-**Version :** v1
+**Version :** v2
 
 ### Règle
 
-La capacité d'un bateau n'est jamais dépassée, et une sortie qui compte moins
+La capacité d'un bateau n'est jamais dépassée, les places demandées sont
+immobilisées 15 minutes le temps du paiement, et une sortie qui compte moins
 de 6 inscrits au contrôle des 24 heures est annulée et intégralement
 remboursée.
 
@@ -299,11 +313,15 @@ Alors le créneau affiche 0 place disponible aux autres clients
 | 2 | exactement 6 inscrits au contrôle des 24 heures | sortie maintenue |
 | 3 | 5 inscrits au contrôle des 24 heures | sortie annulée, chaque client remboursé intégralement |
 | 4 | inscriptions portant le total à 7 après une annulation pour seuil non atteint | sans effet : la sortie annulée n'est pas rétablie |
-| 5 | deux réservations concurrentes sur la dernière place | une seule aboutit, l'autre est refusée, cf. `architecture.md` §5 |
+| 5 | deux clients visant la dernière place | le premier qui valide son formulaire l'immobilise ; le second se voit refuser la place **avant** de saisir sa carte, cf. `architecture.md` §5 |
 | 6 | sortie baleines déjà engagée sur un bateau, demande sur l'autre bateau au même créneau | refusée : un seul naturaliste |
 | 7 | sortie baleines sur un bateau et sortie dauphins sur l'autre, au même créneau | acceptées toutes les deux |
 | 8 | privatisation comptant moins de 6 participants | maintenue : le seuil de 6 ne s'applique pas, le bateau étant intégralement payé, voir la rubrique suivante |
-| 9 | réservation restée en attente de paiement | ne décompte aucune place |
+| 9 | réservation validée mais non payée | ses places sont immobilisées et comptées comme indisponibles pendant 15 minutes |
+| 10 | 15 minutes écoulées sans paiement | les places redeviennent disponibles, sans qu'aucune tâche n'ait à passer : une immobilisation échue ne compte plus |
+| 11 | immobilisation expirée pendant le tunnel de paiement, place encore libre | la place est reprise et la réservation confirmée |
+| 12 | immobilisation expirée pendant le tunnel de paiement, place partie | la réservation est refusée et le client remboursé, cf. `SPEC-BOOKING-07` |
+| 13 | client abandonnant le tunnel sur la dernière place d'un créneau très demandé | la place reste indisponible jusqu'à l'expiration, coût assumé de la règle |
 
 ### Ce qui n'est pas défini
 
@@ -317,6 +335,13 @@ Assumé au 2026-08-12.
 - Comportement si un client réserve entre le contrôle et le départ :
   hypothèse retenue, les réservations restent possibles jusqu'à l'heure de
   fermeture du créneau, mais ne rétablissent pas une sortie déjà annulée.
+- Durée d'immobilisation : 15 minutes est une **hypothèse d'équipe**, jamais
+  soumise au client, arbitrée dans `ADR-003` et tracée à la question 14 du
+  §11 du cahier des charges. Assez pour un paiement sur mobile avec
+  authentification forte, assez peu pour ne pas stériliser une place.
+- Les places immobilisées sont comptées comme indisponibles dans le nombre
+  affiché au client : celui-ci peut donc voir « 0 place » alors que personne
+  n'a encore payé.
 
 ### Critères d'acceptation
 
@@ -324,7 +349,12 @@ Assumé au 2026-08-12.
       refusée, adultes et enfants confondus.
 - [ ] AC-2 : une demande égale au nombre de places restantes est acceptée.
 - [ ] AC-3 : deux réservations concurrentes visant la dernière place ne
-      peuvent pas aboutir toutes les deux.
+      peuvent pas aboutir toutes les deux, et le second client est refusé
+      avant d'atteindre le paiement.
+- [ ] AC-8 : les places d'un formulaire validé sont indisponibles pour les
+      autres clients pendant 15 minutes.
+- [ ] AC-9 : passé 15 minutes sans paiement, ces places redeviennent
+      disponibles.
 - [ ] AC-4 : un créneau comptant moins de 6 inscrits au contrôle des
       24 heures est annulé et chaque client est remboursé intégralement.
 - [ ] AC-5 : un créneau comptant exactement 6 inscrits au contrôle est
@@ -342,7 +372,8 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 | Le seuil de 6 inscrits appliqué à une privatisation annulerait une sortie intégralement payée | acceptée | cas limite 8 et hypothèse d'équipe ajoutés |
 | « À partir de 6 inscrits » ne disait pas si 6 exactement suffit | acceptée | cas limites 2 et 3, AC-4 et AC-5 ajoutés sur les deux côtés du seuil |
 | Rien ne disait si une réservation non payée bloque une place | acceptée | cas limite 9 ajouté, cohérent avec le décompte au paiement confirmé |
-| Réserver temporairement les places dès la validation du formulaire | refusée | cela créerait une durée de rétention de panier que le client n'a jamais évoquée, et un risque de places bloquées par des paniers abandonnés en pleine saison |
+| Réserver temporairement les places dès la validation du formulaire | **acceptée le 2026-08-14**, après un refus le 2026-08-12 | le motif du refus, des places bloquées par des paniers abandonnés, reste réel mais pèse moins lourd que le défaut découvert depuis : sans immobilisation, le client perdant est débité puis remboursé pour une place qu'il n'aura pas. Revirement demandé par le formateur, arbitré dans `ADR-003`, consigné au journal de J5 |
+| Le nombre de places affiché cesse de correspondre au nombre de places vendues | acceptée | écrit dans « Ce qui n'est pas défini » : un client peut voir « 0 place » alors que personne n'a payé |
 
 ## SPEC-BOOKING-04 - Fermeture des réservations en ligne selon le créneau
 
@@ -393,6 +424,8 @@ Alors le créneau ne lui est plus proposé
 | 3 | demande pour le créneau de 10h à 12h00 pile la veille | refusée |
 | 4 | formulaire validé avant midi, paiement confirmé après midi | refusée, sans débit : la limite s'apprécie à la confirmation du paiement |
 | 5 | client appelant le gérant après la fermeture | aucune réservation possible : le gérant n'a pas d'écran de saisie |
+| 7 | formulaire validé à 11h55 pour le créneau de 14h, immobilisation courant jusqu'à 12h10 | le paiement reste possible jusqu'à l'expiration de l'immobilisation, la fermeture s'appréciant à la validation du formulaire |
+| 8 | créneau de 14h en alerte météo et annulé | le message de confirmation part à midi, à l'instant même de la fermeture, cf. `SPEC-CANCEL-06` |
 | 6 | heure de référence | heure locale de l'exploitation, voir la rubrique suivante |
 
 ### Ce qui n'est pas défini
@@ -402,9 +435,12 @@ Assumé au 2026-08-12.
 - Fuseau horaire de référence : jamais explicité par le client. Hypothèse
   retenue : l'heure locale du lieu d'exploitation fait foi, pour la
   fermeture comme pour le contrôle des 24 heures et l'envoi des rappels.
-- Durée maximale du tunnel de paiement : non discutée. Hypothèse retenue :
-  un paiement qui aboutit après l'heure de fermeture est refusé, le client
-  n'étant jamais débité pour une sortie qu'il ne peut plus rejoindre.
+- Articulation entre l'heure de fermeture et l'immobilisation des places :
+  hypothèse retenue, révisée le 2026-08-14, la fermeture s'apprécie à la
+  **validation du formulaire**, et le client dispose ensuite de ses 15
+  minutes pour payer, même si elles franchissent l'heure de fermeture. Sans
+  cela, un client validant à 11h59 serait refusé après avoir saisi sa carte,
+  ce que `ADR-003` cherche précisément à éviter.
 
 ### Critères d'acceptation
 
@@ -653,16 +689,21 @@ Et les places correspondantes sont décomptées de la capacité du créneau
 | 4 | montant dû nul après application d'un bon cadeau couvrant tout le prix | aucun paiement carte n'est demandé, la réservation est confirmée directement |
 | 5 | transaction confirmée côté prestataire mais notification perdue | l'état renvoyé par le prestataire fait foi ; à défaut, rapprochement manuel par le gérant |
 | 6 | tentative de paiement en plusieurs fois ou par un autre moyen | refusée : paiement intégral par carte uniquement |
-| 7 | réservation restée en attente de paiement plusieurs jours | voir la rubrique suivante |
+| 7 | réservation restée en attente de paiement | ses places sont libérées au bout de 15 minutes, cf. `SPEC-BOOKING-03` |
+| 8 | paiement accepté alors que l'immobilisation a expiré et que la place est encore libre | la place est reprise et la réservation confirmée |
+| 9 | paiement accepté alors que l'immobilisation a expiré et que la place est partie | la réservation est refusée et le client intégralement remboursé, sans intervention de sa part |
 
 ### Ce qui n'est pas défini
 
 Assumé au 2026-08-12.
 
-- Délai d'expiration d'une réservation en attente de paiement : non discuté.
-  Hypothèse retenue : expiration automatique après un délai court, à fixer en
-  conception, sans effet sur la disponibilité puisque les places ne sont pas
-  décomptées avant le paiement.
+- Délai d'expiration d'une réservation en attente de paiement : fixé à
+  15 minutes par `ADR-003`, hypothèse d'équipe jamais soumise au client.
+- Cas résiduel du paiement abouti après expiration : la règle est écrite en
+  cas limites 8 et 9, mais elle suppose de pouvoir rembourser sans
+  intervention. Si l'intégration retenue autorise une capture différée, ce
+  remboursement disparaît au profit d'une simple annulation d'autorisation,
+  évolution notée dans `ADR-003`.
 - Facture remise au client : non tranchée, question 3 du §11 du cahier des
   charges. Hypothèse retenue : justificatif émis par le prestataire de
   paiement et transmis par e-mail.
@@ -680,6 +721,8 @@ Assumé au 2026-08-12.
       l'application.
 - [ ] AC-6 : un montant dû nul confirme la réservation sans passage par le
       paiement carte.
+- [ ] AC-7 : un paiement abouti après expiration de l'immobilisation, sur une
+      place entre-temps vendue, est refusé et remboursé intégralement.
 
 ### Revue IA
 
@@ -689,7 +732,8 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 |---|---|---|
 | Un bon cadeau couvrant exactement le prix conduit à un paiement de 0 €, cas non traité par une règle de paiement intégral | acceptée | cas limite 4 et AC-6 ajoutés |
 | La double soumission du paiement n'était pas traitée alors qu'elle est fréquente sur mobile | acceptée | cas limite 3 et AC-4 ajoutés |
-| Rien ne disait ce qu'il advient d'une réservation restée en attente | acceptée | cas limite 7 et hypothèse d'expiration ajoutés |
+| Rien ne disait ce qu'il advient d'une réservation restée en attente | acceptée | cas limite 7, délai désormais chiffré par `ADR-003` |
+| Aucune règle ne couvrait le paiement abouti alors que la place venait d'être vendue à un autre, alors que le paiement est intégral | acceptée | cas limites 8 et 9, AC-7 ajoutés ; c'est le cas résiduel que l'immobilisation réduit sans le supprimer |
 | Mettre en place une reprise automatique des paiements échoués | refusée | complexité sans demande client, et le gérant conserve le contact téléphonique comme filet |
 
 ## SPEC-BOOKING-08 - Accessibilité multi-support
@@ -909,9 +953,10 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 
 ### Règle
 
-Un code d'avoir, émis par le gérant à la suite d'une annulation météo, est
-valable un an à compter de son émission et déduit une seule fois du montant
-total d'une réservation future, quel que soit le type de sortie.
+Un code d'avoir, émis par le gérant à la suite d'une annulation demandée par
+le client, est valable un an à compter de son émission et déduit une seule
+fois du montant total d'une réservation future, quel que soit le type de
+sortie.
 
 > Un avoir de 130 € appliqué à une réservation de 170 € laisse 40 € à payer
 > par carte bancaire, et le code ne peut plus servir.
@@ -922,14 +967,16 @@ Couvre l'application d'un code d'avoir au paiement d'une réservation et sa
 durée de validité. Ne couvre ni la décision d'accorder un avoir, ni son
 montant.
 
-- Ne couvre pas la décision d'accorder un avoir ni son enregistrement :
-  `SPEC-CANCEL-04`.
+- Ne couvre pas la décision d'accorder un avoir ni son émission :
+  `SPEC-ADMIN-06`.
 - Ne couvre pas le bon cadeau, dispositif distinct : `SPEC-BOOKING-09`.
 - Ne couvre pas l'encaissement du solde : `SPEC-BOOKING-07`.
 
 Depuis la v4 du cahier des charges, un avoir ne se distingue plus d'un bon
 cadeau que par **son origine** : il est accordé par le gérant après une
-annulation météo, alors que le bon cadeau est vendu. Montant libre, validité
+annulation demandée par le client, alors que le bon cadeau est vendu.
+*Corrigé en v5 : jusqu'ici l'origine citée était l'annulation météo, qui
+donne en réalité un remboursement intégral et n'émet aucun avoir.* Montant libre, validité
 d'un an, usage unique, imputation sur le montant total et perte du surplus
 sont désormais identiques pour les deux dispositifs. Le maintien de deux
 dispositifs séparés est une hypothèse d'équipe, tracée en question 8 du §11
@@ -956,7 +1003,7 @@ Et le code est marqué comme utilisé
 | 4 | code déjà utilisé | refusé |
 | 5 | code saisi sur un type de sortie différent de la sortie annulée à l'origine | accepté : un avoir n'est rattaché à aucun type de sortie |
 | 6 | code d'avoir et bon cadeau sur la même réservation | refusé : dispositifs non cumulables |
-| 7 | avoir émis puis créneau de remplacement annulé à son tour | un nouvel avoir est émis par le gérant, avec une nouvelle date d'émission et donc une nouvelle échéance, cf. `SPEC-CANCEL-04` |
+| 7 | réservation payée par un avoir puis annulée par le gérant | un nouvel avoir de montant équivalent est émis, avec une nouvelle échéance, cf. `SPEC-CANCEL-04` |
 | 8 | code saisi le jour anniversaire de l'émission | accepté : la validité court jusqu'à la fin du jour anniversaire, aligné sur le bon cadeau |
 | 9 | code saisi le lendemain du jour anniversaire | refusé |
 | 10 | avoir sur le point d'expirer | voir la rubrique suivante : aucun rappel n'est prévu |
