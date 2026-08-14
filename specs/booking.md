@@ -112,6 +112,8 @@ Et aucun âge individuel d'enfant ne lui a été demandé
 | 4 | enfant de moins de 4 ans dans le groupe | non détectable par l'application ; l'avertissement d'interdiction est affiché avant la validation |
 | 5 | e-mail au format invalide | refusé, avec indication du champ concerné |
 | 9 | numéro fixe, ou mobile au format invalide | refusé : le numéro porte l'envoi des SMS, cf. `SPEC-CANCEL-05` |
+| 10 | numéro saisi avec des points, des tirets ou des espaces | accepté, et normalisé avant enregistrement |
+| 11 | e-mail sans arobase ou sans domaine | refusé par l'expression régulière du formulaire |
 | 6 | champ obligatoire vide | refusé, avec indication du champ concerné |
 | 7 | nombre de participants supérieur à la capacité du plus grand bateau | refusé au titre de la capacité, cf. `SPEC-BOOKING-03` |
 | 8 | client rappelant le gérant pour réserver par téléphone | aucune saisie possible : le gérant le renvoie vers le site |
@@ -123,11 +125,12 @@ Assumé au 2026-08-12.
 - Réservation composée uniquement d'enfants : le client n'a jamais évoqué de
   mineur non accompagné. Hypothèse retenue : refusée, au moins un adulte est
   requis dès qu'un enfant est déclaré.
-- Format attendu du numéro de mobile : non discuté. Hypothèse retenue,
-  révisée le 2026-08-14, un format international contrôlé à la saisie. Le
-  client considère qu'un message non délivré relève de la responsabilité de
-  celui qui a mal saisi ses coordonnées ; cette position n'est tenable que si
-  l'application vérifie au moins la forme du numéro.
+- ~~Format attendu du numéro de mobile~~ : **tranché par le client le
+  2026-08-14** (`CR-05/Q18`). Le formulaire contrôle le format de l'e-mail
+  par une expression régulière, et normalise le numéro en retirant les
+  points, les tirets et les espaces avant enregistrement. C'est ce contrôle
+  qui rend tenable la position du client, pour qui un message non délivré
+  relève de celui qui a mal saisi ses coordonnées.
 - Consentement explicite à recevoir des SMS : non abordé par le client.
   Hypothèse retenue : une mention au formulaire, sans case à cocher
   supplémentaire. Question 14 du §11 du cahier des charges.
@@ -148,7 +151,9 @@ Assumé au 2026-08-12.
       4 ans est visible avant la validation du formulaire.
 - [ ] AC-6 : aucun écran ne demande l'âge individuel d'un enfant.
 - [ ] AC-7 : un numéro qui n'est pas un mobile valide est refusé à la
-      saisie.
+      saisie, et un numéro valide est enregistré sans point, tiret ni espace.
+- [ ] AC-8 : une adresse e-mail qui ne satisfait pas l'expression régulière
+      du formulaire est refusée.
 
 ### Revue IA
 

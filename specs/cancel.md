@@ -192,19 +192,19 @@ Et les clients inscrits entrent dans le traitement prévu par SPEC-CANCEL-04
 | 4 | créneau déjà annulé | l'action est sans effet, l'état reste « annulé » |
 | 5 | créneau déjà passé | annulation refusée |
 | 6 | créneau déjà annulé faute d'atteindre 6 inscrits | annulation météo sans objet, l'état d'annulation est unique |
-| 7 | deux bateaux engagés sur le créneau | l'annulation porte sur le créneau entier, voir la rubrique suivante |
+| 7 | deux bateaux engagés sur le créneau | l'annulation porte sur le créneau entier : la météo ne distingue pas les bateaux |
+| 9 | annulation décidée entre le repère des 2 heures et l'heure de départ | acceptée, le message de confirmation part immédiatement |
 | 8 | météo redevenue favorable après l'annulation | pas de retour en arrière : les clients ont déjà été prévenus et remboursés |
 
 ### Ce qui n'est pas défini
 
 Assumé au 2026-08-12, complété au 2026-08-14.
 
-- Heure limite au-delà de laquelle le gérant ne peut plus annuler : non
-  tranchée. Hypothèse retenue : annulation possible jusqu'à l'heure de
-  départ. Question 12 du §11 du cahier des charges.
-- Annulation d'un seul bateau sur un créneau qui en engage deux : le client
-  n'a jamais évoqué ce découpage. Hypothèse retenue : l'annulation porte sur
-  le créneau entier, tous bateaux confondus.
+- ~~Heure limite d'annulation~~ et ~~annulation d'un seul bateau~~ : **les
+  deux points ont été tranchés par le client le 2026-08-14** (`CR-05/Q17` et
+  `Q19`). L'annulation reste possible jusqu'à l'heure de départ et porte
+  toujours sur le créneau entier, les deux bateaux compris, la météo ne
+  distinguant pas les bateaux. Ces règles figurent désormais aux cas limites.
 - Motif enregistré avec l'annulation : non demandé. Hypothèse retenue : la
   raison météo est le seul motif prévu, sans champ de commentaire.
 - Désannulation d'un créneau : non prévue, les clients ayant déjà été
@@ -523,6 +523,7 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 - `REQ-053` : message d'alerte envoyé la veille à 18h aux clients inscrits.
 - `REQ-054` : confirmation 2 heures avant le départ si annulation, silence si maintien.
 - `REQ-055` : le créneau en alerte reste réservable, le risque étant signalé.
+- `REQ-060` : heure d'alerte et délai de confirmation réglables.
 
 **Statut :** revue IA faite
 **Version :** v1
@@ -585,22 +586,27 @@ Et les clients sont remboursés selon SPEC-CANCEL-04
 | 8 | seconde alerte sur un créneau déjà en alerte | sans effet, aucun message n'est renvoyé |
 | 9 | créneau annulé faute d'atteindre 6 inscrits alors qu'il était en alerte | l'annulation automatique l'emporte, un seul message d'annulation part |
 | 10 | envoi impossible sur un canal | l'autre canal part quand même, et l'échec est enregistré |
+| 11 | créneau où naviguent deux bateaux | l'alerte couvre les deux : la météo ne distingue pas les bateaux |
+| 12 | annulation décidée après le repère des 2 heures, jusqu'à l'heure de départ | acceptée, le message part immédiatement au lieu d'être programmé |
 
 ### Ce qui n'est pas défini
 
-Assumé au 2026-08-14, à reposer au client (`CR-05` §8, questions 1 et 2).
+Assumé au 2026-08-14. **Quatre hypothèses de cette rubrique ont été
+confirmées par le client le jour même** (`CR-05/Q16` à `Q20`) et sont
+remontées dans la règle, les cas limites et les critères : horaires
+réglables, annulation possible jusqu'à l'heure de départ, alerte portant sur
+les deux bateaux d'un créneau, confirmation envoyée à tout client inscrit.
 
-- Horaires figés ou réglables : 18h pour l'alerte et 2 heures pour la
-  confirmation sont donnés comme des valeurs, sans que le client dise si
-  elles se règlent. Hypothèse retenue : valeurs par défaut réglables depuis
-  l'espace de gestion, par cohérence avec l'horaire du message de rappel.
-- Heure limite de décision : hypothèse retenue, l'annulation reste possible
-  jusqu'à l'heure de départ, le message partant alors immédiatement.
-- Portée d'une alerte sur un créneau où naviguent deux bateaux : hypothèse
-  retenue, elle couvre le créneau entier, comme l'annulation.
+Restent non définis :
+
 - Levée d'une alerte sans annulation : aucun message n'est prévu, puisque le
   silence vaut maintien. Le créneau redevient simplement programmé.
-- Contenu exact des deux messages, en français et en anglais : non fourni.
+- Contenu exact des deux messages, en français et en anglais : non fourni,
+  question 15 de `CR-05`.
+- Canal d'envoi des SMS : le client conserve le forfait et le numéro de
+  l'entreprise (`CR-05/Q21`), sans dire si les messages partent d'une
+  passerelle d'envoi. Hypothèse retenue : une passerelle affichant le nom de
+  l'entreprise, seule lecture compatible avec un envoi automatique.
 
 ### Critères d'acceptation
 
@@ -618,6 +624,11 @@ Assumé au 2026-08-14, à reposer au client (`CR-05` §8, questions 1 et 2).
       confirmation d'annulation.
 - [ ] AC-8 : une alerte posée après l'heure d'envoi programmée part
       immédiatement.
+- [ ] AC-9 : l'heure d'envoi de l'alerte et le délai de confirmation sont
+      modifiables depuis l'espace de gestion, et les envois à venir suivent
+      les nouvelles valeurs.
+- [ ] AC-10 : une alerte posée sur un créneau où naviguent deux bateaux
+      couvre les deux.
 
 ### Revue IA
 
@@ -629,5 +640,6 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 | Un client réservant après l'envoi de l'alerte n'était couvert par aucune règle | acceptée | cas limite 3 et AC-7 ajoutés |
 | Le message de confirmation d'un créneau de 14h tombe à l'instant exact où ses réservations ferment | acceptée | cas limite 4 écrit, et l'interaction rappelée dans `SPEC-BOOKING-04` |
 | Une alerte posée trop tard n'avait pas de comportement défini | acceptée | cas limite 2 et AC-8 : envoi immédiat |
+| Quatre points étaient écrits comme hypothèses d'équipe alors que le client les a confirmés le jour même | acceptée | remontés en cas limites 11 et 12, AC-9 et AC-10 ; la rubrique « Ce qui n'est pas défini » ne garde que ce qui l'est réellement |
 | Envoyer un message de levée d'alerte quand la sortie est maintenue | refusée | le client a explicitement dit qu'aucun message ne part si la sortie est maintenue ; ajouter un message rassurant contredirait la règle qu'il a posée deux fois |
 | Rendre l'alerte obligatoire avant toute annulation | refusée | la météo peut se dégrader en quelques heures ; imposer une alerte préalable empêcherait d'annuler un créneau du matin décidé la veille au soir |
