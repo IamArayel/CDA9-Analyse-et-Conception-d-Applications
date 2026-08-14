@@ -130,7 +130,7 @@ paiement, aux bons cadeaux ni à l'espace de gestion hors émission d'un avoir.
 | `uml/sequences/` | à créer | Un diagramme « Mettre un créneau en alerte » couvrant les deux issues, maintien silencieux et annulation confirmée |
 | MCD / MLD | non commencé | Ajoute une table de notifications et un statut de sortie enrichi. Cette analyse est un intrant direct de sa première version |
 | `architecture.md` | non rempli | Deux services externes sortants à documenter au §6, envoi de SMS et envoi d'e-mails, avec leur comportement en cas d'indisponibilité |
-| `adr/ADR-002` | à créer | Choix du prestataire d'envoi de SMS |
+| `adr/ADR-004` | à créer | Choix du prestataire d'envoi de SMS. Les numéros ADR-002 (persistance) et ADR-003 (concurrence sur la dernière place) sont déjà pris |
 
 **État nouveau ou donnée nouvelle ?** Oui, sur deux points. L'état « en
 alerte » d'une sortie n'existait dans aucune version antérieure du modèle, et
@@ -223,7 +223,7 @@ Assumé, et à annoncer au client lors de la présentation de J10.
 | 2 | Mettre à jour `docs/cahier-des-charges.md` (v5) : `REQ-023`, `REQ-024` inversées, `REQ-026`, `REQ-019`, `REQ-050`, `REQ-009` modifiées, `REQ-052` à `REQ-058` ajoutées, §8, §11, §12 et §13 mis à jour | équipe |
 | 3 | Reprendre `specs/cancel.md` (`SPEC-CANCEL-01` à `05`, création de `SPEC-CANCEL-06`), `specs/admin.md` (`SPEC-ADMIN-06`), `specs/booking.md` (`SPEC-BOOKING-01`, `SPEC-BOOKING-10`), `specs/non-fonctionnel.md` (`SPEC-NFR-03`, `SPEC-NFR-04`) | équipe |
 | 4 | Mettre à jour `docs/uml/domain.puml` et `use-cases.puml`, refaire `sequences/annuler-creneau-meteo.puml`, ajouter une séquence d'alerte | équipe |
-| 5 | Créer `adr/ADR-002` pour le choix du prestataire d'envoi de SMS | équipe |
+| 5 | Créer `adr/ADR-004` pour le choix du prestataire d'envoi de SMS, `ADR-002` et `ADR-003` étant déjà pris | équipe |
 | 6 | Régénérer `docs/traceability.md` via `./tools/traceability.sh` et vérifier l'absence de rupture nouvelle | équipe |
 | 7 | Consigner au journal J5 l'inversion du refus IA sur le SMS et l'erreur de transcription de `CR-02/Q04` | équipe |
 | 8 | Faire relire `CR-05` par la personne ayant mené l'échange, et corriger `CR-02/Q04` d'une note de rectification datée plutôt que d'une réécriture silencieuse | équipe |

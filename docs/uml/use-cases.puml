@@ -69,6 +69,16 @@ end note
 
 note right of UC3
   SPEC-BOOKING-07
+  ..
+  Concurrence sur la dernière place : deux clients
+  peuvent consulter le même créneau, y voir la même
+  place libre et engager tous les deux le paiement.
+  Une seule réservation aboutit, l'autre est refusée
+  et non débitée (SPEC-BOOKING-03, AC-3).
+  Les places ne sont décomptées qu'à la confirmation
+  du paiement, jamais à la validation du formulaire :
+  le conflit se résout donc ici, pas en UC2.
+  Traitement retenu : architecture.md §5.
 end note
 
 note right of UC9
