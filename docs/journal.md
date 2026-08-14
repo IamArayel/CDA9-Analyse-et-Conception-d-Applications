@@ -382,6 +382,21 @@ décoratif : c'est ce qui permet de distinguer un arbitrage d'un acquiescement.
 - `REQ-059` marquée `déduit` : elle ne vient d'aucun échange client mais
   d'une décision d'équipe. Elle est signalée comme telle plutôt que
   rattachée artificiellement à un entretien.
+- Chaîne descendue jusqu'au bout dans l'après-midi : specs (`SPEC-CANCEL-06`
+  et `SPEC-ADMIN-06` créées, huit spécifications reprises), puis UML, MCD/MLD
+  et architecture en v2. Plus aucune exigence n'est sans spécification.
+- **Second passage client en fin de journée** : les cinq hypothèses d'équipe
+  du §6 de `CR-05` sont **toutes confirmées** (`Q16` à `Q20`), aucune n'est
+  infirmée. Horaires d'alerte réglables, annulation possible jusqu'à l'heure
+  de départ, coordonnées contrôlées à la saisie, alerte portant sur les deux
+  bateaux d'un créneau, confirmation envoyée à tout client inscrit.
+- **`ADR-004` sans objet** : le client conserve le forfait et le numéro
+  actuels de l'entreprise pour les SMS (`CR-05/Q21`). Aucun prestataire n'est
+  donc à comparer, mais la question de la passerelle d'envoi reste ouverte,
+  voir les questions au client.
+- `CR-02/Q04` reçoit une **note de rectification datée** plutôt qu'une
+  réécriture : le compte rendu garde ce que le client a dit, et signale que
+  la lecture qui en avait été faite était fausse.
 
 **Critiques de l'IA acceptées.**
 - `Tarif` regroupait prix adulte, prix enfant et forfait de privatisation,
@@ -421,6 +436,12 @@ décoratif : c'est ce qui permet de distinguer un arbitrage d'un acquiescement.
   `impact-CR-003.md`, alors que `architecture.md` réservait déjà ce numéro à
   la persistance → repéré à la relecture de l'analyse d'impact, renuméroté
   en `ADR-004` après l'insertion d'`ADR-003`.
+- L'IA a ajouté vers 12h30 une note sur le cas d'usage « Payer en ligne »
+  affirmant que le conflit sur la dernière place se résout au paiement, note
+  rendue **fausse une heure plus tard** par `ADR-003`, qui déplace le conflit
+  à la validation du formulaire → repérée en descendant l'UML l'après-midi,
+  note réécrite. L'écriture était juste au moment où elle a été faite ; c'est
+  de ne pas l'avoir revue après la décision qui était l'erreur.
 - L'IA a conclu que l'avoir n'avait plus de fait générateur, en s'appuyant
   sur `REQ-023` et `REQ-050`. La lecture des documents était exacte, mais
   ces documents étaient faux : `CR-02/Q04` avait été transcrit comme si le
@@ -436,13 +457,26 @@ décoratif : c'est ce qui permet de distinguer un arbitrage d'un acquiescement.
 - `docs/architecture.md` (gabarit vierge → v1)
 - `docs/adr/ADR-002-persistance.md`, `docs/adr/ADR-003-concurrence-derniere-place.md` (nouveaux)
 - `docs/cahier-des-charges.md` (v4 → v5)
-- `docs/uml/use-cases.puml` (note de concurrence sur UC3)
+- `docs/uml/use-cases.puml`, `docs/uml/domain.puml` (alignés v5 : deux cas
+  d'usage ajoutés, état « en alerte », classe `Notification`)
+- `docs/uml/sequences/annuler-creneau-meteo.puml` (réécrit),
+  `reserver-payer-sortie.puml` et `controle-j-24h.puml` (mis à jour)
+- `specs/cancel.md` (réécrit, `SPEC-CANCEL-06` créée), `specs/admin.md`
+  (`SPEC-ADMIN-06` créée), `specs/booking.md` et `specs/non-fonctionnel.md`
+- `docs/mcd-mld.md` et `docs/architecture.md` (v1 → v2 en fin de journée)
+- `docs/compte-rendu-entretien-02.md` (note de rectification sur `Q04`)
+- `docs/compte-rendu-entretien-05.md` (`Q16` à `Q21`, cinq ambiguïtés levées)
 - `docs/traceability.md` (régénéré)
+- Images PlantUML régénérées, non versionnées (`.gitignore`)
 
 **Questions ouvertes pour le client.**
-- Les quatre questions nouvelles du §11 (horaires d'alerte réglables ou
-  figés, heure limite d'annulation, message associé à une annulation faute
-  de 6 inscrits, durée d'immobilisation des places et consentement aux SMS).
+- **Les SMS partent-ils d'une passerelle d'envoi affichant le nom de
+  l'entreprise ?** Conserver le forfait actuel est compatible avec un envoi
+  automatique, l'envoyer depuis le téléphone du gérant ne l'est pas. C'est le
+  seul point restant qui puisse faire tomber l'automatisation demandée.
+- Le message associé à une annulation faute de 6 inscrits, et le consentement
+  explicite à recevoir des SMS (§11, questions 13 et 14). Les questions 11 et
+  12 ont trouvé réponse dans la journée.
 - Le texte des trois messages automatiques, en français et en anglais,
   toujours pas fourni, y compris pour le rappel qui existe depuis `CR-02`.
 - La fusion du bon cadeau et de l'avoir (§11, question 8), qui conditionne
