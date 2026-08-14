@@ -49,7 +49,7 @@ suite.
 | Q01 | **Gestion des durées (complément CR-01/Q06) —** La privatisation est-elle possible aussi le matin, ou uniquement l'après-midi ? | Oui : possible de privatiser le matin (brunch) et aussi au sunset. |
 | Q02 | **Grille tarifaire (complément CR-01/Q07) —** Quelle est la tranche d'âge d'un « enfant » ? | Sortie interdite avant 4 ans ; tarif enfant de 4 à 11 ans ; tarif adulte à partir de 12 ans. *(il n'existe donc pas de tarif « bébé » : l'accès est tout simplement interdit en dessous de 4 ans — répond à CR-01/Q07)* |
 | Q03 | **Back-office (complément CR-01/Q08) —** Quelles fonctions/actions sont nécessaires (export PDF, annulation, modification des créneaux, tarifs, noms/nombre des bateaux, message d'accueil) ? Qui y a accès, et qui a le droit de modifier quelles informations ? | Un onglet de modification des tarifs **seulement** ; export du planning des réservations en PDF, imprimable ; pas de modification possible des messages de la page d'accueil ni d'autre contenu. Accès réservé à un unique compte ADMIN. *(voir tension avec US12/US13 au §8)* |
-| Q04 | **Météo —** Qui prend la décision d'annuler un créneau, et comment s'effectue le choix entre report de date et remboursement intégral (annulation par téléphone uniquement, SMS ou WhatsApp) ? | La décision vient du gérant : il appelle le client, qui choisit entre report, avoir ou remboursement. L'annulation passe par téléphone (appel ou SMS) ; prévoir aussi un e-mail sur la plateforme, pour pouvoir annuler par mail au besoin. *(canal e-mail formulé de façon imprécise — voir ambiguïté 4)* |
+| Q04 | **Météo —** Qui prend la décision d'annuler un créneau, et comment s'effectue le choix entre report de date et remboursement intégral (annulation par téléphone uniquement, SMS ou WhatsApp) ? | La décision vient du gérant : il appelle le client, qui choisit entre report, avoir ou remboursement. L'annulation passe par téléphone (appel ou SMS) ; prévoir aussi un e-mail sur la plateforme, pour pouvoir annuler par mail au besoin. *(canal e-mail formulé de façon imprécise — voir ambiguïté 4)* | **⚠️ Rectification du 2026-08-14 :** cette réponse a été lue comme si le choix entre report, avoir et remboursement suivait une **annulation météo**. Le client a corrigé le 2026-08-14 ([CR-05/Q11](./compte-rendu-entretien-05.md#2-questions-posées-et-réponses-obtenues)) : ce choix n'appartient qu'aux annulations **demandées par le client**, une annulation décidée par le gérant donnant toujours un remboursement intégral. `REQ-023` et `REQ-024` ont été inversées en conséquence (cahier des charges v5). La réponse ci-dessus n'est pas réécrite, c'est sa lecture qui était fausse.
 | Q05 | **Météo —** Souhaitez-vous déclencher l'annulation d'un créneau en un clic et informer automatiquement tous les passagers impactés ? | Le gérant veut un visuel sur l'annulation à valider : il tient à rester maître de la décision, pas d'automatisation intégrale. *(en tension avec US09 — voir §8)* |
 | Q06 | **Météo —** Comment le client doit-il pouvoir choisir un nouveau créneau en cas d'annulation météo (lien dédié, avoir, contact direct) ? | Proposition d'un nouveau créneau en fonction des disponibilités et de la météo, **par téléphone**. *(en tension avec US11 — voir §8)* |
 | Q07 | **Communication —** Souhaitez-vous conserver WhatsApp en parallèle des e-mails/SMS pour les confirmations, rappels et alertes météo ? | WhatsApp est conservé, mais en plus de la nouvelle application (pas en remplacement). |
@@ -137,6 +137,13 @@ les deux passent par un appel téléphonique avec le gérant.
 | 9 | L'annulation avec remboursement et le report de réservation, à l'initiative du client, sont organisés par téléphone avec le gérant, et non en autonomie sur la plateforme | « par téléphone avec moi, aussi bien pour l'annulation que pour le report » | oui — précise CR-01/Q13 et CR-02/Q17 |
 
 ## 6. Ambiguïtés détectées
+
+> **Ajout du 2026-08-14.** Une ambiguïté de `Q04` n'avait **pas** été
+> détectée à l'époque : la réponse mêlait la décision d'annulation météo et
+> le choix laissé au client, alors que le second ne concerne que les
+> annulations demandées par le client. L'erreur a vécu du 2026-08-11 au
+> 2026-08-14 et a produit deux exigences `Must` inexactes. Elle est corrigée
+> dans le cahier des charges v5 et consignée au journal de J5.
 
 Ce que le client a dit et qui peut se comprendre de plusieurs façons. Une
 ambiguïté détectée mais non levée reste une ambiguïté : elle va au §8.
