@@ -1,7 +1,7 @@
 # Spécifications - NFR (exigences transverses non fonctionnelles)
 
 **Domaine :** `NFR`
-**Source :** `docs/cahier-des-charges.md` (v4), §10 « Exigences non
+**Source :** `docs/cahier-des-charges.md` (v5), §10 « Exigences non
 fonctionnelles », complété par `docs/compte-rendu-entretien-03.md` (CR-03).
 **Gabarit :** `docs/cle-specification.md` ; chaque spécification en reprend
 les sept rubriques, dans le même ordre.
@@ -236,9 +236,12 @@ Et il est inférieur à 5 € par mois
 
 Assumé au 2026-08-12.
 
-- Budget total du projet : jamais discuté avec le client, question 2 du §11
-  du cahier des charges. Hypothèse retenue : l'équipe n'engage aucun coût
-  récurrent au-delà de l'hébergement documenté.
+- Budget total du projet : la question 2 du §11, ouverte depuis le premier
+  entretien, a reçu une réponse le 2026-08-14, « budget illimité pour
+  l'exercice ». Elle relève du cadre pédagogique et ne vaut pas engagement
+  d'exploitation : le choix d'hébergement à faible coût est maintenu, mais
+  sa justification n'est plus une contrainte client. Un second coût
+  récurrent apparaît en v5, l'envoi de SMS, arbitré dans un ADR à venir.
 - Prise en charge de l'abonnement après la livraison : non discutée, liée à
   la question de la maintenance.
 
@@ -309,6 +312,7 @@ Et aucune donnée de carte bancaire n'a jamais été stockée
 | 3 | client demandant l'accès à ses données | même traitement manuel |
 | 4 | réservation annulée puis remboursée | soumise au même délai que les autres |
 | 5 | obligations comptables portant sur les paiements | portées par le prestataire de paiement, hors de l'application |
+| 6 | numéro de mobile d'un client dont la sortie est passée | supprimé au même délai que le reste, alors qu'il a servi à lui envoyer des SMS |
 
 ### Ce qui n'est pas défini
 
@@ -322,6 +326,11 @@ Assumé au 2026-08-12, question 4 du §11 du cahier des charges.
   conservées jusqu'à son expiration, par exception au délai général.
 - Procédure d'exercice des droits d'accès et de suppression : aucune
   interface prévue, traitement manuel par le gérant.
+- Numéro de mobile : il devient en v5 une donnée de contact indispensable,
+  puisqu'il porte l'envoi des SMS. Hypothèse retenue : il suit le même délai
+  de conservation que le reste, et sa collecte est signalée au client par une
+  mention au formulaire plutôt que par une case à cocher. Question 14 du §11
+  du cahier des charges.
 
 ### Critères d'acceptation
 
