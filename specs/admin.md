@@ -1,10 +1,11 @@
 # Spécifications - ADMIN (espace de gestion du gérant)
 
 **Domaine :** `ADMIN`
-**Source :** `docs/cahier-des-charges.md` (v4), cas d'usage Must have
+**Source :** `docs/cahier-des-charges.md` (v5), cas d'usage Must have
 « modifier les tarifs et suivre le planning sans ressaisie manuelle »,
 complété par `docs/compte-rendu-entretien-03.md` (CR-03) et
-`docs/impact-CR-001.md`.
+`docs/impact-CR-001.md`, puis par `docs/compte-rendu-entretien-05.md`
+(CR-05) et `docs/impact-CR-003.md` pour l'émission d'un avoir.
 **Gabarit :** `docs/cle-specification.md` ; chaque spécification en reprend
 les sept rubriques, dans le même ordre.
 
@@ -492,3 +493,108 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 | L'unicité du nom d'un bateau n'était pas exigée alors que le nom sert d'identifiant au planning | acceptée | cas limite 3 et AC-4 ajoutés |
 | L'habilitation du nouveau bateau aux sorties baleines reste une hypothèse d'équipe | acceptée | tracée dans « Ce qui n'est pas défini » et rattachée à la question 7 du §11 du cahier des charges |
 | Prévoir dès maintenant un champ « types de sorties compatibles » | refusée | l'hypothèse d'équipe retenue est l'inverse, et l'information n'existe même pas pour les deux bateaux actuels : ajouter le champ créerait une donnée que personne ne sait renseigner tant que le client n'a pas répondu |
+
+## SPEC-ADMIN-06 - Enregistrement d'une annulation client et émission d'un avoir
+
+**Exigences :**
+
+- `REQ-019` : annulation à l'initiative du client, issue et barème dégressif.
+- `REQ-050` : l'avoir est délivré sous forme d'un code de réduction unique.
+- `REQ-056` : remboursement intégral si le créneau avait été mis en alerte.
+
+**Statut :** revue IA faite
+**Version :** v1
+
+### Règle
+
+Quand un client annule sa réservation par téléphone, le gérant enregistre
+depuis l'espace de gestion l'issue convenue, report, avoir ou remboursement,
+et l'application produit le code d'avoir lorsque c'est cette issue qui est
+retenue.
+
+> La négociation reste téléphonique, mais elle laisse une trace dans l'outil,
+> et un avoir n'existe pas tant que le gérant ne l'a pas émis.
+
+### Portée
+
+Couvre l'enregistrement de l'issue d'une annulation demandée par le client et
+l'émission du code d'avoir. Ne couvre ni la conversation téléphonique, ni
+l'usage du code, ni les annulations décidées par le gérant.
+
+- Ne couvre pas l'usage du code d'avoir au paiement : `SPEC-BOOKING-10`.
+- Ne couvre pas l'annulation décidée par le gérant, qui donne un
+  remboursement intégral sans choix : `SPEC-CANCEL-04`.
+- Ne couvre pas la mise en alerte d'un créneau : `SPEC-CANCEL-06`.
+- Ne couvre pas le report vers un autre créneau, qui reste soumis à la
+  disponibilité : `SPEC-BOOKING-03`.
+- Ne couvre pas la demande d'annulation elle-même : elle se fait par
+  téléphone, hors application, cf. la portée du domaine CANCEL.
+
+**Ajoutée en v5.** Jusqu'à la v4, l'avoir était décrit comme émis à la suite
+d'une annulation météo. Le client a corrigé le 2026-08-14 : cette issue
+n'appartient qu'aux annulations demandées par le client. Sans cette
+spécification, plus aucun avoir ne pourrait être créé, alors que son usage
+est spécifié.
+
+### Scénarios nominaux
+
+```gherkin
+Étant donné une réservation payée 170 € pour une sortie dans 5 jours
+Et un client qui appelle le gérant pour annuler
+Quand ils conviennent d'un avoir et que le gérant l'enregistre
+Alors un code d'avoir unique est produit
+Et son montant est celui décidé par le gérant, retenue du barème comprise
+Et sa date d'expiration est fixée à un an
+Et le code est transmis au client par écrit
+```
+
+### Cas limites
+
+| # | Situation | Comportement attendu |
+|---|---|---|
+| 1 | annulation à plus de 7 jours du départ | le gérant applique 100 %, aucune retenue |
+| 2 | annulation entre 48 heures et 24 heures | le gérant applique la retenue de 50 % prévue au barème |
+| 3 | annulation à moins de 24 heures du départ | aucun barème n'est défini en deçà de 24 heures, voir la rubrique suivante |
+| 4 | créneau mis en alerte météo, client qui renonce | remboursement intégral quel que soit le délai, y compris si la sortie a finalement lieu |
+| 5 | issue « report » enregistrée | aucun code n'est émis, la réservation est rattachée au nouveau créneau sous réserve de disponibilité |
+| 6 | issue « remboursement » enregistrée | aucun code n'est émis, le remboursement suit le circuit du prestataire |
+| 7 | réservation payée par un bon cadeau ou un avoir | l'issue « remboursement » est remplacée par un avoir de montant équivalent |
+| 8 | même réservation annulée deux fois | refusé : une réservation déjà annulée n'a plus d'issue à enregistrer |
+
+### Ce qui n'est pas défini
+
+Assumé au 2026-08-14.
+
+- Barème applicable à moins de 24 heures du départ : le client n'a jamais
+  descendu son barème en dessous de ce seuil. Hypothèse retenue : aucune
+  retenue automatique, le gérant décide au cas par cas, comme il le fait
+  aujourd'hui.
+- Montant d'un avoir par rapport au barème : le client n'a pas dit si un
+  avoir subit la même retenue qu'un remboursement. Hypothèse retenue : oui,
+  le gérant saisit un montant libre et reste maître de l'arbitrage.
+- Canal de transmission du code au client : hypothèse retenue, le même que
+  les autres messages, SMS et e-mail.
+
+### Critères d'acceptation
+
+- [ ] AC-1 : le gérant peut enregistrer, pour une réservation donnée, l'issue
+      convenue parmi report, avoir et remboursement.
+- [ ] AC-2 : l'enregistrement d'un avoir produit un code unique, d'un montant
+      saisi par le gérant et expirant un an plus tard.
+- [ ] AC-3 : aucun code n'est produit pour une issue « report » ou
+      « remboursement ».
+- [ ] AC-4 : lorsque le créneau concerné est en alerte, le montant remboursé
+      proposé est le montant intégral, sans retenue.
+- [ ] AC-5 : une réservation déjà annulée ne peut pas recevoir une seconde
+      issue.
+
+### Revue IA
+
+Consigne utilisée : voir l'en-tête de ce fichier.
+
+| Remarque de l'IA | Décision | Motif |
+|---|---|---|
+| Après la correction du 2026-08-14, plus aucune spécification ne créait d'avoir, alors que son usage et son expiration restaient spécifiés | acceptée | cette spécification est ajoutée pour cette seule raison ; sans elle, `SPEC-BOOKING-10` décrit un code que personne ne peut produire |
+| Le barème s'arrête à 24 heures du départ et ne dit rien en deçà | acceptée | cas limite 3 et hypothèse écrites plutôt que laissées implicites, faute de règle client |
+| Un client qui renonce après une alerte relève de deux règles contradictoires, le barème et le remboursement intégral | acceptée | cas limite 4 et AC-4 : l'alerte l'emporte, le risque venant du gérant |
+| Automatiser le calcul de la retenue à partir du barème | refusée | le client applique ce barème à la main depuis toujours et n'a jamais demandé son automatisation ; l'outil garde la trace de sa décision, il ne la prend pas à sa place |
