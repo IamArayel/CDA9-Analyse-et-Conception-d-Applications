@@ -349,3 +349,103 @@ décoratif : c'est ce qui permet de distinguer un arbitrage d'un acquiescement.
   format de facture, durée de conservation des données, modalités de
   connexion à l'espace de gestion, usage téléphonique d'un bon cadeau,
   champs du formulaire de création d'un bateau).
+
+
+## J5 - 2026-08-14
+
+**Présents.** Client + équipe complète de développeurs.
+
+**Décisions.**
+- MCD et MLD produits (`docs/mcd-mld.md`, `uml/mcd.puml`, `uml/mld.puml`),
+  jusqu'ici absents du dépôt alors que le jalon de fin de semaine les
+  attend. Chaque entité et chaque contrainte cite la spécification qui la
+  porte.
+- **Deux tables distinctes** pour `bon_cadeau` et `avoir`, malgré des
+  colonnes désormais identiques : la question de leur fusion est posée au
+  client et reste sans réponse (§11, question 8). Deux tables gardent les
+  deux options ouvertes, une table fusionnée préjugerait de sa réponse.
+- `architecture.md` rédigé en v1 : quatre couches, les douze règles métier
+  sensibles rattachées chacune à sa spécification et à son emplacement dans
+  `src/`, et cinq limites assumées au §9.
+- `ADR-002` : MySQL confirmé, mais **contre le modèle réel** et non contre
+  l'intuition de J2, comme `ADR-001` s'y était engagé.
+- `ADR-003` : la concurrence sur la dernière place passe à la
+  **pré-réservation de 15 minutes**, sur remarque du formateur au jalon.
+- Le client revient en cours de journée avec une demande nouvelle, l'alerte
+  météo préventive. Chaîne descendue dans l'ordre : `CR-05`, puis
+  `impact-CR-003`, puis cahier des charges v5. Les spécifications, l'UML et
+  le modèle **ne sont pas encore descendus** : ils restent alignés sur la
+  v4, ce qui est écrit dans chacun d'eux.
+- `REQ-023` et `REQ-024` **inversées, identifiants conservés**, comme
+  `REQ-045` en v4 : la correction reste lisible dans le document et dans la
+  matrice.
+- `REQ-059` marquée `déduit` : elle ne vient d'aucun échange client mais
+  d'une décision d'équipe. Elle est signalée comme telle plutôt que
+  rattachée artificiellement à un entretien.
+
+**Critiques de l'IA acceptées.**
+- `Tarif` regroupait prix adulte, prix enfant et forfait de privatisation,
+  alors que les deux premiers dépendent du type de sortie et le troisième du
+  bateau → forfait déplacé sur `bateau`, en colonne nullable, ce qui porte
+  au passage `SPEC-ADMIN-05` AC-5 (`docs/mcd-mld.md` §5).
+- `ChoixAnnulation` était rattaché à `Sortie` : impossible de savoir quel
+  client avait choisi quoi → rattaché à `reservation`, avec unicité.
+- La règle du naturaliste unique n'était portée par aucune contrainte →
+  colonne générée `creneau_baleines` et index unique, plutôt qu'un contrôle
+  applicatif sujet aux courses.
+- Le non-cumul d'un bon cadeau et d'un avoir reposait sur du code →
+  contrainte `CHECK` ajoutée au schéma.
+- Aucune spécification ne disait ce qu'il advient de l'argent du client
+  perdant sur la dernière place, alors que le paiement est intégral →
+  `ADR-003`, pré-réservation.
+
+**Critiques de l'IA refusées, et pourquoi.**
+- Fusionner `bon_cadeau` et `avoir` en une table unique portant une colonne
+  d'origine → refusé, car la fusion est défendable techniquement mais
+  préjuge d'une question posée au client et restée sans réponse. La
+  séparation est réversible, la fusion détruirait l'information d'origine.
+- Stocker le nombre de places restantes sur `sortie` pour éviter un calcul →
+  refusé, donnée dérivée donc désynchronisable ; le verrou transactionnel
+  suffit à la volumétrie attendue (`SPEC-NFR-01`).
+
+**Erreurs produites par l'IA et détectées.**
+- L'IA a annoncé un MCD livré alors que seuls des tableaux d'entités et de
+  cardinalités existaient dans `mcd-mld.md` : **aucun diagramme conceptuel**
+  → repéré par l'équipe en cherchant le fichier, corrigé par
+  `uml/mcd.puml`.
+- Premier rendu de `uml/mcd.puml` : les losanges d'association sortaient
+  vides, PlantUML n'affichant pas le nom d'un élément `diamond` → repéré en
+  générant l'image avant de committer, corrigé par des nœuds nommés portant
+  le stéréotype `association`.
+- L'IA a numéroté `ADR-002` l'ADR du prestataire SMS dans
+  `impact-CR-003.md`, alors que `architecture.md` réservait déjà ce numéro à
+  la persistance → repéré à la relecture de l'analyse d'impact, renuméroté
+  en `ADR-004` après l'insertion d'`ADR-003`.
+- L'IA a conclu que l'avoir n'avait plus de fait générateur, en s'appuyant
+  sur `REQ-023` et `REQ-050`. La lecture des documents était exacte, mais
+  ces documents étaient faux : `CR-02/Q04` avait été transcrit comme si le
+  choix report, avoir ou remboursement suivait une annulation météo. Le
+  client a corrigé le 2026-08-14 → `REQ-023` et `REQ-024` inversées,
+  `REQ-019` et `REQ-050` précisées. **L'erreur ne datait pas du jour même
+  mais du deuxième entretien**, et elle n'aurait pas été détectée sans
+  l'analyse d'impact.
+
+**Ce qui a été généré aujourd'hui.**
+- `docs/compte-rendu-entretien-05.md`, `docs/impact-CR-003.md` (nouveaux)
+- `docs/mcd-mld.md`, `docs/uml/mcd.puml`, `docs/uml/mld.puml` (nouveaux)
+- `docs/architecture.md` (gabarit vierge → v1)
+- `docs/adr/ADR-002-persistance.md`, `docs/adr/ADR-003-concurrence-derniere-place.md` (nouveaux)
+- `docs/cahier-des-charges.md` (v4 → v5)
+- `docs/uml/use-cases.puml` (note de concurrence sur UC3)
+- `docs/traceability.md` (régénéré)
+
+**Questions ouvertes pour le client.**
+- Les quatre questions nouvelles du §11 (horaires d'alerte réglables ou
+  figés, heure limite d'annulation, message associé à une annulation faute
+  de 6 inscrits, durée d'immobilisation des places et consentement aux SMS).
+- Le texte des trois messages automatiques, en français et en anglais,
+  toujours pas fourni, y compris pour le rappel qui existe depuis `CR-02`.
+- La fusion du bon cadeau et de l'avoir (§11, question 8), qui conditionne
+  une ou deux tables au modèle de données.
+- `CR-05` doit être relu par la personne ayant mené l'échange : comme
+  `CR-04`, il repose sur des propos rapportés et non sur une source brute.
