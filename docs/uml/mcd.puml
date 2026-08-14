@@ -1,0 +1,141 @@
+@startuml mcd
+' Modèle conceptuel de données (Merise) - Ti Baleine
+' Vocabulaire du client, aucune notion technique : ni clé étrangère,
+' ni identifiant technique, ni type de colonne. Voir docs/mcd-mld.md §3 et §4.
+' Le passage au relationnel est dessiné dans mld.puml.
+
+hide circle
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+entity "BATEAU" as bateau {
+  <u>nom</u>
+  capacité
+  forfait de privatisation
+}
+
+entity "CRENEAU" as creneau {
+  <u>date</u>
+  <u>heure de départ</u>
+}
+
+entity "SORTIE" as sortie {
+  type de sortie
+  formule
+  statut
+}
+
+entity "RESERVATION" as reservation {
+  nom du client
+  prénom du client
+  e-mail
+  téléphone
+  nombre d'adultes
+  nombre d'enfants
+  montant
+  langue
+  statut
+  date de création
+}
+
+entity "BON CADEAU" as bon_cadeau {
+  <u>code</u>
+  montant
+  date d'achat
+  date d'expiration
+  statut
+}
+
+entity "AVOIR" as avoir {
+  <u>code</u>
+  montant
+  date d'émission
+  date d'expiration
+  statut
+}
+
+entity "CHOIX D'ANNULATION" as choix {
+  type
+  date d'enregistrement
+}
+
+entity "TARIF" as tarif {
+  <u>type de sortie</u>
+  prix adulte
+  prix enfant
+}
+
+entity "JOUR DE FERMETURE" as fermeture {
+  <u>date</u>
+  récurrent chaque année
+}
+
+entity "PARAMETRE" as parametre {
+  heure d'ouverture
+  heure de fermeture
+  délai du message de rappel
+}
+
+entity "GERANT" as gerant {
+  <u>e-mail</u>
+  mot de passe
+}
+
+class "PROGRAMMER" as programmer <<association>>
+class "AFFECTER" as affecter <<association>>
+class "RECEVOIR" as recevoir <<association>>
+class "REDUIRE (BON CADEAU)" as reduire_bon <<association>>
+class "REDUIRE (AVOIR)" as reduire_avoir <<association>>
+class "DONNER LIEU A" as donner_lieu <<association>>
+class "MATERIALISER" as materialiser <<association>>
+
+creneau     -- programmer : (0,n)
+programmer  -- sortie : (1,1)
+
+bateau      -- affecter : (0,n)
+affecter    -- sortie : (1,1)
+
+sortie      -- recevoir : (0,n)
+recevoir    -- reservation : (1,1)
+
+bon_cadeau  -- reduire_bon : (0,1)
+reduire_bon -- reservation : (0,1)
+
+avoir        -- reduire_avoir : (0,1)
+reduire_avoir -- reservation : (0,1)
+
+reservation -- donner_lieu : (0,1)
+donner_lieu -- choix : (1,1)
+
+choix        -- materialiser : (0,1)
+materialiser -- avoir : (0,1)
+
+note bottom of sortie
+  Une sortie est la prestation rattachée à un
+  créneau, pour un bateau et un type donnés.
+  Deux bateaux peuvent naviguer sur le même
+  créneau (SPEC-BOOKING-03).
+end note
+
+note bottom of tarif
+  Entité de référence, sans association : le montant
+  est figé sur la réservation à sa création, il ne
+  suit pas les changements de tarif (SPEC-ADMIN-02).
+  Le forfait de privatisation dépend du bateau, pas
+  du type de sortie (SPEC-BOOKING-05).
+end note
+
+note bottom of parametre
+  PARAMETRE, JOUR DE FERMETURE et GERANT sont des
+  entités de référence, lues par l'application et
+  jamais rattachées à une réservation
+  (SPEC-ADMIN-01, SPEC-ADMIN-04, SPEC-CANCEL-05).
+end note
+
+note bottom of avoir
+  BON CADEAU et AVOIR restent deux entités : l'un est
+  vendu, l'autre accordé. Justification et alternative
+  écartée dans docs/mcd-mld.md §5.
+end note
+
+@enduml

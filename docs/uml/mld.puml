@@ -1,0 +1,156 @@
+@startuml mld
+' Modèle logique de données - Ti Baleine
+' Dérivé de domain.puml (v4) et de docs/mcd-mld.md.
+' Notation « information engineering » (pied de corbeau).
+' PK = clé primaire, FK = clé étrangère, U = contrainte d'unicité.
+
+hide circle
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+entity "gerant" as gerant {
+  **id** : PK
+  --
+  email : U
+  mot_de_passe
+}
+
+entity "parametre" as parametre {
+  **id** : PK
+  --
+  heure_ouverture
+  heure_fermeture
+  delai_rappel_heures
+}
+
+entity "jour_fermeture" as jour_fermeture {
+  **id** : PK
+  --
+  date_fermeture : U
+  recurrent_annuel
+}
+
+entity "bateau" as bateau {
+  **id** : PK
+  --
+  nom : U
+  capacite
+  forfait_privatisation
+}
+
+entity "creneau" as creneau {
+  **id** : PK
+  --
+  date_creneau
+  heure_depart
+  .. U (date_creneau, heure_depart) ..
+}
+
+entity "tarif" as tarif {
+  **id** : PK
+  --
+  type_sortie : U
+  prix_adulte
+  prix_enfant
+}
+
+entity "sortie" as sortie {
+  **id** : PK
+  --
+  //creneau_id// : FK
+  //bateau_id// : FK
+  type_sortie
+  formule
+  statut
+  .. U (creneau_id, bateau_id) ..
+  .. U (creneau_baleines) ..
+}
+
+entity "reservation" as reservation {
+  **id** : PK
+  --
+  //sortie_id// : FK
+  //bon_cadeau_id// : FK, U
+  //avoir_id// : FK, U
+  nom_client
+  prenom_client
+  email
+  telephone_mobile
+  nombre_adultes
+  nombre_enfants
+  montant
+  langue
+  statut
+  date_creation
+}
+
+entity "bon_cadeau" as bon_cadeau {
+  **id** : PK
+  --
+  code : U
+  montant
+  date_achat
+  date_expiration
+  statut
+}
+
+entity "avoir" as avoir {
+  **id** : PK
+  --
+  code : U
+  montant
+  date_emission
+  date_expiration
+  statut
+}
+
+entity "choix_annulation" as choix_annulation {
+  **id** : PK
+  --
+  //reservation_id// : FK, U
+  //avoir_id// : FK
+  type
+  date_enregistrement
+}
+
+creneau  ||--o{ sortie : programme
+bateau   ||--o{ sortie : est affecté à
+sortie   ||--o{ reservation : reçoit
+reservation ||--o| choix_annulation : donne lieu à
+bon_cadeau  |o--o| reservation : réduit le montant de
+avoir       |o--o| reservation : réduit le montant de
+avoir       |o--o| choix_annulation : matérialise
+
+note bottom of sortie
+  statut : PROGRAMMEE | ANNULEE
+  formule : STANDARD | PRIVATISATION
+  type_sortie : DAUPHINS | BALEINES
+  creneau_baleines : colonne générée, égale à
+  creneau_id si type_sortie = BALEINES, NULL sinon.
+  Son index unique porte la règle « un seul bateau
+  en sortie baleines par créneau » (SPEC-BOOKING-03).
+end note
+
+note bottom of reservation
+  statut : EN_ATTENTE_PAIEMENT | CONFIRMEE | ANNULEE
+  CHECK (bon_cadeau_id IS NULL OR avoir_id IS NULL)
+  porte le non-cumul des deux dispositifs
+  (SPEC-BOOKING-09, SPEC-BOOKING-10).
+  Le montant est figé à la réservation : aucune
+  dépendance vers tarif (SPEC-ADMIN-02).
+end note
+
+note bottom of tarif
+  Le forfait de privatisation est porté par bateau,
+  et non par type de sortie : 600 € Ti Kap,
+  1 100 € Le Grand Bleu (SPEC-BOOKING-05).
+end note
+
+note bottom of avoir
+  Table distincte de bon_cadeau : origines,
+  cycles de vie et responsables différents.
+  Justification et alternative écartée dans
+  docs/mcd-mld.md §5.
+end note
+
+@enduml
