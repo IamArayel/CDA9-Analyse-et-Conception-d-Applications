@@ -20,11 +20,13 @@ rectangle "Ti Baleine" {
   usecase "Exporter le planning des réservations" as UC5
   usecase "Visualiser les clients inscrits sur un créneau" as UC6
   usecase "Annuler un créneau (météo)" as UC7
-  usecase "Enregistrer le choix d'un client\n(report, avoir, remboursement)" as UC8
+  usecase "Enregistrer l'issue d'une annulation\ndemandée par le client" as UC8
   usecase "Acheter un bon cadeau" as UC10
   usecase "Utiliser un bon cadeau ou\nun code d'avoir au paiement" as UC11
   usecase "Modifier les horaires d'ouverture\net les jours de fermeture" as UC12
   usecase "Créer un nouveau bateau" as UC13
+  usecase "Mettre un créneau en alerte météo" as UC14
+  usecase "Émettre un avoir" as UC15
 }
 
 Client --> UC1
@@ -45,8 +47,9 @@ Gerant --> UC7
 Gerant --> UC8
 Gerant --> UC12
 Gerant --> UC13
+Gerant --> UC14
 UC7 ..> UC6 : <<include>>
-UC8 ..> UC7 : <<extend>>
+UC15 ..> UC8 : <<extend>>
 UC4 ..> UC9 : <<include>>
 UC5 ..> UC9 : <<include>>
 UC6 ..> UC9 : <<include>>
@@ -54,6 +57,10 @@ UC7 ..> UC9 : <<include>>
 UC8 ..> UC9 : <<include>>
 UC12 ..> UC9 : <<include>>
 UC13 ..> UC9 : <<include>>
+UC14 ..> UC9 : <<include>>
+UC15 ..> UC9 : <<include>>
+UC14 ..> UC6 : <<include>>
+UC7 ..> UC14 : <<extend>>
 
 note right of UC1
   SPEC-BOOKING-03
@@ -71,13 +78,15 @@ note right of UC3
   SPEC-BOOKING-07
   ..
   Concurrence sur la dernière place : deux clients
-  peuvent consulter le même créneau, y voir la même
-  place libre et engager tous les deux le paiement.
-  Une seule réservation aboutit, l'autre est refusée
-  et non débitée (SPEC-BOOKING-03, AC-3).
-  Les places ne sont décomptées qu'à la confirmation
-  du paiement, jamais à la validation du formulaire :
-  le conflit se résout donc ici, pas en UC2.
+  peuvent consulter le même créneau et y voir la
+  même place libre. Depuis ADR-003, les places sont
+  immobilisées 15 minutes dès la validation du
+  formulaire (UC2) : le second client est refusé
+  avant de saisir sa carte, et non après avoir payé.
+  Le conflit se résout donc en UC2, et UC3 ne traite
+  plus que le cas résiduel d'une immobilisation
+  expirée pendant le paiement
+  (SPEC-BOOKING-03, SPEC-BOOKING-07).
   Traitement retenu : architecture.md §5.
 end note
 
@@ -103,7 +112,28 @@ note right of UC7
 end note
 
 note right of UC8
-  SPEC-CANCEL-04
+  SPEC-ADMIN-06 (v5)
+  Le choix report, avoir ou remboursement
+  n'appartient qu'aux annulations demandées
+  par le client. Une annulation décidée par
+  le gérant donne un remboursement intégral,
+  sans choix — SPEC-CANCEL-04
+end note
+
+note right of UC14
+  SPEC-CANCEL-06 (v5)
+  Alerte posée créneau par créneau, message
+  la veille à 18h, confirmation 2h avant le
+  départ si la sortie est annulée, silence
+  si elle est maintenue.
+end note
+
+note right of UC15
+  SPEC-ADMIN-06 (v5)
+  Une des trois issues possibles, et la seule
+  origine d'un avoir depuis la correction du
+  2026-08-14. N'est plus rattachée à
+  l'annulation météo.
 end note
 
 note right of UC10

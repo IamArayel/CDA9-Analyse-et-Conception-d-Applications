@@ -41,6 +41,7 @@ class Sortie {
   typeSortie
   formule
   statut
+  dateAlerte
 }
 note bottom of Sortie
   Capacité jamais dépassée — SPEC-BOOKING-03
@@ -48,17 +49,21 @@ note bottom of Sortie
   Un seul bateau à la fois pour une sortie Baleines — SPEC-BOOKING-03
   Dauphins toute l'année, Baleines 15/06-31/10 — SPEC-BOOKING-02
   Fermeture des réservations selon le créneau — SPEC-BOOKING-04
+  Trois états : programmée, en alerte, annulée.
+  L'alerte est posée par le gérant et court jusqu'à
+  l'heure de départ (v5) — SPEC-CANCEL-06
 end note
 
 class Réservation {
   nomClient
   prénomClient
   email
-  téléphone
+  mobile
   nombreAdultes
   nombreEnfants
   montant
   statut
+  expireLe
 }
 note bottom of Réservation
   Peut porter sur une seule personne, aucun
@@ -68,6 +73,10 @@ note bottom of Réservation
   Le montant dû peut être réduit par un bon
   cadeau ou un avoir (v3) — SPEC-BOOKING-09,
   SPEC-BOOKING-10
+  Places immobilisées 15 minutes le temps du
+  paiement (v5) — SPEC-BOOKING-03, ADR-003
+  Le mobile porte l'envoi des SMS (v5)
+  — SPEC-BOOKING-01
 end note
 
 class BonCadeau {
@@ -97,14 +106,31 @@ class Avoir {
 }
 note bottom of Avoir
   Ajouté en v3 — impact-CR-001.md
-  Code de réduction unique, valeur décidée au
-  cas par cas par le gérant après une annulation
-  météo — SPEC-BOOKING-10, SPEC-CANCEL-04
+  Code de réduction unique, valeur décidée au cas
+  par cas par le gérant après une annulation
+  demandée par le client (v5, origine corrigée)
+  — SPEC-BOOKING-10, SPEC-ADMIN-06
   Valable 1 an à compter de l'émission
   (REQ-051, v4) — impact-CR-002.md
   Ne se distingue plus d'un BonCadeau que par
   son origine : fusion à trancher avec le client
   (cahier des charges §11, question 8).
+end note
+
+class Notification {
+  type
+  canal
+  dateEnvoi
+  statut
+}
+note bottom of Notification
+  Trois types : rappel avant la sortie, alerte
+  météo, confirmation d'annulation (v5)
+  — SPEC-CANCEL-05, SPEC-CANCEL-06
+  Deux canaux systématiques, SMS et e-mail ;
+  WhatsApp reste manuel — REQ-057
+  Sans cette trace, rien ne dit si la confirmation
+  doit encore partir — SPEC-CANCEL-04, AC-6
 end note
 
 class Tarif {
@@ -130,21 +156,26 @@ class ChoixAnnulation {
   type
 }
 note bottom of ChoixAnnulation
-  Report, avoir ou remboursement, enregistré
-  après contact téléphonique — SPEC-CANCEL-04
+  Report, avoir ou remboursement, enregistré par le
+  gérant après une annulation demandée par le
+  client au téléphone (v5) — SPEC-ADMIN-06
+  Une annulation décidée par le gérant ne donne
+  lieu à aucun choix : remboursement intégral
+  — SPEC-CANCEL-04
 end note
 
 Bateau "1" -- "0..*" Sortie : est affectée à >
 Créneau "1" -- "0..*" Sortie : programme >
 Tarif "1" -- "0..*" Sortie : s'applique selon type >
 Sortie "1" -- "0..*" Réservation : reçoit >
-Sortie "1" -- "0..*" ChoixAnnulation : donne lieu à (si annulée) >
+Réservation "1" -- "0..1" ChoixAnnulation : donne lieu à\n(si annulée par le client) >
+Réservation "1" -- "0..*" Notification : reçoit >
 BonCadeau "0..1" -- "0..1" Réservation : réduit le montant de >
 Avoir "0..1" -- "0..1" Réservation : réduit le montant de >
-Gérant ..> Sortie : annule pour raison météo\n(SPEC-CANCEL-02)
+Gérant ..> Sortie : met en alerte puis annule\n(SPEC-CANCEL-06, SPEC-CANCEL-02)
 Gérant ..> Tarif : modifie\n(SPEC-ADMIN-02)
 Gérant ..> Horaires : modifie\n(SPEC-ADMIN-04)
 Gérant ..> Bateau : crée (v3)\n(SPEC-ADMIN-05)
-Gérant ..> Avoir : accorde après une annulation météo\n(SPEC-CANCEL-04)
+Gérant ..> Avoir : émet après une annulation client\n(SPEC-ADMIN-06)
 
 @enduml
