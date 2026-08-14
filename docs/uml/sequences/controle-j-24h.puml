@@ -88,11 +88,14 @@ opt sortie maintenue
   end note
 
   loop pour chaque réservation confirmée
-    Site -> Client : message de rappel\n(météo prévue, affaires à prévoir)
+    Site -> Client : message de rappel (SMS et e-mail)\n(météo prévue, affaires à prévoir)
     note right of Site
       Envoyé à l'horaire configuré, 24 heures
-      avant le départ par défaut
-      — SPEC-CANCEL-05, AC-1, AC-2
+      avant le départ par défaut, sur les deux
+      canaux — SPEC-CANCEL-05, AC-1, AC-2
+      Il part même si le créneau est en alerte :
+      les deux messages coexistent
+      — SPEC-CANCEL-05, cas limite 3
       Rédigé dans la langue choisie à la
       réservation — SPEC-NFR-02
     end note

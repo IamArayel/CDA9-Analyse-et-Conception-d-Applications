@@ -2,6 +2,9 @@
 ' Séquence — Réserver et payer une sortie (UC2, UC1, UC3, UC11)
 ' Vocabulaire client (cf. cahier-des-charges.md §13 Glossaire).
 ' Réalise SPEC-BOOKING-01 à 04, 06, 07, 09, 10.
+' Les places sont immobilisées 15 minutes dès la validation du formulaire
+' (ADR-003) : le second client sur la dernière place est refusé avant de
+' saisir sa carte, et non après avoir payé.
 ' Le gérant n'intervient à aucun moment : le site est l'unique point
 ' d'entrée d'une nouvelle réservation (REQ-036).
 
@@ -41,14 +44,17 @@ alt saisie invalide, créneau complet ou fermé
   end note
 else saisie valide
   Site -> Site : crée la réservation\nà l'état « en attente de paiement »
+  Site -> Site : immobilise les places\npour 15 minutes
   Site -> Site : calcule le montant à partir du Tarif
   note right of Site
     Tarif adulte x nombre d'adultes
     + tarif enfant x nombre d'enfants,
     ou forfait si privatisation
     — SPEC-BOOKING-05, SPEC-BOOKING-06
-    Aucune place n'est décomptée à ce stade
-    — SPEC-BOOKING-03
+    Les places sont immobilisées, donc comptées
+    comme indisponibles pour les autres clients,
+    sans être encore vendues
+    — SPEC-BOOKING-03, ADR-003
   end note
   Site --> Client : récapitulatif et montant dû
   deactivate Site
@@ -95,18 +101,28 @@ else saisie valide
       n'est stockée — SPEC-BOOKING-07
     end note
 
-    alt paiement refusé, abandonné, ou abouti après l'heure limite
+    alt paiement refusé ou abandonné
       Site --> Client : réservation non confirmée
       note right of Site
-        Aucune place décomptée, aucun débit
-        — SPEC-BOOKING-07, AC-2
-        Un paiement qui aboutit après la fermeture
-        du créneau est refusé sans débit
-        — SPEC-BOOKING-04, AC-3
+        Aucun débit. Les places restent immobilisées
+        jusqu'à l'expiration des 15 minutes, puis
+        redeviennent disponibles
+        — SPEC-BOOKING-07, AC-2, SPEC-BOOKING-03
         Le code éventuellement saisi reste utilisable
       end note
 
-    else paiement confirmé dans les délais
+    else paiement abouti après expiration de l'immobilisation
+      Site -> Site : vérifie si la place est encore libre
+      note right of Site
+        Place encore libre : la réservation est
+        confirmée. Place vendue entre-temps : la
+        réservation est refusée et le client est
+        remboursé intégralement
+        — SPEC-BOOKING-07, AC-7, ADR-003
+      end note
+      Site --> Client : confirmation ou refus avec remboursement
+
+    else paiement confirmé pendant l'immobilisation
       Site -> Site : passe la réservation à « confirmée »,\ndécompte les places et marque le code utilisé
       Site --> Client : confirmation de réservation
       note right of Site
