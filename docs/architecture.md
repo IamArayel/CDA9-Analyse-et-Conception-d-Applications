@@ -1,17 +1,19 @@
 # Architecture - Ti Baleine
 
-**Version :** v1 - 2026-08-14 (J5)
-**Décisions associées :** `adr/ADR-001-stack.md` (adoptée),
-`adr/ADR-002-persistance.md` (à rédiger ce jour, confirme MySQL contre le
-MLD réel plutôt que contre l'intuition de J2)
-**Modèle de données :** `mcd-mld.md`, diagramme `uml/mld.puml`
+**Version :** v2 - 2026-08-14 (J5)
+**Décisions associées :** `adr/ADR-001-stack.md`, `adr/ADR-002-persistance.md`
+(MySQL confirmé contre le MLD réel), `adr/ADR-003-concurrence-derniere-place.md`
+(immobilisation des places), `adr/ADR-004` à venir pour le prestataire SMS
+**Modèle de données :** `mcd-mld.md`, diagrammes `uml/mcd.puml` et `uml/mld.puml`
 
 Décrit comment le système est organisé et pourquoi. Chaque choix se rattache
 à une exigence (`REQ`) ou à une contrainte du client.
 
-**Alignement.** Cette version décrit l'architecture du dossier validé, cahier
-des charges **v4**. Les effets de l'entretien du 2026-08-14 sont analysés
-dans `impact-CR-003.md` et signalés au [§9](#9-ce-que-cette-architecture-ne-fait-pas).
+**Alignement.** Cette version décrit le cahier des charges **v5** et les
+spécifications qui en découlent. La v1, écrite le matin même, s'arrêtait à la
+v4 et renvoyait à `impact-CR-003.md` pour ce qui allait changer ; l'alerte
+météo, l'envoi par SMS et l'immobilisation des places y sont désormais
+intégrés.
 
 ---
 
@@ -21,9 +23,10 @@ Une application web unique, servie par Symfony, qui expose deux parcours
 sans rapport l'un avec l'autre : un site public de réservation, accessible
 sans compte, et un espace de gestion protégé par le compte unique du gérant.
 Le paiement est intégralement délégué à Stripe, qui reste le seul système à
-manipuler une donnée bancaire. Deux traitements tournent sans utilisateur
-devant l'écran : le contrôle du seuil de 6 inscrits à 24 heures du départ et
-l'envoi du message de rappel.
+manipuler une donnée bancaire. Trois traitements tournent sans utilisateur
+devant l'écran : le contrôle du seuil de 6 inscrits à 24 heures du départ,
+l'envoi des messages programmés (rappel, alerte météo, confirmation
+d'annulation) et la libération des places immobilisées non payées.
 
 ```text
    Client (mobile, tablette, ordinateur)      Gérant (ordinateur)
@@ -33,9 +36,9 @@ l'envoi du message de rappel.
                \______  application Symfony  _______/
                               |        \
                         MySQL (Doctrine) \____ Stripe (paiement, remboursement)
-                              |               \___ envoi d'e-mails
+                              |               \___ envoi d'e-mails et de SMS
                      tâches planifiées
-              (seuil J-24h, message de rappel)
+       (seuil J-24h, messages programmés, places libérées)
 ```
 
 ## 2. Couches
@@ -45,7 +48,7 @@ l'envoi du message de rappel.
 | Interface (`Controller`, Twig, formulaires) | recevoir une requête, valider la forme des données, afficher | Application | règle métier, requête SQL, appel à Stripe |
 | Application (services de cas d'usage) | orchestrer un cas d'usage, ouvrir et fermer la transaction | Domaine, Infrastructure | règle métier, gabarit HTML |
 | Domaine (entités, politiques, services de domaine) | les règles métier, et elles seules | rien | framework, Doctrine, HTTP |
-| Infrastructure (repositories Doctrine, client Stripe, envoi d'e-mails, planificateur) | persistance et systèmes extérieurs | services externes | règle métier, décision de cas d'usage |
+| Infrastructure (repositories Doctrine, client Stripe, envoi d'e-mails et de SMS, planificateur) | persistance et systèmes extérieurs | services externes | règle métier, décision de cas d'usage |
 
 La colonne de droite est celle qui sert en revue : c'est elle qui permet de
 dire si une portion de code générée est à sa place. Deux exemples concrets de
@@ -60,8 +63,11 @@ décisions, ce qui le rend testable sans base de données.
 
 | Règle | Spécification | Où elle est implémentée |
 |---|---|---|
-| La capacité d'un bateau n'est jamais dépassée | `SPEC-BOOKING-03` | `Domaine\Politique\Capacite`, appelée par `Application\ConfirmerReservation` dans la transaction de paiement |
-| Deux réservations concurrentes sur la dernière place | `SPEC-BOOKING-03` | `Application\ConfirmerReservation`, verrou pessimiste sur la ligne `sortie`, voir §5 |
+| La capacité d'un bateau n'est jamais dépassée | `SPEC-BOOKING-03` | `Domaine\Politique\Capacite`, appelée par `Application\CreerReservation` dans la transaction qui immobilise les places |
+| Deux réservations concurrentes sur la dernière place | `SPEC-BOOKING-03` | `Application\CreerReservation`, verrou pessimiste sur la ligne `sortie` au moment d'immobiliser les places, voir §5 |
+| Immobilisation des places pendant 15 minutes | `SPEC-BOOKING-03` | `Domaine\Politique\Immobilisation`, évaluée à la lecture ; `Application\Tache\LibererLesPlacesEchues` pour l'entretien |
+| Alerte météo et messages programmés | `SPEC-CANCEL-06` | `Application\MettreEnAlerte` pour la décision, `Application\Tache\EnvoyerLesMessagesProgrammes` pour les envois |
+| Remboursement intégral après annulation par le gérant | `SPEC-CANCEL-04` | `Application\AnnulerCreneau`, qui déclenche le remboursement auprès de l'infrastructure de paiement |
 | Un seul bateau engagé en sortie baleines par créneau | `SPEC-BOOKING-03` | contrainte d'unicité en base (`sortie.creneau_baleines`), traduite en refus métier par `Infrastructure\Persistance\SortieRepository` |
 | Sortie maintenue à partir de 6 inscrits, contrôle à 24 heures | `SPEC-BOOKING-03` | `Application\Tache\ControlerSeuilDeMaintien`, tâche planifiée |
 | Saison des sorties baleines et jours de fermeture | `SPEC-BOOKING-02`, `SPEC-ADMIN-04` | `Domaine\Politique\OffreDeCreneaux` |
@@ -79,7 +85,7 @@ décisions, ce qui le rend testable sans base de données.
 src/
 ├── Domaine/          entités, politiques, services de domaine, sans framework
 ├── Application/      un service par cas d'usage, plus les tâches planifiées
-├── Infrastructure/   repositories Doctrine, client Stripe, envoi d'e-mails
+├── Infrastructure/   repositories Doctrine, Stripe, envois e-mail et SMS
 └── Interface/        contrôleurs, formulaires, gabarits Twig
 ```
 
@@ -94,11 +100,12 @@ Le schéma complet est décrit dans `mcd-mld.md` et dessiné dans
 architecturale.
 
 > La concurrence sur la dernière place disponible (`SPEC-BOOKING-03`) est
-> traitée par une transaction unique, ouverte au moment où Stripe confirme le
-> paiement, qui verrouille la ligne `sortie` (`SELECT ... FOR UPDATE`),
-> recompte les places vendues, puis écrit la réservation ; elle est garantie
-> par le fait que la vérification et l'écriture ne peuvent pas être séparées
-> par une autre transaction.
+> traitée par une transaction unique, ouverte **à la validation du
+> formulaire** et non plus à l'encaissement (`ADR-003`), qui verrouille la
+> ligne `sortie` (`SELECT ... FOR UPDATE`), recompte les places prises,
+> immobilisations non échues comprises, puis écrit la réservation avec sa
+> date d'expiration ; elle est garantie par le fait que la vérification et
+> l'écriture ne peuvent pas être séparées par une autre transaction.
 
 - **Unicité portée par la base, pas par le code.** La règle du naturaliste
   unique est un index unique sur une colonne générée : deux réservations
@@ -110,6 +117,10 @@ architecturale.
 - **Usage unique d'un code** : contrainte d'unicité sur les clés étrangères
   `bon_cadeau_id` et `avoir_id`, ce qui rend un second usage impossible même
   en cas de double soumission.
+- **L'expiration d'une immobilisation est évaluée à la lecture** : une
+  réservation échue ne compte plus dans les places prises, même si aucune
+  tâche n'est encore passée. Une panne du planificateur ne bloque donc aucune
+  vente.
 - **Aucune donnée dérivée stockée** : le nombre de places restantes est
   toujours recalculé. La volumétrie attendue (`SPEC-NFR-01`) ne justifie pas
   un compteur dénormalisé, qui se désynchroniserait.
@@ -121,7 +132,8 @@ architecturale.
 | Service | Usage | Ce qui se passe s'il est indisponible |
 |---|---|---|
 | Stripe | encaissement, remboursement, justificatif au client | Aucune réservation ne peut être confirmée : le parcours s'arrête avant l'écriture, aucune place n'est décomptée et le client voit un message explicite. Les réservations déjà confirmées ne sont pas affectées. Un remboursement décidé par le gérant est mis en attente et rejoué |
-| Envoi d'e-mails | message de rappel avant la sortie, confirmation de réservation | Le rappel n'est pas envoyé et l'échec est journalisé. Le gérant conserve le téléphone comme filet, c'est l'état du dossier en v4 ; `CR-05` supprime ce filet, voir §9 |
+| Envoi d'e-mails | rappel, alerte météo, confirmation d'annulation, confirmation de réservation | Le message n'est pas envoyé, l'échec est enregistré dans `notification`, et l'autre canal part quand même |
+| Envoi de SMS | mêmes messages, canal que le client lit en premier | Idem. Depuis la v5 le gérant ne téléphone plus : un message perdu sur les deux canaux n'est rattrapé par personne, ce que le client assume |
 | Hébergement Hostinger (MySQL, cron) | persistance et tâches planifiées | Le site est indisponible : ni réservation, ni espace de gestion. Le gérant bascule sur le téléphone, comme avant le projet |
 
 La colonne de droite n'est pas facultative : le client annule des sorties
@@ -164,11 +176,14 @@ gênantes.
   Au-delà, le verrou pessimiste du §5 deviendrait le point de contention.
 - **Elle ne garantit aucune disponibilité.** Aucun taux n'a été négocié avec
   le client, et l'offre retenue n'en permet pas.
-- **Elle ne conserve aucune trace des envois.** Un e-mail parti, non parti ou
-  refusé n'est pas historisé, seulement journalisé. C'est acceptable tant que
-  le gérant appelle ses clients, et cela cesse de l'être avec `CR-05`, qui
-  supprime l'appel : `impact-CR-003` prévoit une table `notification` et un
-  canal SMS, à intégrer en v2 après le passage du cahier des charges en v5.
+- **Elle ne garantit pas la délivrance d'un message.** Les envois sont
+  historisés dans `notification`, mais aucune relance ni canal de repli n'est
+  prévu, et le gérant ne téléphone plus. Un client dont les deux coordonnées
+  sont erronées ne sera prévenu de rien, ce que le client a explicitement
+  assumé.
+- **Elle immobilise des places sans les vendre.** Une place peut rester
+  indisponible quinze minutes après un panier abandonné, en pleine saison.
+  C'est le prix assumé de `ADR-003`.
 - **Elle n'isole pas un environnement de recette.** Toute correction est
   poussée directement en production, ce qui reste tenable sur un site à un
   seul utilisateur de gestion, et ne le serait plus en pleine saison.
