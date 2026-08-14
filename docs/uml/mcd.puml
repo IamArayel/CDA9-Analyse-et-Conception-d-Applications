@@ -23,19 +23,21 @@ entity "SORTIE" as sortie {
   type de sortie
   formule
   statut
+  date de mise en alerte
 }
 
 entity "RESERVATION" as reservation {
   nom du client
   prénom du client
   e-mail
-  téléphone
+  mobile
   nombre d'adultes
   nombre d'enfants
   montant
   langue
   statut
   date de création
+  fin d'immobilisation
 }
 
 entity "BON CADEAU" as bon_cadeau {
@@ -59,6 +61,13 @@ entity "CHOIX D'ANNULATION" as choix {
   date d'enregistrement
 }
 
+entity "NOTIFICATION" as notification {
+  type
+  canal
+  date d'envoi
+  statut
+}
+
 entity "TARIF" as tarif {
   <u>type de sortie</u>
   prix adulte
@@ -74,6 +83,8 @@ entity "PARAMETRE" as parametre {
   heure d'ouverture
   heure de fermeture
   délai du message de rappel
+  heure d'envoi de l'alerte
+  délai de confirmation d'annulation
 }
 
 entity "GERANT" as gerant {
@@ -88,6 +99,7 @@ class "REDUIRE (BON CADEAU)" as reduire_bon <<association>>
 class "REDUIRE (AVOIR)" as reduire_avoir <<association>>
 class "DONNER LIEU A" as donner_lieu <<association>>
 class "MATERIALISER" as materialiser <<association>>
+class "NOTIFIER" as notifier <<association>>
 
 creneau     -- programmer : (0,n)
 programmer  -- sortie : (1,1)
@@ -104,6 +116,9 @@ reduire_bon -- reservation : (0,1)
 avoir        -- reduire_avoir : (0,1)
 reduire_avoir -- reservation : (0,1)
 
+reservation -- notifier : (0,n)
+notifier    -- notification : (1,1)
+
 reservation -- donner_lieu : (0,1)
 donner_lieu -- choix : (1,1)
 
@@ -115,6 +130,14 @@ note bottom of sortie
   créneau, pour un bateau et un type donnés.
   Deux bateaux peuvent naviguer sur le même
   créneau (SPEC-BOOKING-03).
+  Trois états : programmée, en alerte, annulée
+  (v5, SPEC-CANCEL-06).
+end note
+
+note bottom of notification
+  Rappel, alerte météo ou confirmation
+  d'annulation, envoyés par SMS et par e-mail
+  (v5, SPEC-CANCEL-05, SPEC-CANCEL-06).
 end note
 
 note bottom of tarif

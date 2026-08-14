@@ -21,6 +21,8 @@ entity "parametre" as parametre {
   heure_ouverture
   heure_fermeture
   delai_rappel_heures
+  heure_alerte
+  delai_confirmation_heures
 }
 
 entity "jour_fermeture" as jour_fermeture {
@@ -62,6 +64,7 @@ entity "sortie" as sortie {
   type_sortie
   formule
   statut
+  date_alerte
   .. U (creneau_id, bateau_id) ..
   .. U (creneau_baleines) ..
 }
@@ -82,6 +85,7 @@ entity "reservation" as reservation {
   langue
   statut
   date_creation
+  expire_le
 }
 
 entity "bon_cadeau" as bon_cadeau {
@@ -104,6 +108,16 @@ entity "avoir" as avoir {
   statut
 }
 
+entity "notification" as notification {
+  **id** : PK
+  --
+  //reservation_id// : FK
+  type
+  canal
+  date_envoi
+  statut
+}
+
 entity "choix_annulation" as choix_annulation {
   **id** : PK
   --
@@ -116,19 +130,23 @@ entity "choix_annulation" as choix_annulation {
 creneau  ||--o{ sortie : programme
 bateau   ||--o{ sortie : est affecté à
 sortie   ||--o{ reservation : reçoit
+reservation ||--o{ notification : reçoit
 reservation ||--o| choix_annulation : donne lieu à
 bon_cadeau  |o--o| reservation : réduit le montant de
 avoir       |o--o| reservation : réduit le montant de
 avoir       |o--o| choix_annulation : matérialise
 
 note bottom of sortie
-  statut : PROGRAMMEE | ANNULEE
+  statut : PROGRAMMEE | EN_ALERTE | ANNULEE
   formule : STANDARD | PRIVATISATION
   type_sortie : DAUPHINS | BALEINES
   creneau_baleines : colonne générée, égale à
   creneau_id si type_sortie = BALEINES, NULL sinon.
   Son index unique porte la règle « un seul bateau
   en sortie baleines par créneau » (SPEC-BOOKING-03).
+  date_alerte : horodatage de la mise en alerte,
+  nécessaire pour savoir si la confirmation
+  d'annulation doit encore partir (SPEC-CANCEL-06).
 end note
 
 note bottom of reservation
@@ -138,12 +156,26 @@ note bottom of reservation
   (SPEC-BOOKING-09, SPEC-BOOKING-10).
   Le montant est figé à la réservation : aucune
   dépendance vers tarif (SPEC-ADMIN-02).
+  expire_le : fin de l'immobilisation des places,
+  15 minutes après la validation du formulaire.
+  Une ligne échue ne compte plus dans les places
+  prises, sans qu'aucune tâche n'ait à passer
+  (SPEC-BOOKING-03, ADR-003).
 end note
 
 note bottom of tarif
   Le forfait de privatisation est porté par bateau,
   et non par type de sortie : 600 € Ti Kap,
   1 100 € Le Grand Bleu (SPEC-BOOKING-05).
+end note
+
+note bottom of notification
+  type : RAPPEL | ALERTE | CONFIRMATION_ANNULATION
+  canal : SMS | EMAIL, les deux systématiquement
+  (REQ-057). Sans cette trace, rien ne dit si la
+  confirmation doit encore partir, ni quoi répondre
+  à un client affirmant n'avoir rien reçu
+  (SPEC-CANCEL-04, AC-6).
 end note
 
 note bottom of avoir

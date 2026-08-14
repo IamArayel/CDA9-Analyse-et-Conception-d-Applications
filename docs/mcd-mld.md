@@ -1,8 +1,8 @@
 # Modèle de données - MCD et MLD
 
-**Version :** v1 - 2026-08-14 (J5)
-**Dérivé de :** `docs/uml/domain.puml` (v4), `specs/*.md`,
-`docs/cahier-des-charges.md` (v4)
+**Version :** v2 - 2026-08-14 (J5)
+**Dérivé de :** `docs/uml/domain.puml` (v5), `specs/*.md`,
+`docs/cahier-des-charges.md` (v5)
 **Décisions associées :** `adr/ADR-001-stack.md` (Symfony/PHP, Doctrine,
 MySQL), `adr/ADR-002-persistance.md`
 **Diagrammes :** `docs/uml/mcd.puml` (conceptuel), `docs/uml/mld.puml` (logique)
@@ -11,10 +11,11 @@ Ce document descend le diagramme de domaine vers un schéma de données. Il ne
 crée aucune règle : chaque entité, chaque attribut et chaque contrainte se
 rattache à une spécification. Ce qui ne s'y rattache pas n'existe pas ici.
 
-**Alignement.** Ce modèle reflète l'état validé du dossier, cahier des
-charges **v4**. L'entretien du 2026-08-14 (`CR-05`) n'est pas encore descendu
-la chaîne : ses effets sur ce modèle sont isolés au [§9](#9-ce-que-lentretien-du-2026-08-14-va-changer),
-et seront intégrés en v2 une fois le cahier des charges passé en v5.
+**Alignement.** Ce modèle reflète le cahier des charges **v5** et les
+spécifications qui en découlent. La v1, écrite le matin même, s'arrêtait à la
+v4 et isolait les changements attendus dans une rubrique dédiée ; ils sont
+désormais intégrés, et le [§9](#9-ce-que-la-v5-a-changé) récapitule ce qui a
+bougé.
 
 ---
 
@@ -49,6 +50,10 @@ Elles servent d'entrée au MCD. Chacune cite la spécification qui la porte.
 | RG-15 | L'espace de gestion n'a qu'un compte, celui du gérant | `SPEC-ADMIN-01` |
 | RG-16 | L'horaire d'envoi du message de rappel est réglable | `SPEC-CANCEL-05` |
 | RG-17 | Le client choisit la langue de son parcours, le français par défaut | `SPEC-BOOKING-11` |
+| RG-18 | Une sortie est programmée, en alerte météo, ou annulée | `SPEC-CANCEL-06` |
+| RG-19 | Les places d'une réservation sont immobilisées 15 minutes le temps du paiement | `SPEC-BOOKING-03` |
+| RG-20 | Chaque message envoyé à un client laisse une trace, avec son type, son canal et sa date | `SPEC-CANCEL-04` |
+| RG-21 | Le choix entre report, avoir et remboursement n'existe que pour une annulation demandée par le client | `SPEC-ADMIN-06` |
 
 ## 3. MCD - entités et propriétés
 
@@ -56,14 +61,15 @@ Elles servent d'entrée au MCD. Chacune cite la spécification qui la porte.
 |---|---|---|---|
 | BATEAU | nom, capacité, forfait de privatisation | nom | `SPEC-ADMIN-05`, `SPEC-BOOKING-05` |
 | CRENEAU | date, heure de départ | date + heure | `SPEC-BOOKING-02` |
-| SORTIE | type de sortie, formule, statut | identifiant technique | `SPEC-BOOKING-02`, `SPEC-BOOKING-03` |
-| RESERVATION | nom, prénom, e-mail, téléphone, nombre d'adultes, nombre d'enfants, montant, langue, statut, date de création | identifiant technique | `SPEC-BOOKING-01`, `SPEC-BOOKING-07` |
+| SORTIE | type de sortie, formule, statut, date de mise en alerte | identifiant technique | `SPEC-BOOKING-02`, `SPEC-BOOKING-03`, `SPEC-CANCEL-06` |
+| RESERVATION | nom, prénom, e-mail, mobile, nombre d'adultes, nombre d'enfants, montant, langue, statut, date de création, fin d'immobilisation | identifiant technique | `SPEC-BOOKING-01`, `SPEC-BOOKING-07` |
+| NOTIFICATION | type, canal, date d'envoi, statut | identifiant technique | `SPEC-CANCEL-05`, `SPEC-CANCEL-06` |
 | BON_CADEAU | code, montant, date d'achat, date d'expiration, statut | code | `SPEC-BOOKING-09` |
 | AVOIR | code, montant, date d'émission, date d'expiration, statut | code | `SPEC-BOOKING-10` |
-| CHOIX_ANNULATION | type, date d'enregistrement | identifiant technique | `SPEC-CANCEL-04` |
+| CHOIX_ANNULATION | type, date d'enregistrement | identifiant technique | `SPEC-ADMIN-06` |
 | TARIF | type de sortie, prix adulte, prix enfant | type de sortie | `SPEC-BOOKING-06`, `SPEC-ADMIN-02` |
 | JOUR_FERMETURE | date, récurrence annuelle | date | `SPEC-ADMIN-04` |
-| PARAMETRE | heure d'ouverture, heure de fermeture, délai du message de rappel | identifiant technique | `SPEC-ADMIN-04`, `SPEC-CANCEL-05` |
+| PARAMETRE | heure d'ouverture, heure de fermeture, délai du message de rappel, heure d'envoi de l'alerte, délai de confirmation | identifiant technique | `SPEC-ADMIN-04`, `SPEC-CANCEL-05`, `SPEC-CANCEL-06` |
 | GERANT | e-mail, mot de passe | e-mail | `SPEC-ADMIN-01` |
 
 ## 4. MCD - associations et cardinalités
@@ -75,6 +81,7 @@ Elles servent d'entrée au MCD. Chacune cite la spécification qui la porte.
 | recevoir | SORTIE | 0,n | RESERVATION | 1,1 |
 | réduire | BON_CADEAU | 0,1 | RESERVATION | 0,1 |
 | réduire | AVOIR | 0,1 | RESERVATION | 0,1 |
+| notifier | RESERVATION | 0,n | NOTIFICATION | 1,1 |
 | donner lieu à | RESERVATION | 0,1 | CHOIX_ANNULATION | 1,1 |
 | matérialiser | CHOIX_ANNULATION | 0,1 | AVOIR | 0,1 |
 
@@ -145,13 +152,14 @@ CRENEAU (id, date_creneau, heure_depart)
     U : (date_creneau, heure_depart)
 
 SORTIE (id, #creneau_id, #bateau_id, type_sortie, formule, statut,
-        creneau_baleines)
+        date_alerte, creneau_baleines)
     U : (creneau_id, bateau_id)
     U : creneau_baleines
 
 RESERVATION (id, #sortie_id, #bon_cadeau_id, #avoir_id, nom_client,
              prenom_client, email, telephone_mobile, nombre_adultes,
-             nombre_enfants, montant, langue, statut, date_creation)
+             nombre_enfants, montant, langue, statut, date_creation,
+             expire_le)
     U : bon_cadeau_id
     U : avoir_id
 
@@ -160,6 +168,8 @@ BON_CADEAU (id, code, montant, date_achat, date_expiration, statut)
 
 AVOIR (id, code, montant, date_emission, date_expiration, statut)
     U : code
+
+NOTIFICATION (id, #reservation_id, type, canal, date_envoi, statut)
 
 CHOIX_ANNULATION (id, #reservation_id, #avoir_id, type, date_enregistrement)
     U : reservation_id
@@ -170,7 +180,8 @@ TARIF (id, type_sortie, prix_adulte, prix_enfant)
 JOUR_FERMETURE (id, date_fermeture, recurrent_annuel)
     U : date_fermeture
 
-PARAMETRE (id, heure_ouverture, heure_fermeture, delai_rappel_heures)
+PARAMETRE (id, heure_ouverture, heure_fermeture, delai_rappel_heures,
+           heure_alerte, delai_confirmation_heures)
 
 GERANT (id, email, mot_de_passe)
     U : email
@@ -190,7 +201,8 @@ GERANT (id, email, mot_de_passe)
 | | `bateau_id` | INT UNSIGNED | FK, NOT NULL |
 | | `type_sortie` | VARCHAR(20) | NOT NULL, CHECK IN (DAUPHINS, BALEINES) |
 | | `formule` | VARCHAR(20) | NOT NULL, CHECK IN (STANDARD, PRIVATISATION) |
-| | `statut` | VARCHAR(20) | NOT NULL, CHECK IN (PROGRAMMEE, ANNULEE) |
+| | `statut` | VARCHAR(20) | NOT NULL, CHECK IN (PROGRAMMEE, EN_ALERTE, ANNULEE) |
+| | `date_alerte` | DATETIME | NULL |
 | | `creneau_baleines` | INT UNSIGNED | colonne générée, UNIQUE |
 | `reservation` | `sortie_id` | INT UNSIGNED | FK, NOT NULL |
 | | `bon_cadeau_id` | INT UNSIGNED | FK, NULL, UNIQUE |
@@ -203,6 +215,12 @@ GERANT (id, email, mot_de_passe)
 | | `langue` | CHAR(2) | NOT NULL, défaut `fr` |
 | | `statut` | VARCHAR(30) | NOT NULL, CHECK IN (EN_ATTENTE_PAIEMENT, CONFIRMEE, ANNULEE) |
 | | `date_creation` | DATETIME | NOT NULL |
+| | `expire_le` | DATETIME | NOT NULL, index avec `sortie_id` et `statut` |
+| `notification` | `reservation_id` | INT UNSIGNED | FK, NOT NULL |
+| | `type` | VARCHAR(30) | NOT NULL, CHECK IN (RAPPEL, ALERTE, CONFIRMATION_ANNULATION) |
+| | `canal` | VARCHAR(10) | NOT NULL, CHECK IN (SMS, EMAIL) |
+| | `date_envoi` | DATETIME | NOT NULL |
+| | `statut` | VARCHAR(20) | NOT NULL, CHECK IN (ENVOYE, ECHEC) |
 | `bon_cadeau` | `code` | VARCHAR(16) | NOT NULL, UNIQUE |
 | | `montant` | DECIMAL(8,2) | NOT NULL, CHECK > 0 |
 | | `date_achat` | DATETIME | NOT NULL |
@@ -222,6 +240,8 @@ GERANT (id, email, mot_de_passe)
 | | `recurrent_annuel` | BOOLEAN | NOT NULL, défaut faux |
 | `parametre` | `heure_ouverture`, `heure_fermeture` | TIME | NOT NULL |
 | | `delai_rappel_heures` | SMALLINT UNSIGNED | NOT NULL, défaut 24 |
+| | `heure_alerte` | TIME | NOT NULL, défaut 18:00 |
+| | `delai_confirmation_heures` | SMALLINT UNSIGNED | NOT NULL, défaut 2 |
 | `gerant` | `email` | VARCHAR(180) | NOT NULL, UNIQUE |
 | | `mot_de_passe` | VARCHAR(255) | NOT NULL, empreinte, jamais en clair |
 
@@ -238,6 +258,12 @@ pour le non-cumul (`RG-11`), et
 `CHECK (nombre_adultes + nombre_enfants >= 1 AND (nombre_enfants = 0 OR nombre_adultes >= 1))`
 pour `RG-05` et `RG-06`.
 
+**L'immobilisation est évaluée à la lecture.** Une réservation en attente
+dont `expire_le` est dépassé ne compte plus dans les places prises, sans
+qu'aucune tâche n'ait à passer la supprimer. Le nettoyage périodique n'est
+qu'un entretien, jamais une condition de correction : une panne du
+planificateur ne bloque aucune vente.
+
 **Les statuts sont des `VARCHAR` contraints**, et non des `ENUM` MySQL :
 Doctrine ne gère pas nativement le type `ENUM`, et une valeur nouvelle
 imposerait une migration de type plutôt qu'une migration de contrainte.
@@ -250,22 +276,24 @@ la couche applicative et de la transaction. Elles sont documentées dans
 
 | Règle | Spécification | Pourquoi le schéma ne suffit pas |
 |---|---|---|
-| La capacité d'un bateau n'est jamais dépassée | `SPEC-BOOKING-03` | Somme des participants d'une sortie, calculée sur plusieurs lignes ; verrou sur la ligne `sortie` au moment du paiement |
-| Deux réservations concurrentes sur la dernière place | `SPEC-BOOKING-03` | Même verrou, dans la même transaction que la confirmation du paiement |
+| La capacité d'un bateau n'est jamais dépassée | `SPEC-BOOKING-03` | Somme des participants d'une sortie, réservations immobilisées non échues comprises ; verrou sur la ligne `sortie` |
+| Deux réservations concurrentes sur la dernière place | `SPEC-BOOKING-03` | Même verrou, pris désormais à la validation du formulaire et non à l'encaissement (`ADR-003`) |
+| Envoi de l'alerte et de la confirmation aux bonnes heures | `SPEC-CANCEL-06` | Traitement planifié, hors transaction utilisateur |
 | Le seuil de 6 inscrits à 24 heures du départ | `SPEC-BOOKING-03` | Contrôle périodique, hors transaction utilisateur |
 
-## 9. Ce que l'entretien du 2026-08-14 va changer
+## 9. Ce que la v5 a changé
 
-Analysé dans `impact-CR-003.md`, non intégré ici tant que le cahier des
-charges n'est pas passé en v5.
+Par rapport à la v1 de ce document, écrite le matin même sur le cahier des
+charges v4.
 
-| Objet | Changement attendu |
+| Objet | Changement |
 |---|---|
-| `sortie.statut` | Nouvelle valeur `EN_ALERTE`, avec la date d'envoi de l'alerte et l'horodatage de la décision |
-| Nouvelle table `notification` | Type (rappel, alerte, confirmation), canal (SMS, e-mail), destinataire, date d'envoi, statut. Sans elle, rien ne dit si le message de confirmation doit encore partir |
-| `choix_annulation` | Se rattache aux annulations à l'initiative du client, et non plus à l'annulation météo |
-| `reservation.telephone_mobile` | Devient une donnée de contact contrôlée, puisqu'elle porte un canal d'envoi |
-| `parametre` | Deux colonnes supplémentaires si les horaires d'alerte et de confirmation sont réglables, question ouverte au §8 de `CR-05` |
+| `sortie.statut` | Nouvelle valeur `EN_ALERTE`, et une colonne `date_alerte` qui horodate la mise en alerte |
+| `notification` | Table nouvelle : type, canal, date d'envoi et statut de chaque message. Sans elle, rien ne dit si la confirmation d'annulation doit encore partir |
+| `reservation.expire_le` | Fin de l'immobilisation des places, 15 minutes après la validation du formulaire (`ADR-003`) |
+| `reservation.telephone_mobile` | Devient une donnée de contact contrôlée, puisqu'elle porte l'envoi des SMS |
+| `choix_annulation` | Se rattache aux annulations demandées par le client (`SPEC-ADMIN-06`) et non plus à l'annulation météo |
+| `parametre` | Deux colonnes supplémentaires, l'heure d'envoi de l'alerte et le délai de confirmation, réglables par hypothèse d'équipe |
 
 ## 10. Revue IA
 
@@ -282,6 +310,8 @@ Consigne utilisée :
 | `ChoixAnnulation` était rattaché à `Sortie` : impossible de savoir quel client a choisi quoi | acceptée | rattaché à `reservation`, avec unicité |
 | La règle du naturaliste unique n'était portée par aucune contrainte | acceptée | colonne générée et index unique, plutôt qu'un contrôle applicatif sujet aux courses |
 | Le non-cumul bon cadeau et avoir reposait sur du code | acceptée | contrainte `CHECK` ajoutée au schéma |
+| Rien ne permettait de savoir si la confirmation d'annulation devait encore partir, ni de répondre à un client affirmant n'avoir rien reçu | acceptée | table `notification` ajoutée en v2, alors même que le client juge la non-délivrance sans objet |
+| Une immobilisation dépendant d'une tâche planifiée bloquerait des ventes en cas de panne du planificateur | acceptée | l'expiration est évaluée à la lecture, le nettoyage n'étant qu'un entretien |
 | Fusionner `bon_cadeau` et `avoir` en une table unique avec colonne d'origine | refusée | la fusion est défendable techniquement mais préjuge d'une question posée au client et restée sans réponse (§11, question 8) ; deux tables gardent les deux options ouvertes, la fusion détruirait l'information d'origine |
 | Stocker le nombre de places restantes sur `sortie` pour éviter un calcul | refusée | donnée dérivée, donc désynchronisable ; le verrou transactionnel décrit au §8 suffit à la volumétrie attendue (`SPEC-NFR-01`) |
 
