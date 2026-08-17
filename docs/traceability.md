@@ -42,15 +42,15 @@ une exigence que plus aucune spécification ne reprend · un cas de test utilis�
 
 | SPEC | REQ | Source | Cas de test | Tests | Commits |
 |---|---|---|---|---|---|
-| `SPEC-ADMIN-01` | `REQ-031`, `REQ-032`, `REQ-034`, `REQ-104` | `CR-02/Q03`, `CR-02/Q10`, `déduit` | `CASE-ADMIN-01`, `CASE-ADMIN-02`, `CASE-ADMIN-03` | — | — |
-| `SPEC-ADMIN-02` | `REQ-016`, `REQ-028` | `CR-01/Q07`, `CR-02/Q03` | `CASE-ADMIN-04`, `CASE-ADMIN-05`, `CASE-BOOKING-32` | — | — |
-| `SPEC-ADMIN-03` | `REQ-029` | `CR-02/Q03` | `CASE-ADMIN-06`, `CASE-ADMIN-07` | — | — |
-| `SPEC-ADMIN-04` | `REQ-038`, `REQ-039` | `CR-03/Q01` | `CASE-ADMIN-08`, `CASE-ADMIN-09` | — | `6195bfd` |
-| `SPEC-ADMIN-05` | `REQ-041` | `CR-03/Q06` | `CASE-ADMIN-10`, `CASE-ADMIN-11`, `CASE-ADMIN-12` | — | — |
-| `SPEC-ADMIN-06` | `REQ-019`, `REQ-050`, `REQ-056` | `CR-01/Q13`, `CR-03/Q05`, `CR-05/Q10` | `CASE-ADMIN-13`, `CASE-ADMIN-14`, `CASE-ADMIN-15` | — | `51dba2a` |
+| `SPEC-ADMIN-01` | `REQ-031`, `REQ-032`, `REQ-034`, `REQ-104` | `CR-02/Q03`, `CR-02/Q10`, `déduit` | `CASE-ADMIN-01`, `CASE-ADMIN-02`, `CASE-ADMIN-03` | — | `3877256` |
+| `SPEC-ADMIN-02` | `REQ-016`, `REQ-028` | `CR-01/Q07`, `CR-02/Q03` | `CASE-ADMIN-04`, `CASE-ADMIN-05`, `CASE-BOOKING-32` | — | `ba29c7a`, `ab844db` |
+| `SPEC-ADMIN-03` | `REQ-029` | `CR-02/Q03` | `CASE-ADMIN-06`, `CASE-ADMIN-07` | — | `277679f` |
+| `SPEC-ADMIN-04` | `REQ-038`, `REQ-039` | `CR-03/Q01` | `CASE-ADMIN-08`, `CASE-ADMIN-09` | — | `036f3f4`, `6195bfd` |
+| `SPEC-ADMIN-05` | `REQ-041` | `CR-03/Q06` | `CASE-ADMIN-10`, `CASE-ADMIN-11`, `CASE-ADMIN-12` | — | `1ef9ddd` |
+| `SPEC-ADMIN-06` | `REQ-019`, `REQ-050`, `REQ-056` | `CR-01/Q13`, `CR-03/Q05`, `CR-05/Q10` | `CASE-ADMIN-13`, `CASE-ADMIN-14`, `CASE-ADMIN-15` | — | `548ad16`, `51dba2a` |
 | `SPEC-BOOKING-01` | `REQ-001`, `REQ-008`, `REQ-009`, `REQ-015`, `REQ-036` | `CR-01/Q02`, `CR-02/Q02`, `CR-02/Q12`, `CR-02/Q18` | `CASE-BOOKING-20`, `CASE-BOOKING-21`, `CASE-BOOKING-22`, `CASE-BOOKING-23` | — | `27aa920`, `89943cf`, `db1251e` |
 | `SPEC-BOOKING-02` | `REQ-010`, `REQ-011`, `REQ-038` | `CR-01/Q05`, `CR-03/Q01` | `CASE-BOOKING-24`, `CASE-BOOKING-25`, `CASE-BOOKING-26` | — | `6ef0ea9` |
-| `SPEC-BOOKING-03` | `REQ-002`, `REQ-003`, `REQ-004`, `REQ-007`, `REQ-033`, `REQ-059` | `CR-01/Q01`, `CR-01/Q02`, `CR-01/Q08`, `CR-02/Q10`, `CR-02/Q16`, `déduit` | `CASE-BOOKING-01`, `CASE-BOOKING-02`, `CASE-BOOKING-03`, `CASE-BOOKING-04`, `CASE-BOOKING-05`, `CASE-BOOKING-06`, `CASE-BOOKING-07`, `CASE-BOOKING-08` | — | `bee544a` |
+| `SPEC-BOOKING-03` | `REQ-002`, `REQ-003`, `REQ-004`, `REQ-007`, `REQ-033`, `REQ-059` | `CR-01/Q01`, `CR-01/Q02`, `CR-01/Q08`, `CR-02/Q10`, `CR-02/Q16`, `déduit` | `CASE-BOOKING-01`, `CASE-BOOKING-02`, `CASE-BOOKING-03`, `CASE-BOOKING-04`, `CASE-BOOKING-05`, `CASE-BOOKING-06`, `CASE-BOOKING-07`, `CASE-BOOKING-08`, `CASE-BOOKING-35`, `CASE-BOOKING-36`, `CASE-BOOKING-37`, `CASE-BOOKING-38`, `CASE-BOOKING-39` | — | `bee544a` |
 | `SPEC-BOOKING-04` | `REQ-005` | `CR-01/Q09` | `CASE-BOOKING-27`, `CASE-BOOKING-28` | — | `67e6509` |
 | `SPEC-BOOKING-05` | `REQ-006`, `REQ-014` | `CR-01/Q03`, `CR-01/Q07` | `CASE-BOOKING-29`, `CASE-BOOKING-30` | — | `f376bb8` |
 | `SPEC-BOOKING-06` | `REQ-012`, `REQ-014`, `REQ-015` | `CR-01/Q04`, `CR-01/Q07`, `CR-02/Q02` | `CASE-BOOKING-31`, `CASE-BOOKING-32` | — | `d297463` |
@@ -94,7 +94,10 @@ n'est pas une faute. Un trou qu'on découvre à notre place en est une.**
 | Quoi | Depuis | Pourquoi | Ce qu'on en fait |
 |---|---|---|---|
 | 27 spécifications sur 29 sont encore sans cas de test | J3 | les `CASE-*` ne s'écrivent qu'une fois le MCD/MLD stabilisé, acquis depuis J5. `SPEC-BOOKING-03` et `SPEC-CANCEL-06`, les deux plus exposées, sont couvertes depuis J6 | suite dans l'ordre de `docs/strategie-de-test.md` §8 : paiement, bon cadeau, remboursement après annulation, puis le reste des `Must` |
-| Les 17 cas de test n'ont aucun test automatisé | J6 | les cas viennent d'être écrits ; l'automatisation est le maillon suivant de la chaîne, et c'est une tâche de production pour l'agent (README §2) | à J6 et J7, après le plan de délégation |
+| Les 67 cas de test n'ont aucun test automatisé | J6 | les cas viennent d'être écrits ; l'automatisation est le maillon suivant de la chaîne, et c'est une tâche de production pour l'agent (README §2) | à J6 et J7, après le plan de délégation |
+| Sort d'une réservation déposée sur un créneau déjà annulé faute d'inscrits | J6 | `SPEC-BOOKING-03` cas limite 4 ne dit que ceci : la sortie annulée n'est pas rétablie. Que la réservation elle-même soit acceptée ou refusée relève d'une hypothèse d'équipe jamais soumise au client | question à poser au prochain entretien ; `CASE-BOOKING-35` n'observe donc que l'état de la sortie |
+| Application du seuil de 6 inscrits à une privatisation | J6 | le client a énoncé le seuil pour une sortie ouverte à la vente et n'a jamais parlé d'une privatisation peu remplie. `SPEC-BOOKING-03` cas limite 8 fige l'hypothèse que le bateau payé en entier n'y est pas soumis | question à poser au prochain entretien ; `CASE-BOOKING-37` fige l'hypothèse, il ne la démontre pas |
+| Instant exact d'expiration d'une immobilisation, à 15 minutes pile | J6 | `SPEC-BOOKING-03` écrit « passé 15 minutes » et « 15 minutes écoulées », ce qui ne départage pas la borne. `CASE-BOOKING-04` observe 14h14 et 14h16, jamais 14h15 | arbitrage d'équipe à porter dans `ADR-003`, ce n'est pas une question client |
 | Texte des trois messages automatiques, en français et en anglais | J3 | jamais fourni par le client, ni pour le rappel, ni pour l'alerte, ni pour la confirmation d'annulation (`CR-05/Q15`) | reposé au prochain entretien ; sans lui, `SPEC-CANCEL-05` et `SPEC-CANCEL-06` ne sont testables que sur leur déclenchement, pas sur leur contenu |
 | Mode d'envoi des SMS | J5 | `CR-05/Q21` répond sur le forfait conservé, pas sur la passerelle d'envoi. La lecture retenue est la seule compatible avec un envoi automatique | question 1 du §8 de `CR-05`, prioritaire : c'est le seul point qui puisse encore faire tomber l'automatisation demandée |
 | Fusion de `BonCadeau` et `Avoir` | J4 | les deux dispositifs ne diffèrent plus que par leur origine depuis la v4 (question 8 du §11) | deux tables maintenues tant que le client n'a pas répondu, choix réversible documenté dans `mcd-mld.md` §5 |
