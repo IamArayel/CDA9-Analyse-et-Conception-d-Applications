@@ -1,19 +1,20 @@
 # Architecture - Ti Baleine
 
-**Version :** v2 - 2026-08-14 (J5)
+**Version :** v3 - 2026-08-17 (J6)
 **Décisions associées :** `adr/ADR-001-stack.md`, `adr/ADR-002-persistance.md`
 (MySQL confirmé contre le MLD réel), `adr/ADR-003-concurrence-derniere-place.md`
-(immobilisation des places), `adr/ADR-004` à venir pour le prestataire SMS
+(immobilisation des places), `adr/ADR-004-envoi-des-sms.md`,
+`adr/ADR-005-horloge-injectable.md`
 **Modèle de données :** `mcd-mld.md`, diagrammes `uml/mcd.puml` et `uml/mld.puml`
 
 Décrit comment le système est organisé et pourquoi. Chaque choix se rattache
 à une exigence (`REQ`) ou à une contrainte du client.
 
 **Alignement.** Cette version décrit le cahier des charges **v5** et les
-spécifications qui en découlent. La v1, écrite le matin même, s'arrêtait à la
-v4 et renvoyait à `impact-CR-003.md` pour ce qui allait changer ; l'alerte
-météo, l'envoi par SMS et l'immobilisation des places y sont désormais
-intégrés.
+spécifications qui en découlent. La v1 et la v2, écrites à J5, ont intégré
+l'alerte météo, l'envoi par SMS et l'immobilisation des places. La v3 ajoute
+les deux décisions prises à J6 : la plateforme d'envoi retenue en `ADR-004`
+et l'accès au temps tranché en `ADR-005`.
 
 ---
 
@@ -47,7 +48,7 @@ d'annulation) et la libération des places immobilisées non payées.
 |---|---|---|---|
 | Interface (`Controller`, Twig, formulaires) | recevoir une requête, valider la forme des données, afficher | Application | règle métier, requête SQL, appel à Stripe |
 | Application (services de cas d'usage) | orchestrer un cas d'usage, ouvrir et fermer la transaction | Domaine, Infrastructure | règle métier, gabarit HTML |
-| Domaine (entités, politiques, services de domaine) | les règles métier, et elles seules | rien | framework, Doctrine, HTTP |
+| Domaine (entités, politiques, services de domaine) | les règles métier, et elles seules | rien | framework, Doctrine, HTTP, **lecture de l'heure système** |
 | Infrastructure (repositories Doctrine, client Stripe, envoi d'e-mails et de SMS, planificateur) | persistance et systèmes extérieurs | services externes | règle métier, décision de cas d'usage |
 
 La colonne de droite est celle qui sert en revue : c'est elle qui permet de
@@ -58,6 +59,14 @@ Doctrine qui appelle Stripe.
 Le sens des dépendances est unique, de l'interface vers le domaine. Le
 domaine ne connaît ni Doctrine ni Symfony : il reçoit des données et rend des
 décisions, ce qui le rend testable sans base de données.
+
+**Le temps est une donnée, pas un service ambiant** (`ADR-005`). Le domaine ne
+lit jamais l'heure système. Les traitements déclenchés sans utilisateur
+reçoivent une horloge injectée ; les calculs purs reçoivent un instant en
+paramètre. Un appel direct à l'heure système dans le domaine est un défaut de
+revue, au même titre qu'une requête SQL dans un contrôleur. Sans cette règle,
+aucune des huit règles horaires du projet n'est testable : vérifier
+l'expiration d'un bon cadeau à un an imposerait d'attendre un an.
 
 ## 3. Où vivent les règles métier
 
@@ -78,14 +87,17 @@ décisions, ce qui le rend testable sans base de données.
 | Annulation météo décidée par le gérant, jamais automatique | `SPEC-CANCEL-02` | `Application\AnnulerCreneau`, appelée uniquement depuis l'espace de gestion |
 | Message de rappel avant la sortie | `SPEC-CANCEL-05` | `Application\Tache\EnvoyerLeRappel`, tâche planifiée |
 | Règle de complexité du mot de passe | `SPEC-ADMIN-01` | contrainte de validation Symfony sur le formulaire de mot de passe |
+| Accès au temps | `ADR-005` | `Domaine\Horloge` en interface, `Infrastructure\Horloge\HorlogeSysteme` en production, horloge figée en test |
 
 ## 4. Arborescence applicative
 
 ```text
 src/
 ├── Domaine/          entités, politiques, services de domaine, sans framework
+│                     dont l'interface Horloge, que le domaine définit
 ├── Application/      un service par cas d'usage, plus les tâches planifiées
-├── Infrastructure/   repositories Doctrine, Stripe, envois e-mail et SMS
+├── Infrastructure/   repositories Doctrine, Stripe, envois e-mail et SMS,
+│                     horloge système
 └── Interface/        contrôleurs, formulaires, gabarits Twig
 ```
 
@@ -134,6 +146,8 @@ architecturale.
 | Stripe | encaissement, remboursement, justificatif au client | Aucune réservation ne peut être confirmée : le parcours s'arrête avant l'écriture, aucune place n'est décomptée et le client voit un message explicite. Les réservations déjà confirmées ne sont pas affectées. Un remboursement décidé par le gérant est mis en attente et rejoué |
 | Envoi d'e-mails | rappel, alerte météo, confirmation d'annulation, confirmation de réservation | Le message n'est pas envoyé, l'échec est enregistré dans `notification`, et l'autre canal part quand même |
 | Envoi de SMS | mêmes messages, canal que le client lit en premier | Idem. Depuis la v5 le gérant ne téléphone plus : un message perdu sur les deux canaux n'est rattrapé par personne, ce que le client assume |
+
+`ADR-004` retient **un seul prestataire pour les deux canaux**, ce qui unifie la trace des envois mais crée un point de défaillance commun : une panne de la plateforme prive l'application du SMS et de l'e-mail à la fois. `SPEC-CANCEL-05` AC-6 ne couvre qu'un échec unitaire, un numéro invalide par exemple, pas une panne globale.
 | Hébergement Hostinger (MySQL, cron) | persistance et tâches planifiées | Le site est indisponible : ni réservation, ni espace de gestion. Le gérant bascule sur le téléphone, comme avant le projet |
 
 La colonne de droite n'est pas facultative : le client annule des sorties

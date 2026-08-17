@@ -49,10 +49,14 @@ rappel à un horaire réglable, alerte la veille à 18h, confirmation 2 heures
 avant, immobilisation des places pendant 15 minutes.
 
 **Aucune de ces règles n'est testable si le code lit l'heure système.** La
-stratégie impose donc une **horloge injectable** : le domaine reçoit l'instant
-courant, il ne va jamais le chercher. Un cas de test fixe l'instant, avance
-d'une minute, et observe. C'est la seule contrainte que cette stratégie fait
-peser sur la conception du code, et elle est assumée comme telle.
+stratégie impose donc que le domaine reçoive l'instant courant au lieu d'aller
+le chercher. Un cas de test fixe l'instant, avance d'une minute, et observe.
+C'est la seule contrainte que cette stratégie fait peser sur la conception du
+code, et elle est assumée comme telle.
+
+Le moyen a été tranché en `ADR-005` : une **horloge injectée** pour les
+traitements déclenchés sans utilisateur, un **instant passé en paramètre**
+pour les calculs purs.
 
 Le fuseau de référence est celui de l'exploitation, conformément à
 `SPEC-BOOKING-04`. Tous les cas l'expriment en heure locale.
