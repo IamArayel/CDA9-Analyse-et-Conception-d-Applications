@@ -1,35 +1,101 @@
-<!-- Généré par tools/traceability.sh — ne pas éditer à la main. -->
+<!-- Généré par tools/traceability.sh — ne pas éditer à la main.
+     Les sections « Exigences non couvertes » et « Trous connus » sont
+     alimentées par docs/traceability-trous.md, lui tenu à la main. -->
 
-# Matrice de traçabilité
+# Matrice de traçabilité — équipe `Le Trio`
 
-| SPEC | REQ | Cas de test | Tests | Commits |
-|---|---|---|---|---|
-| SPEC-ADMIN-01 | REQ-031 REQ-032 REQ-034 REQ-104 | — | 0 | 0 |
-| SPEC-ADMIN-02 | REQ-016 REQ-028 | — | 0 | 0 |
-| SPEC-ADMIN-03 | REQ-029 | — | 0 | 0 |
-| SPEC-ADMIN-04 | REQ-038 REQ-039 | — | 0 | 1 |
-| SPEC-ADMIN-05 | REQ-041 | — | 0 | 0 |
-| SPEC-ADMIN-06 | REQ-019 REQ-050 REQ-056 | — | 0 | 1 |
-| SPEC-BOOKING-01 | REQ-001 REQ-008 REQ-009 REQ-015 REQ-036 | — | 0 | 2 |
-| SPEC-BOOKING-02 | REQ-010 REQ-011 REQ-038 | — | 0 | 0 |
-| SPEC-BOOKING-03 | REQ-002 REQ-003 REQ-004 REQ-007 REQ-033 REQ-059 | — | 0 | 0 |
-| SPEC-BOOKING-04 | REQ-005 | — | 0 | 0 |
-| SPEC-BOOKING-05 | REQ-006 REQ-014 | — | 0 | 0 |
-| SPEC-BOOKING-06 | REQ-012 REQ-014 REQ-015 | — | 0 | 0 |
-| SPEC-BOOKING-07 | REQ-017 REQ-018 | — | 0 | 0 |
-| SPEC-BOOKING-08 | REQ-035 REQ-101 | — | 0 | 0 |
-| SPEC-BOOKING-09 | REQ-043 REQ-044 REQ-045 REQ-046 REQ-047 REQ-048 REQ-049 | — | 0 | 2 |
-| SPEC-BOOKING-10 | REQ-050 REQ-051 | — | 0 | 2 |
-| SPEC-BOOKING-11 | REQ-040 REQ-102 | — | 0 | 0 |
-| SPEC-CANCEL-01 | REQ-022 | — | 0 | 1 |
-| SPEC-CANCEL-02 | REQ-021 | — | 0 | 0 |
-| SPEC-CANCEL-03 | REQ-004 | — | 0 | 0 |
-| SPEC-CANCEL-04 | REQ-023 REQ-026 REQ-058 | — | 0 | 0 |
-| SPEC-CANCEL-05 | REQ-025 REQ-042 REQ-057 | — | 0 | 1 |
-| SPEC-CANCEL-06 | REQ-052 REQ-053 REQ-054 REQ-055 REQ-060 | — | 0 | 0 |
-| SPEC-NFR-01 | REQ-100 | — | 0 | 0 |
-| SPEC-NFR-02 | REQ-040 REQ-102 | — | 0 | 1 |
-| SPEC-NFR-03 | REQ-103 | — | 0 | 1 |
-| SPEC-NFR-04 | REQ-105 | — | 0 | 1 |
-| SPEC-NFR-05 | REQ-106 | — | 0 | 0 |
-| SPEC-NFR-06 | REQ-107 | — | 0 | 0 |
+Reprise au créneau 16h15, avec le journal. C'est le seul endroit où l'état de la
+chaîne se lit d'un coup d'œil.
+
+```text
+CR-01/Q07 → REQ-012 → SPEC-BOOKING-04 → CASE-BOOKING-17 → test → code → commit
+```
+
+Une ligne par spécification. **Ce document ne se reconstitue pas la veille du
+rendu** : `git log -- docs/traceability.md` montre les jours où il a été tenu.
+
+---
+
+## Comment la lire
+
+| Colonne | Ce qu'on y met | Où le trouver |
+|---|---|---|
+| SPEC | l'identifiant de la spécification | titre de section dans `specs/<domaine>.md` |
+| REQ | la ou les exigences qu'elle réalise | `docs/cahier-des-charges.md` |
+| Source | l'échange dont l'exigence est issue, ou `déduit` | `docs/compte-rendu-entretien-nn.md` |
+| Cas de test | le ou les cas qui la couvrent | `tests/cases/CASE-*.md` |
+| Tests | le nom du test automatisé | `tests/` |
+| Commits | le ou les sha courts | `git log --grep=<SPEC-ID>` |
+
+Un maillon qui n'existe pas encore se note `—`. Plusieurs valeurs dans une case se
+séparent par une virgule.
+
+**Les six ruptures surveillées** par `tools/traceability.sh --check` : une exigence
+sans source · une source citée qui n'existe pas dans nos comptes rendus · une
+spécification qu'aucun cas de test ne couvre · un cas de test sans test automatisé ·
+une exigence que plus aucune spécification ne reprend · un cas de test utilisé dans
+`tests/` mais défini nulle part.
+
+---
+
+## Matrice
+
+| SPEC | REQ | Source | Cas de test | Tests | Commits |
+|---|---|---|---|---|---|
+| `SPEC-ADMIN-01` | `REQ-031`, `REQ-032`, `REQ-034`, `REQ-104` | `CR-02/Q03`, `CR-02/Q10`, `déduit` | — | — | — |
+| `SPEC-ADMIN-02` | `REQ-016`, `REQ-028` | `CR-01/Q07`, `CR-02/Q03` | — | — | — |
+| `SPEC-ADMIN-03` | `REQ-029` | `CR-02/Q03` | — | — | — |
+| `SPEC-ADMIN-04` | `REQ-038`, `REQ-039` | `CR-03/Q01` | — | — | `6195bfd` |
+| `SPEC-ADMIN-05` | `REQ-041` | `CR-03/Q06` | — | — | — |
+| `SPEC-ADMIN-06` | `REQ-019`, `REQ-050`, `REQ-056` | `CR-01/Q13`, `CR-03/Q05`, `CR-05/Q10` | — | — | `51dba2a` |
+| `SPEC-BOOKING-01` | `REQ-001`, `REQ-008`, `REQ-009`, `REQ-015`, `REQ-036` | `CR-01/Q02`, `CR-02/Q02`, `CR-02/Q12`, `CR-02/Q18` | — | — | `89943cf`, `db1251e` |
+| `SPEC-BOOKING-02` | `REQ-010`, `REQ-011`, `REQ-038` | `CR-01/Q05`, `CR-03/Q01` | — | — | — |
+| `SPEC-BOOKING-03` | `REQ-002`, `REQ-003`, `REQ-004`, `REQ-007`, `REQ-033`, `REQ-059` | `CR-01/Q01`, `CR-01/Q02`, `CR-01/Q08`, `CR-02/Q10`, `CR-02/Q16`, `déduit` | — | — | — |
+| `SPEC-BOOKING-04` | `REQ-005` | `CR-01/Q09` | — | — | — |
+| `SPEC-BOOKING-05` | `REQ-006`, `REQ-014` | `CR-01/Q03`, `CR-01/Q07` | — | — | — |
+| `SPEC-BOOKING-06` | `REQ-012`, `REQ-014`, `REQ-015` | `CR-01/Q04`, `CR-01/Q07`, `CR-02/Q02` | — | — | — |
+| `SPEC-BOOKING-07` | `REQ-017`, `REQ-018` | `CR-01/Q10`, `CR-01/Q11` | — | — | — |
+| `SPEC-BOOKING-08` | `REQ-035`, `REQ-101` | `déduit` | — | — | — |
+| `SPEC-BOOKING-09` | `REQ-043`, `REQ-044`, `REQ-045`, `REQ-046`, `REQ-047`, `REQ-048`, `REQ-049` | `CR-03/Q07`, `CR-04/Q01` | — | — | `deaf28b`, `392a2ab` |
+| `SPEC-BOOKING-10` | `REQ-050`, `REQ-051` | `CR-03/Q05`, `CR-04/Q04` | — | — | `deaf28b`, `721ed6e` |
+| `SPEC-BOOKING-11` | `REQ-040`, `REQ-102` | `CR-03/Q02` | — | — | — |
+| `SPEC-CANCEL-01` | `REQ-022` | `CR-02/Q05` | — | — | `4ae1077` |
+| `SPEC-CANCEL-02` | `REQ-021` | `CR-02/Q04` | — | — | — |
+| `SPEC-CANCEL-03` | `REQ-004` | `CR-01/Q08` | — | — | — |
+| `SPEC-CANCEL-04` | `REQ-023`, `REQ-026`, `REQ-058` | `CR-05/Q03`, `CR-05/Q11`, `CR-05/Q12` | — | — | — |
+| `SPEC-CANCEL-05` | `REQ-025`, `REQ-042`, `REQ-057` | `CR-02/Q08`, `CR-03/Q03`, `CR-05/Q02` | — | — | `ab148cc` |
+| `SPEC-CANCEL-06` | `REQ-052`, `REQ-053`, `REQ-054`, `REQ-055`, `REQ-060` | `CR-05/Q01`, `CR-05/Q06`, `CR-05/Q08`, `CR-05/Q16` | — | — | — |
+| `SPEC-NFR-01` | `REQ-100` | `déduit` | — | — | — |
+| `SPEC-NFR-02` | `REQ-040`, `REQ-102` | `CR-03/Q02` | — | — | `0944f07` |
+| `SPEC-NFR-03` | `REQ-103` | `déduit` | — | — | `ffc7ad3` |
+| `SPEC-NFR-04` | `REQ-105` | `déduit` | — | — | `ffc7ad3` |
+| `SPEC-NFR-05` | `REQ-106` | `déduit` | — | — | — |
+| `SPEC-NFR-06` | `REQ-107` | `déduit` | — | — | — |
+
+---
+
+## Exigences non couvertes
+
+Une exigence qu'aucune spécification ne reprend n'apparaît nulle part dans le
+tableau ci-dessus. C'est la rupture la plus facile à ne pas voir, et elle se
+crée toute seule quand le client change d'avis.
+
+| REQ | Priorité | Pourquoi elle n'est pas encore spécifiée |
+|---|---|---|
+| — | — | Aucune : toutes les exigences du cahier des charges sont reprises par au moins une spécification. |
+
+---
+
+## Trous connus
+
+Ce que nous savons incomplet, et ce que nous comptons en faire. **Un trou déclaré
+n'est pas une faute. Un trou qu'on découvre à notre place en est une.**
+
+| Quoi | Depuis | Pourquoi | Ce qu'on en fait |
+|---|---|---|---|
+| Les 29 spécifications sont sans cas de test | J3 | les `CASE-*` ne s'écrivent qu'une fois le MCD/MLD stabilisé, ce qui est acquis depuis J5 | premiers cas de test à J6, en commençant par `SPEC-BOOKING-03` et `SPEC-CANCEL-06`, les deux plus exposées |
+| Texte des trois messages automatiques, en français et en anglais | J3 | jamais fourni par le client, ni pour le rappel, ni pour l'alerte, ni pour la confirmation d'annulation (`CR-05/Q15`) | reposé au prochain entretien ; sans lui, `SPEC-CANCEL-05` et `SPEC-CANCEL-06` ne sont testables que sur leur déclenchement, pas sur leur contenu |
+| Mode d'envoi des SMS | J5 | `CR-05/Q21` répond sur le forfait conservé, pas sur la passerelle d'envoi. La lecture retenue est la seule compatible avec un envoi automatique | question 1 du §8 de `CR-05`, prioritaire : c'est le seul point qui puisse encore faire tomber l'automatisation demandée |
+| Fusion de `BonCadeau` et `Avoir` | J4 | les deux dispositifs ne diffèrent plus que par leur origine depuis la v4 (question 8 du §11) | deux tables maintenues tant que le client n'a pas répondu, choix réversible documenté dans `mcd-mld.md` §5 |
+| `ADR-004`, prestataire d'envoi de SMS | J5 | sans objet : le client conserve le forfait et le numéro de l'entreprise (`CR-05/Q21`) | aucun ADR à écrire, la trace de la décision est dans `CR-05` et au journal de J5 |
+| Message associé à une annulation faute de 6 inscrits | J5 | cas non abordé par le client (`CR-05/Q14`), alors que c'est la seule annulation automatique de l'outil | question 13 du §11, à reposer ; en attendant, aucun message spécifique n'est spécifié |

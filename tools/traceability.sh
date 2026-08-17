@@ -5,9 +5,16 @@
 #   ./tools/traceability.sh           régénère la matrice
 #   ./tools/traceability.sh --check   régénère et sort en erreur s'il y a une rupture
 #
+# Le fichier produit suit docs/traceability-template.md : six colonnes, une
+# section pour les exigences non couvertes, une section pour les trous connus.
+# Les deux parties que personne ne peut deviner à notre place, le motif d'une
+# exigence non spécifiée et la liste des trous, sont tenues à la main dans
+# docs/traceability-trous.md et recopiées ici.
+#
 # Conventions attendues (voir README §4) :
 #   docs/compte-rendu-entretien-nn.md  questions numérotées Qnn
-#   docs/cahier-des-charges.md         REQ-nnn, chacune citant CR-nn/Qnn ou « déduit »
+#   docs/cahier-des-charges.md         REQ-nnn en début de ligne de tableau,
+#                                      chacune citant CR-nn/Qnn ou « déduit »
 #   specs/<domaine>.md                 sections titrées SPEC-<DOM>-nn, citant au moins un REQ
 #   tests/cases/CASE-<DOM>-nn.md       un fichier par cas, citant au moins un SPEC
 #   tests/**                           le nom du test contient l'ID CASE
@@ -21,7 +28,9 @@ set -u
 
 cd "$(dirname "$0")/.." || exit 1
 
+EQUIPE="Le Trio"
 CDC="docs/cahier-des-charges.md"
+NOTES="docs/traceability-trous.md"
 OUT="docs/traceability.md"
 CHECK=0
 [ "${1:-}" = "--check" ] && CHECK=1
@@ -31,12 +40,48 @@ RX_SPEC='SPEC-[A-Z0-9]+-[0-9][0-9]'
 RX_CASE_ANY='CASE[-_][A-Z0-9]+[-_][0-9][0-9]'
 RX_SRC='CR-[0-9][0-9]/Q[0-9][0-9]'
 RX_DEDUIT='d[ée]duit'
+# Une exigence se *définit* sur une ligne de tableau qui commence par son
+# identifiant. Partout ailleurs (§11, §14, glossaire), un REQ n'est qu'une
+# mention en prose : la contrôler comme une définition produirait des ruptures
+# fantômes.
+RX_REQ_ROW='^\| *REQ-[0-9][0-9][0-9] *\|'
 
 ruptures=0
 warn() { printf 'RUPTURE  %s\n' "$1" >&2; ruptures=$((ruptures + 1)); }
 
+# Joint des lignes en une cellule de tableau : « a, b, c », ou « — » si vide.
+join_cell() {
+  local v
+  v=$(paste -sd',' - | sed 's/,/, /g')
+  [ -z "$v" ] && v="—"
+  printf '%s' "$v"
+}
+
 # Fichiers de tests automatisés : tout tests/ sauf les cas de test et les gabarits.
 test_files=$(find tests -type f ! -path 'tests/cases/*' ! -name 'TEMPLATE.md' 2>/dev/null)
+
+# --- REQ -> source et priorité ----------------------------------------------
+# Lues une fois pour toutes sur les lignes de définition du cahier des charges.
+req_meta=""
+if [ -f "$CDC" ]; then
+  req_meta=$(
+    grep -E "$RX_REQ_ROW" "$CDC" 2>/dev/null | awk -F'|' -v rxsrc="$RX_SRC" '
+      {
+        req = $2; gsub(/[ \t`]/, "", req)
+        prio = (NF >= 4) ? $4 : ""
+        gsub(/^[ \t]+|[ \t]+$/, "", prio)
+        gsub(/\*/, "", prio)
+        if (prio !~ /Must|Should|Could|Won/) prio = "—"
+        else sub(/ *\(.*/, "", prio)
+        src = ""
+        if (match($0, rxsrc)) src = substr($0, RSTART, RLENGTH)
+        else if (tolower($0) ~ /d[eé]duit/) src = "déduit"
+        print req "\t" src "\t" prio
+      }'
+  )
+fi
+
+meta_of() { printf '%s\n' "$req_meta" | awk -F'\t' -v r="$1" -v c="$2" '$1 == r { print $c; exit }'; }
 
 # --- SPEC -> REQ ------------------------------------------------------------
 # Un REQ est rattaché au dernier SPEC rencontré au-dessus de lui, dans le même fichier.
@@ -64,53 +109,157 @@ for f in tests/cases/CASE-*.md; do
   done
 done
 
+# Noms des tests automatisés portant un identifiant de cas donné.
+tests_of_case() {
+  local rx
+  rx=$(printf '%s' "$1" | sed 's/-/[-_]/g')
+  printf '%s\n' "$test_files" | tr '\n' '\0' \
+    | xargs -0 grep -hoIE "[A-Za-z0-9_]*${rx}[A-Za-z0-9_]*" 2>/dev/null | sort -u
+}
+
 # --- Matrice ----------------------------------------------------------------
 specs=$(grep -rhoE "$RX_SPEC" specs 2>/dev/null | sort -u)
 [ -z "$specs" ] && warn "aucune spécification trouvée dans specs/"
 
 {
-  echo "<!-- Généré par tools/traceability.sh — ne pas éditer à la main. -->"
+  echo "<!-- Généré par tools/traceability.sh — ne pas éditer à la main."
+  echo "     Les sections « Exigences non couvertes » et « Trous connus » sont"
+  echo "     alimentées par docs/traceability-trous.md, lui tenu à la main. -->"
   echo
-  echo "# Matrice de traçabilité"
+  echo "# Matrice de traçabilité — équipe \`$EQUIPE\`"
   echo
-  echo "| SPEC | REQ | Cas de test | Tests | Commits |"
-  echo "|---|---|---|---|---|"
+  echo "Reprise au créneau 16h15, avec le journal. C'est le seul endroit où l'état de la"
+  echo "chaîne se lit d'un coup d'œil."
+  echo
+  echo '```text'
+  echo "CR-01/Q07 → REQ-012 → SPEC-BOOKING-04 → CASE-BOOKING-17 → test → code → commit"
+  echo '```'
+  echo
+  echo "Une ligne par spécification. **Ce document ne se reconstitue pas la veille du"
+  echo "rendu** : \`git log -- $OUT\` montre les jours où il a été tenu."
+  echo
+  echo "---"
+  echo
+  echo "## Comment la lire"
+  echo
+  echo "| Colonne | Ce qu'on y met | Où le trouver |"
+  echo "|---|---|---|"
+  echo "| SPEC | l'identifiant de la spécification | titre de section dans \`specs/<domaine>.md\` |"
+  echo "| REQ | la ou les exigences qu'elle réalise | \`$CDC\` |"
+  echo "| Source | l'échange dont l'exigence est issue, ou \`déduit\` | \`docs/compte-rendu-entretien-nn.md\` |"
+  echo "| Cas de test | le ou les cas qui la couvrent | \`tests/cases/CASE-*.md\` |"
+  echo "| Tests | le nom du test automatisé | \`tests/\` |"
+  echo "| Commits | le ou les sha courts | \`git log --grep=<SPEC-ID>\` |"
+  echo
+  echo "Un maillon qui n'existe pas encore se note \`—\`. Plusieurs valeurs dans une case se"
+  echo "séparent par une virgule."
+  echo
+  echo "**Les six ruptures surveillées** par \`tools/traceability.sh --check\` : une exigence"
+  echo "sans source · une source citée qui n'existe pas dans nos comptes rendus · une"
+  echo "spécification qu'aucun cas de test ne couvre · un cas de test sans test automatisé ·"
+  echo "une exigence que plus aucune spécification ne reprend · un cas de test utilisé dans"
+  echo "\`tests/\` mais défini nulle part."
+  echo
+  echo "---"
+  echo
+  echo "## Matrice"
+  echo
+  echo "| SPEC | REQ | Source | Cas de test | Tests | Commits |"
+  echo "|---|---|---|---|---|---|"
 
   for spec in $specs; do
-    reqs=$(printf '%s\n' "$pairs_spec_req" | awk -F'\t' -v s="$spec" '$1 == s { print $2 }' | sort -u | paste -sd' ' -)
+    reqs=$(printf '%s\n' "$pairs_spec_req" | awk -F'\t' -v s="$spec" '$1 == s { print $2 }' | sort -u)
     cases=$(printf '%s\n' "$pairs_spec_case" | awk -F'\t' -v s="$spec" '$1 == s { print $2 }' | sort -u)
 
-    ntests=0
-    for cid in $cases; do
-      rx=$(printf '%s' "$cid" | sed 's/-/[-_]/g')
-      n=$(printf '%s\n' "$test_files" | tr '\n' '\0' | xargs -0 grep -lIE "$rx" 2>/dev/null | grep -c .)
-      ntests=$((ntests + n))
-    done
-
-    ncommits=0
-    [ -d .git ] && ncommits=$(git log --oneline --grep="$spec" 2>/dev/null | grep -c .)
-
-    [ -z "$reqs" ]  && { warn "$spec ne cite aucune exigence"; reqs="—"; }
+    [ -z "$reqs" ] && warn "$spec ne cite aucune exigence"
     [ -z "$cases" ] && warn "$spec n'est couverte par aucun cas de test"
-    [ "$ntests" -eq 0 ] && warn "$spec n'a aucun test automatisé"
 
-    cases_cell=$(printf '%s\n' "$cases" | paste -sd' ' -)
-    [ -z "$cases_cell" ] && cases_cell="—"
+    reqs_cell=$(printf '%s\n' "$reqs" | sed '/^$/d;s/.*/`&`/' | join_cell)
 
-    printf '| %s | %s | %s | %s | %s |\n' "$spec" "$reqs" "$cases_cell" "$ntests" "$ncommits"
+    sources=""
+    for r in $reqs; do
+      s=$(meta_of "$r" 2)
+      [ -z "$s" ] && s="—"
+      sources="${sources}${s}
+"
+    done
+    src_cell=$(printf '%s' "$sources" | sed '/^$/d' | sort -u | sed 's/.*/`&`/' | join_cell)
+
+    tests_all=""
+    for cid in $cases; do
+      t=$(tests_of_case "$cid")
+      [ -z "$t" ] && warn "$cid n'a aucun test automatisé"
+      tests_all="${tests_all}${t}
+"
+    done
+    tests_cell=$(printf '%s' "$tests_all" | sed '/^$/d' | sort -u | sed 's/.*/`&`/' | join_cell)
+
+    commits_cell="—"
+    if [ -d .git ]; then
+      commits_cell=$(git log --format='%h' --grep="$spec" 2>/dev/null | sed 's/.*/`&`/' | join_cell)
+    fi
+
+    cases_cell=$(printf '%s\n' "$cases" | sed '/^$/d;s/.*/`&`/' | join_cell)
+
+    printf '| `%s` | %s | %s | %s | %s | %s |\n' \
+      "$spec" "$reqs_cell" "$src_cell" "$cases_cell" "$tests_cell" "$commits_cell"
   done
+
+  # --- Exigences non couvertes ----------------------------------------------
+  echo
+  echo "---"
+  echo
+  echo "## Exigences non couvertes"
+  echo
+  echo "Une exigence qu'aucune spécification ne reprend n'apparaît nulle part dans le"
+  echo "tableau ci-dessus. C'est la rupture la plus facile à ne pas voir, et elle se"
+  echo "crée toute seule quand le client change d'avis."
+  echo
+  echo "| REQ | Priorité | Pourquoi elle n'est pas encore spécifiée |"
+  echo "|---|---|---|"
+
+  nb_non_couvertes=0
+  if [ -f "$CDC" ]; then
+    for req in $(grep -ohE "$RX_REQ" "$CDC" 2>/dev/null | sort -u); do
+      if ! grep -rqE "$req" specs 2>/dev/null; then
+        warn "$req n'est couverte par aucune spécification"
+        nb_non_couvertes=$((nb_non_couvertes + 1))
+        prio=$(meta_of "$req" 3)
+        [ -z "$prio" ] && prio="—"
+        motif=$(grep -E "^$req *\|" "$NOTES" 2>/dev/null | head -1 | cut -d'|' -f2- | sed 's/^ *//;s/ *$//')
+        if [ -z "$motif" ]; then
+          motif="**motif à écrire dans \`$NOTES\`**"
+          warn "$req est non couverte et sans motif dans $NOTES"
+        fi
+        printf '| `%s` | %s | %s |\n' "$req" "$prio" "$motif"
+      fi
+    done
+  fi
+  [ "$nb_non_couvertes" -eq 0 ] && echo "| — | — | Aucune : toutes les exigences du cahier des charges sont reprises par au moins une spécification. |"
+
+  # --- Trous connus ---------------------------------------------------------
+  echo
+  echo "---"
+  echo
+  echo "## Trous connus"
+  echo
+  echo "Ce que nous savons incomplet, et ce que nous comptons en faire. **Un trou déclaré"
+  echo "n'est pas une faute. Un trou qu'on découvre à notre place en est une.**"
+  echo
+  if [ -f "$NOTES" ]; then
+    # Le bloc « trous » du fichier tenu à la main, commentaires HTML retirés
+    # et lignes vides de tête supprimées.
+    sed -n '/^## trous/,$p' "$NOTES" | sed '1d;/<!--/,/-->/d' | awk 'NF { p = 1 } p'
+  else
+    warn "$NOTES est absent : la section « Trous connus » ne peut pas être remplie"
+    echo "> \`$NOTES\` est absent."
+  fi
 } > "$OUT"
-
-# --- Exigences non couvertes ------------------------------------------------
-if [ -f "$CDC" ]; then
-  for req in $(grep -ohE "$RX_REQ" "$CDC" 2>/dev/null | sort -u); do
-    grep -rqE "$req" specs 2>/dev/null || warn "$req n'est couverte par aucune spécification"
-  done
-fi
 
 # --- REQ -> échange consigné ------------------------------------------------
 # Chaque exigence cite soit un échange d'entretien (CR-nn/Qnn), soit « déduit ».
 # Une règle métier qui ne vient d'aucun échange consigné ne vient de nulle part.
+# Contrôlé sur les lignes de définition uniquement, cf. RX_REQ_ROW.
 ndeduits=0
 if [ -f "$CDC" ]; then
   while IFS= read -r line; do
@@ -131,7 +280,7 @@ if [ -f "$CDC" ]; then
     else
       warn "$req ne cite aucune source (ni CR-nn/Qnn, ni « déduit »)"
     fi
-  done < "$CDC"
+  done < <(grep -E "$RX_REQ_ROW" "$CDC")
 fi
 
 # --- Cas de test référencés dans les tests mais non définis -----------------
