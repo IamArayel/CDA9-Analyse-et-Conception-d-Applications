@@ -136,3 +136,62 @@ Le même dans tous les cas, pour qu'un chiffre inattendu saute aux yeux.
 Le suivi se lit dans la matrice, colonne `Cas de test`. Ce qui n'est pas
 encore couvert est déclaré dans `docs/traceability-trous.md`, pas laissé au
 hasard d'une relecture.
+
+## 9. Organisation de `tests/`
+
+Cette section est la dernière entrée du plan de délégation de J7 : sans elle,
+l'agent ne sait pas où écrire, ni sous quelle forme.
+
+```text
+tests/
+├── cases/            les cas de test, en markdown, tenus par l'équipe
+│   ├── TEMPLATE.md
+│   └── CASE-<DOM>-nn.md
+├── Domaine/          PHPUnit, une classe par spécification
+├── Application/      PHPUnit, une classe par spécification, avec la base
+├── BoutEnBout/       Behat, un fichier .feature par parcours
+└── Doublures/        horloge figée, paiement, envois
+```
+
+**Un outil par niveau**, conformément à `ADR-001` :
+
+| Niveau | Outil | Ce qui s'y écrit |
+|---|---|---|
+| Domaine | PHPUnit | les règles pures, sans base ni réseau |
+| Application | PHPUnit | les cas d'usage avec la base, doublures branchées |
+| Bout en bout | Behat | les trois parcours, le scénario Gherkin du cas repris tel quel |
+
+**Une classe de test par spécification, une méthode par cas.**
+`SPEC-BOOKING-03` donne une classe qui contient huit méthodes, une par cas
+de `CASE-BOOKING-01` à `08`. La matrice se remplit alors toute seule, et un
+cas orphelin se voit immédiatement.
+
+Le nom de la méthode **contient l'identifiant du cas**, avec des tirets bas :
+
+```text
+test_CASE_BOOKING_03_derniere_place_second_client_refuse_avant_paiement
+```
+
+Pour les scénarios Behat, l'identifiant figure dans le nom du fichier et dans
+le titre du scénario, ce qui suffit à `tools/traceability.sh`.
+
+**Trois doublures, et seulement trois :**
+
+- **l'horloge**, figée par le cas de test, conformément à `ADR-005` ;
+- **le prestataire de paiement**, dont on simule les quatre réponses,
+  acceptée, refusée, abandonnée, perdue ;
+- **les envois**, qui n'expédient rien mais enregistrent ce qui aurait été
+  envoyé, avec son type, son canal et son destinataire, ce que
+  `SPEC-CANCEL-04` AC-6 exige de toute façon en production.
+
+Tout le reste est réel, base de données comprise : c'est elle qui porte deux
+règles métier, l'unicité du naturaliste et le non-cumul des codes.
+
+**Le jeu de données de référence du §7 est construit à un seul endroit**, et
+chaque test part de lui. Un chiffre inattendu dans un test signale alors une
+régression, pas un jeu de données différent.
+
+**Exécution** : `php bin/phpunit` pour les deux premiers niveaux,
+`vendor/bin/behat` pour le troisième. Les deux commandes doivent passer avant
+tout commit de fin de journée, au même titre que
+`tools/traceability.sh --check`.
