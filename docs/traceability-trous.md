@@ -16,7 +16,8 @@ Aucune exigence non couverte à ce jour.
 
 | Quoi | Depuis | Pourquoi | Ce qu'on en fait |
 |---|---|---|---|
-| Les 29 spécifications sont sans cas de test | J3 | les `CASE-*` ne s'écrivent qu'une fois le MCD/MLD stabilisé, ce qui est acquis depuis J5 | premiers cas de test à J6, en commençant par `SPEC-BOOKING-03` et `SPEC-CANCEL-06`, les deux plus exposées |
+| 27 spécifications sur 29 sont encore sans cas de test | J3 | les `CASE-*` ne s'écrivent qu'une fois le MCD/MLD stabilisé, acquis depuis J5. `SPEC-BOOKING-03` et `SPEC-CANCEL-06`, les deux plus exposées, sont couvertes depuis J6 | suite dans l'ordre de `docs/strategie-de-test.md` §8 : paiement, bon cadeau, remboursement après annulation, puis le reste des `Must` |
+| Les 17 cas de test n'ont aucun test automatisé | J6 | les cas viennent d'être écrits ; l'automatisation est le maillon suivant de la chaîne, et c'est une tâche de production pour l'agent (README §2) | à J6 et J7, après le plan de délégation |
 | Texte des trois messages automatiques, en français et en anglais | J3 | jamais fourni par le client, ni pour le rappel, ni pour l'alerte, ni pour la confirmation d'annulation (`CR-05/Q15`) | reposé au prochain entretien ; sans lui, `SPEC-CANCEL-05` et `SPEC-CANCEL-06` ne sont testables que sur leur déclenchement, pas sur leur contenu |
 | Mode d'envoi des SMS | J5 | `CR-05/Q21` répond sur le forfait conservé, pas sur la passerelle d'envoi. La lecture retenue est la seule compatible avec un envoi automatique | question 1 du §8 de `CR-05`, prioritaire : c'est le seul point qui puisse encore faire tomber l'automatisation demandée |
 | Fusion de `BonCadeau` et `Avoir` | J4 | les deux dispositifs ne diffèrent plus que par leur origine depuis la v4 (question 8 du §11) | deux tables maintenues tant que le client n'a pas répondu, choix réversible documenté dans `mcd-mld.md` §5 |

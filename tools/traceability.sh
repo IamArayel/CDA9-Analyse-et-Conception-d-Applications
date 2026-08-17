@@ -93,22 +93,6 @@ pairs_spec_req=$(
   ' specs/*.md 2>/dev/null | sort -u
 )
 
-# --- SPEC -> CASE -----------------------------------------------------------
-pairs_spec_case=""
-for f in tests/cases/CASE-*.md; do
-  [ -e "$f" ] || continue
-  cid=$(basename "$f" .md)
-  refs=$(grep -ohE "$RX_SPEC" "$f" 2>/dev/null | sort -u)
-  if [ -z "$refs" ]; then
-    warn "$cid ne cite aucune spécification"
-    continue
-  fi
-  for sp in $refs; do
-    pairs_spec_case="${pairs_spec_case}${sp}	${cid}
-"
-  done
-done
-
 # Noms des tests automatisés portant un identifiant de cas donné.
 tests_of_case() {
   local rx
@@ -116,6 +100,28 @@ tests_of_case() {
   printf '%s\n' "$test_files" | tr '\n' '\0' \
     | xargs -0 grep -hoIE "[A-Za-z0-9_]*${rx}[A-Za-z0-9_]*" 2>/dev/null | sort -u
 }
+
+# --- SPEC -> CASE -----------------------------------------------------------
+pairs_spec_case=""
+for f in tests/cases/CASE-*.md; do
+  [ -e "$f" ] || continue
+  cid=$(basename "$f" .md)
+  # Un cas se rattache aux spécifications de sa ligne « Spécification : »
+  # uniquement. Les identifiants cités ailleurs, notamment sous « Ce que ce
+  # cas ne vérifie pas », désignent des voisins qu'il ne couvre justement pas.
+  refs=$(grep -E '^\*\*Sp' "$f" 2>/dev/null | grep -ohE "$RX_SPEC" | sort -u)
+  if [ -z "$refs" ]; then
+    warn "$cid ne cite aucune spécification sur sa ligne « Spécification : »"
+    continue
+  fi
+  for sp in $refs; do
+    pairs_spec_case="${pairs_spec_case}${sp}	${cid}
+"
+  done
+  # Un cas sans test automatisé se signale une fois, ici, et non une fois par
+  # spécification qui le cite.
+  [ -z "$(tests_of_case "$cid")" ] && warn "$cid n'a aucun test automatisé"
+done
 
 # --- Matrice ----------------------------------------------------------------
 specs=$(grep -rhoE "$RX_SPEC" specs 2>/dev/null | sort -u)
@@ -187,9 +193,7 @@ specs=$(grep -rhoE "$RX_SPEC" specs 2>/dev/null | sort -u)
 
     tests_all=""
     for cid in $cases; do
-      t=$(tests_of_case "$cid")
-      [ -z "$t" ] && warn "$cid n'a aucun test automatisé"
-      tests_all="${tests_all}${t}
+      tests_all="${tests_all}$(tests_of_case "$cid")
 "
     done
     tests_cell=$(printf '%s' "$tests_all" | sed '/^$/d' | sort -u | sed 's/.*/`&`/' | join_cell)

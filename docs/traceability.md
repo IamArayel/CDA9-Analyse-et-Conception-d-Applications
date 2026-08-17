@@ -50,7 +50,7 @@ une exigence que plus aucune spécification ne reprend · un cas de test utilis�
 | `SPEC-ADMIN-06` | `REQ-019`, `REQ-050`, `REQ-056` | `CR-01/Q13`, `CR-03/Q05`, `CR-05/Q10` | — | — | `51dba2a` |
 | `SPEC-BOOKING-01` | `REQ-001`, `REQ-008`, `REQ-009`, `REQ-015`, `REQ-036` | `CR-01/Q02`, `CR-02/Q02`, `CR-02/Q12`, `CR-02/Q18` | — | — | `89943cf`, `db1251e` |
 | `SPEC-BOOKING-02` | `REQ-010`, `REQ-011`, `REQ-038` | `CR-01/Q05`, `CR-03/Q01` | — | — | — |
-| `SPEC-BOOKING-03` | `REQ-002`, `REQ-003`, `REQ-004`, `REQ-007`, `REQ-033`, `REQ-059` | `CR-01/Q01`, `CR-01/Q02`, `CR-01/Q08`, `CR-02/Q10`, `CR-02/Q16`, `déduit` | — | — | — |
+| `SPEC-BOOKING-03` | `REQ-002`, `REQ-003`, `REQ-004`, `REQ-007`, `REQ-033`, `REQ-059` | `CR-01/Q01`, `CR-01/Q02`, `CR-01/Q08`, `CR-02/Q10`, `CR-02/Q16`, `déduit` | `CASE-BOOKING-01`, `CASE-BOOKING-02`, `CASE-BOOKING-03`, `CASE-BOOKING-04`, `CASE-BOOKING-05`, `CASE-BOOKING-06`, `CASE-BOOKING-07`, `CASE-BOOKING-08` | — | — |
 | `SPEC-BOOKING-04` | `REQ-005` | `CR-01/Q09` | — | — | — |
 | `SPEC-BOOKING-05` | `REQ-006`, `REQ-014` | `CR-01/Q03`, `CR-01/Q07` | — | — | — |
 | `SPEC-BOOKING-06` | `REQ-012`, `REQ-014`, `REQ-015` | `CR-01/Q04`, `CR-01/Q07`, `CR-02/Q02` | — | — | — |
@@ -64,7 +64,7 @@ une exigence que plus aucune spécification ne reprend · un cas de test utilis�
 | `SPEC-CANCEL-03` | `REQ-004` | `CR-01/Q08` | — | — | — |
 | `SPEC-CANCEL-04` | `REQ-023`, `REQ-026`, `REQ-058` | `CR-05/Q03`, `CR-05/Q11`, `CR-05/Q12` | — | — | — |
 | `SPEC-CANCEL-05` | `REQ-025`, `REQ-042`, `REQ-057` | `CR-02/Q08`, `CR-03/Q03`, `CR-05/Q02` | — | — | `ab148cc` |
-| `SPEC-CANCEL-06` | `REQ-052`, `REQ-053`, `REQ-054`, `REQ-055`, `REQ-060` | `CR-05/Q01`, `CR-05/Q06`, `CR-05/Q08`, `CR-05/Q16` | — | — | — |
+| `SPEC-CANCEL-06` | `REQ-052`, `REQ-053`, `REQ-054`, `REQ-055`, `REQ-060` | `CR-05/Q01`, `CR-05/Q06`, `CR-05/Q08`, `CR-05/Q16` | `CASE-CANCEL-01`, `CASE-CANCEL-02`, `CASE-CANCEL-03`, `CASE-CANCEL-04`, `CASE-CANCEL-05`, `CASE-CANCEL-06`, `CASE-CANCEL-07`, `CASE-CANCEL-08`, `CASE-CANCEL-09` | — | — |
 | `SPEC-NFR-01` | `REQ-100` | `déduit` | — | — | — |
 | `SPEC-NFR-02` | `REQ-040`, `REQ-102` | `CR-03/Q02` | — | — | `0944f07` |
 | `SPEC-NFR-03` | `REQ-103` | `déduit` | — | — | `ffc7ad3` |
@@ -93,7 +93,8 @@ n'est pas une faute. Un trou qu'on découvre à notre place en est une.**
 
 | Quoi | Depuis | Pourquoi | Ce qu'on en fait |
 |---|---|---|---|
-| Les 29 spécifications sont sans cas de test | J3 | les `CASE-*` ne s'écrivent qu'une fois le MCD/MLD stabilisé, ce qui est acquis depuis J5 | premiers cas de test à J6, en commençant par `SPEC-BOOKING-03` et `SPEC-CANCEL-06`, les deux plus exposées |
+| 27 spécifications sur 29 sont encore sans cas de test | J3 | les `CASE-*` ne s'écrivent qu'une fois le MCD/MLD stabilisé, acquis depuis J5. `SPEC-BOOKING-03` et `SPEC-CANCEL-06`, les deux plus exposées, sont couvertes depuis J6 | suite dans l'ordre de `docs/strategie-de-test.md` §8 : paiement, bon cadeau, remboursement après annulation, puis le reste des `Must` |
+| Les 17 cas de test n'ont aucun test automatisé | J6 | les cas viennent d'être écrits ; l'automatisation est le maillon suivant de la chaîne, et c'est une tâche de production pour l'agent (README §2) | à J6 et J7, après le plan de délégation |
 | Texte des trois messages automatiques, en français et en anglais | J3 | jamais fourni par le client, ni pour le rappel, ni pour l'alerte, ni pour la confirmation d'annulation (`CR-05/Q15`) | reposé au prochain entretien ; sans lui, `SPEC-CANCEL-05` et `SPEC-CANCEL-06` ne sont testables que sur leur déclenchement, pas sur leur contenu |
 | Mode d'envoi des SMS | J5 | `CR-05/Q21` répond sur le forfait conservé, pas sur la passerelle d'envoi. La lecture retenue est la seule compatible avec un envoi automatique | question 1 du §8 de `CR-05`, prioritaire : c'est le seul point qui puisse encore faire tomber l'automatisation demandée |
 | Fusion de `BonCadeau` et `Avoir` | J4 | les deux dispositifs ne diffèrent plus que par leur origine depuis la v4 (question 8 du §11) | deux tables maintenues tant que le client n'a pas répondu, choix réversible documenté dans `mcd-mld.md` §5 |
