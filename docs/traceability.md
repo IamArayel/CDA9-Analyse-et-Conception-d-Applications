@@ -58,17 +58,17 @@ une exigence que plus aucune spécification ne reprend · un cas de test utilis�
 | `SPEC-BOOKING-08` | `REQ-035`, `REQ-101` | `déduit` | — | — | — |
 | `SPEC-BOOKING-09` | `REQ-043`, `REQ-044`, `REQ-045`, `REQ-046`, `REQ-047`, `REQ-048`, `REQ-049` | `CR-03/Q07`, `CR-04/Q01` | `CASE-BOOKING-14`, `CASE-BOOKING-15`, `CASE-BOOKING-16`, `CASE-BOOKING-17`, `CASE-BOOKING-18`, `CASE-BOOKING-19` | — | `33656ed`, `deaf28b`, `392a2ab` |
 | `SPEC-BOOKING-10` | `REQ-050`, `REQ-051` | `CR-03/Q05`, `CR-04/Q04` | `CASE-BOOKING-19`, `CASE-BOOKING-33`, `CASE-BOOKING-34` | — | `dfee14e`, `deaf28b`, `721ed6e` |
-| `SPEC-BOOKING-11` | `REQ-040`, `REQ-102` | `CR-03/Q02` | — | — | — |
-| `SPEC-CANCEL-01` | `REQ-022` | `CR-02/Q05` | `CASE-CANCEL-14`, `CASE-CANCEL-15` | — | `4ae1077` |
-| `SPEC-CANCEL-02` | `REQ-021` | `CR-02/Q04` | `CASE-CANCEL-16`, `CASE-CANCEL-17`, `CASE-CANCEL-18` | — | — |
-| `SPEC-CANCEL-03` | `REQ-004` | `CR-01/Q08` | `CASE-CANCEL-19`, `CASE-CANCEL-20` | — | — |
+| `SPEC-BOOKING-11` | `REQ-040`, `REQ-102` | `CR-03/Q02` | `CASE-BOOKING-35`, `CASE-BOOKING-36` | — | — |
+| `SPEC-CANCEL-01` | `REQ-022` | `CR-02/Q05` | `CASE-CANCEL-14`, `CASE-CANCEL-15` | — | `bc37c97`, `4ae1077` |
+| `SPEC-CANCEL-02` | `REQ-021` | `CR-02/Q04` | `CASE-CANCEL-16`, `CASE-CANCEL-17`, `CASE-CANCEL-18` | — | `8e58d34` |
+| `SPEC-CANCEL-03` | `REQ-004` | `CR-01/Q08` | `CASE-CANCEL-19`, `CASE-CANCEL-20` | — | `41f7eba` |
 | `SPEC-CANCEL-04` | `REQ-023`, `REQ-026`, `REQ-058` | `CR-05/Q03`, `CR-05/Q11`, `CR-05/Q12` | `CASE-CANCEL-10`, `CASE-CANCEL-11`, `CASE-CANCEL-12`, `CASE-CANCEL-13` | — | `98a7f23` |
-| `SPEC-CANCEL-05` | `REQ-025`, `REQ-042`, `REQ-057` | `CR-02/Q08`, `CR-03/Q03`, `CR-05/Q02` | `CASE-CANCEL-21`, `CASE-CANCEL-22`, `CASE-CANCEL-23`, `CASE-CANCEL-24` | — | `ab148cc` |
+| `SPEC-CANCEL-05` | `REQ-025`, `REQ-042`, `REQ-057` | `CR-02/Q08`, `CR-03/Q03`, `CR-05/Q02` | `CASE-CANCEL-21`, `CASE-CANCEL-22`, `CASE-CANCEL-23`, `CASE-CANCEL-24` | — | `c7abfe7`, `ab148cc` |
 | `SPEC-CANCEL-06` | `REQ-052`, `REQ-053`, `REQ-054`, `REQ-055`, `REQ-060` | `CR-05/Q01`, `CR-05/Q06`, `CR-05/Q08`, `CR-05/Q16` | `CASE-CANCEL-01`, `CASE-CANCEL-02`, `CASE-CANCEL-03`, `CASE-CANCEL-04`, `CASE-CANCEL-05`, `CASE-CANCEL-06`, `CASE-CANCEL-07`, `CASE-CANCEL-08`, `CASE-CANCEL-09` | — | `cdb26fa` |
 | `SPEC-NFR-01` | `REQ-100` | `déduit` | — | — | — |
-| `SPEC-NFR-02` | `REQ-040`, `REQ-102` | `CR-03/Q02` | — | — | `0944f07` |
+| `SPEC-NFR-02` | `REQ-040`, `REQ-102` | `CR-03/Q02` | `CASE-NFR-01`, `CASE-NFR-02` | — | `0944f07` |
 | `SPEC-NFR-03` | `REQ-103` | `déduit` | — | — | `ffc7ad3` |
-| `SPEC-NFR-04` | `REQ-105` | `déduit` | — | — | `ffc7ad3` |
+| `SPEC-NFR-04` | `REQ-105` | `déduit` | `CASE-NFR-03`, `CASE-NFR-04` | — | `ffc7ad3` |
 | `SPEC-NFR-05` | `REQ-106` | `déduit` | — | — | — |
 | `SPEC-NFR-06` | `REQ-107` | `déduit` | — | — | — |
 
