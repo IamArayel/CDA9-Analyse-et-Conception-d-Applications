@@ -47,6 +47,7 @@ RX_DEDUIT='d[ée]duit'
 RX_REQ_ROW='^\| *REQ-[0-9][0-9][0-9] *\|'
 
 ruptures=0
+nmanuels=0
 warn() { printf 'RUPTURE  %s\n' "$1" >&2; ruptures=$((ruptures + 1)); }
 
 # Joint des lignes en une cellule de tableau : « a, b, c », ou « — » si vide.
@@ -119,8 +120,14 @@ for f in tests/cases/CASE-*.md; do
 "
   done
   # Un cas sans test automatisé se signale une fois, ici, et non une fois par
-  # spécification qui le cite.
-  [ -z "$(tests_of_case "$cid")" ] && warn "$cid n'a aucun test automatisé"
+  # spécification qui le cite. Un cas déclaré « manuel assumé » n'est pas une
+  # rupture : c'est une décision motivée dans docs/strategie-de-test.md §4,
+  # comptée à part comme les exigences « déduit ».
+  if grep -qE '^\*\*Statut :\*\* *manuel assumé' "$f" 2>/dev/null; then
+    nmanuels=$((nmanuels + 1))
+  elif [ -z "$(tests_of_case "$cid")" ]; then
+    warn "$cid n'a aucun test automatisé"
+  fi
 done
 
 # --- Matrice ----------------------------------------------------------------
@@ -297,6 +304,9 @@ done
 echo "$OUT régénéré."
 if [ "$ndeduits" -gt 0 ]; then
   echo "$ndeduits exigence(s) marquée(s) « déduit » — à justifier, ce n'est pas une rupture."
+fi
+if [ "$nmanuels" -gt 0 ]; then
+  echo "$nmanuels cas de test déclaré(s) « manuel assumé » — à justifier, ce n'est pas une rupture."
 fi
 if [ "$ruptures" -gt 0 ]; then
   echo "$ruptures rupture(s) de traçabilité." >&2
