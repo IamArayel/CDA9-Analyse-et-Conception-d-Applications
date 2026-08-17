@@ -319,9 +319,9 @@ Trop souvent oubliées, et c'est là que les projets se cassent. Chacune doit
 | REQ-102 | Langues : site disponible en français et en anglais (REQ-040). | Aucun contenu (y compris les messages automatiques, REQ-025) ne reste non traduit dans l'une des deux langues. | [CR-03/Q02](./compte-rendu-entretien-03.md#2-questions-posées-et-réponses-obtenues) |
 | REQ-103 | Coût d'hébergement : solution à faible coût recherchée par l'équipe, le budget du client n'étant pas encore validé. | Coût d'hébergement mensuel documenté et validé par le client avant mise en production. | *Déduit* — voir [§11](#11-questions-restées-ouvertes) |
 | REQ-104 | Sécurité et contrôle d'accès : l'espace de gestion est protégé par un compte unique (REQ-031) avec une règle de mot de passe minimale (8 caractères, majuscule, minuscule, chiffre, caractère spécial). | Tentative de création d'un mot de passe non conforme rejetée. | *Déduit* — aucune règle de sécurité demandée par le client (cf. REQ-034) |
-| REQ-105 | Données personnelles et durée de conservation : seules les informations minimales du REQ-009 sont collectées ; aucune donnée de paiement sensible n'est stockée (REQ-018) ; une durée de conservation minimale de 3 mois avant suppression est envisagée. | Suppression ou anonymisation effective des données passé le délai retenu. | Note interne de l'équipe (RGPD), point de départ du délai non validé — voir [§11](#11-questions-restées-ouvertes) |
-| REQ-106 | Déploiement : fréquence de mise à jour et environnement de recette non discutés avec le client. | À définir avec le client. | Non abordé — voir [§11](#11-questions-restées-ouvertes) |
-| REQ-107 | Maintenance après livraison : responsable et durée de la maintenance après livraison non discutés avec le client. | À définir avec le client. | Non abordé — voir [§11](#11-questions-restées-ouvertes) |
+| REQ-105 | Données personnelles et durée de conservation : seules les informations minimales du REQ-009 sont collectées ; aucune donnée de paiement sensible n'est stockée (REQ-018) ; une durée de conservation minimale de 3 mois avant suppression est envisagée. | Suppression ou anonymisation effective des données passé le délai retenu. | *Déduit* — note interne de l'équipe (RGPD), point de départ du délai non validé, voir [§11](#11-questions-restées-ouvertes) |
+| REQ-106 | Déploiement : fréquence de mise à jour et environnement de recette non discutés avec le client. | À définir avec le client. | *Déduit* — sujet non abordé avec le client, hypothèse d'équipe en attendant, voir [§11](#11-questions-restées-ouvertes) |
+| REQ-107 | Maintenance après livraison : responsable et durée de la maintenance après livraison non discutés avec le client. | À définir avec le client. | *Déduit* — sujet non abordé avec le client, hypothèse d'équipe en attendant, voir [§11](#11-questions-restées-ouvertes) |
 
 ## 11. Questions restées ouvertes
 
@@ -387,9 +387,13 @@ justification dans la colonne Source :
   ce cahier des charges) ;
 - `REQ-034` / `REQ-104` — la règle de mot de passe de l'espace de gestion ;
 - `REQ-035` — l'adaptation du site aux différents écrans ;
-- `REQ-100`, `REQ-101`, `REQ-103`, `REQ-105` — les exigences non
-  fonctionnelles pour lesquelles aucune donnée chiffrée ou aucune décision
-  n'a été confirmée par le client (voir [§11](#11-questions-restées-ouvertes)).
+- `REQ-100`, `REQ-101`, `REQ-103`, `REQ-105`, `REQ-106`, `REQ-107` — les
+  exigences non fonctionnelles pour lesquelles aucune donnée chiffrée ni
+  aucune décision n'a été confirmée par le client (voir
+  [§11](#11-questions-restées-ouvertes)). Les trois dernières portaient la
+  mention « note interne » ou « non abordé », que `tools/traceability.sh`
+  signalait à juste titre comme une absence de source : elles sont désormais
+  marquées `déduit`, ce qu'elles ont toujours été.
 
 `REQ-102` (langues) sortait de cette liste en v2 uniquement faute d'avoir été
 posée au client ; ce n'est plus une hypothèse d'équipe depuis `CR-03/Q02`.
