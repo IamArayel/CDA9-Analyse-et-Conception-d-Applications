@@ -1,7 +1,7 @@
 # CASE-BOOKING-32 - le montant affiché est celui encaissé, malgré un changement de tarif
 
-**Spécification :** `SPEC-BOOKING-06`
-**Critères couverts :** AC-3, AC-4
+**Spécification :** `SPEC-BOOKING-06`, `SPEC-ADMIN-02`
+**Critères couverts :** `SPEC-BOOKING-06` AC-3 et AC-4, `SPEC-ADMIN-02` AC-4
 **Type :** limite
 **Niveau :** application
 **Statut :** à automatiser
@@ -29,7 +29,7 @@ Et il est exprimé en euros, y compris pour un client ayant choisi l'anglais
 
 ## Ce que ce cas ne vérifie pas
 
-- L'application du nouveau tarif aux réservations suivantes → cas de `SPEC-ADMIN-02`, à écrire.
+- L'application du nouveau tarif aux réservations suivantes → `CASE-ADMIN-04`.
 - La traduction du parcours → cas de `SPEC-BOOKING-11`, à écrire.
 
 ## Test automatisé
