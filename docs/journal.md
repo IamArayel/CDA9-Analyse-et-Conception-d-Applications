@@ -483,3 +483,106 @@ décoratif : c'est ce qui permet de distinguer un arbitrage d'un acquiescement.
   une ou deux tables au modèle de données.
 - `CR-05` doit être relu par la personne ayant mené l'échange : comme
   `CR-04`, il repose sur des propos rapportés et non sur une source brute.
+
+
+## J6 - 2026-08-17
+
+**Présents.** Équipe complète de développeurs. Aucun retour du formateur sur
+le rendu de vendredi : nous passons à l'étape suivante.
+
+**Décisions.**
+- **Stratégie de test écrite** (`docs/strategie-de-test.md`). Le barème note
+  « Tests : stratégie, cas, qualité » et rien ne l'écrivait. Elle dit ce que
+  nous testons, à quel niveau, et surtout **ce que nous ne testons pas** :
+  le prestataire de paiement, la délivrance réelle d'un message, le rendu
+  graphique, la charge, et les deux spécifications au statut brouillon.
+- **Gabarit de cas créé** (`tests/cases/TEMPLATE.md`). Le README précise que
+  les fichiers à créer n'ont pas de gabarit fourni et qu'il faut savoir le
+  défendre : le nôtre impose de citer la spécification **et** les critères
+  couverts, de fixer l'instant courant quand l'heure compte, et de déclarer
+  **ce que le cas ne vérifie pas**.
+- **82 cas de test écrits**, 27 spécifications couvertes sur 29, en sept
+  paliers ordonnés par risque et non par facilité.
+- **Triage assumé plutôt que couverture affichée.** Couvrir les 141 critères
+  au rythme du premier palier demandait une centaine de cas en quatre jours,
+  tout en automatisant, générant le code et préparant J10. Couverture fine
+  sur l'argent et le parcours client, nominale sur le reste, trois cas
+  `manuel assumé`, deux spécifications sans cas. Le tout déclaré.
+- **SMS** : l'envoi depuis le téléphone du gérant est écarté, volume trop
+  important pour un terminal de poche et dépendance à la couverture réseau
+  et à la batterie. Une plateforme française conforme au RGPD est retenue,
+  choisie sur la popularité et la simplicité, le prix n'étant plus un critère
+  depuis la réponse « budget illimité ». `ADR-004` écrit.
+- **Bon cadeau et avoir** : deux tables maintenues, par précaution si le
+  gérant fait évoluer son produit. La question 8 du §11 reste posée au
+  client, mais la conception, elle, est arrêtée.
+- **Accès au temps** : `ADR-005`. Une horloge injectée pour les traitements
+  déclenchés sans utilisateur, un instant en paramètre pour les calculs purs.
+  La lecture de l'heure système rejoint la colonne « ce qui n'a rien à y
+  faire » du domaine dans `architecture.md` §2.
+- **Organisation de `tests/`** écrite au §9 de la stratégie : un outil par
+  niveau, une classe par spécification, une méthode par cas, trois doublures
+  et pas une de plus. C'est la dernière entrée manquante du plan de
+  délégation de J7.
+- Le **planning de l'équipe** est ajouté au dépôt.
+
+**Critiques de l'IA acceptées.**
+- Couvrir les 141 critères d'acceptation n'était pas tenable dans le temps
+  restant → triage explicite par palier, et non-couverture déclarée dans
+  `docs/traceability-trous.md` plutôt que découverte à J10.
+- Les quatre critères de `SPEC-NFR-05` et `SPEC-NFR-06` ne décrivent aucun
+  comportement logiciel, ce sont des actions de projet → aucune de ces deux
+  spécifications n'aura de cas de test, et c'est écrit.
+- Un cas déclaré `manuel assumé` produisait une rupture permanente dans la
+  matrice → `tools/traceability.sh` les compte désormais à part, comme les
+  exigences `déduit`. Le bruit permanent finit par masquer les vraies
+  ruptures.
+- L'ADR de la plateforme SMS avait été déclaré « sans objet » le 14 août sur
+  une lecture trop large de `CR-05/Q21` : le client répondait sur son
+  abonnement, pas sur le mode d'envoi → `ADR-004` écrit, ligne corrigée dans
+  les trous.
+
+**Critiques de l'IA refusées, et pourquoi.**
+- Aucune aujourd'hui ; l'équipe a suivi les recommandations de l'agent sur les trois arbitrages du jour,
+  l'ordre des paliers, l'horloge et l'organisation des tests. En revanche
+  **les critères de choix de la plateforme SMS sont ceux de l'équipe**,
+  française et conforme au RGPD, populaire et simple, le prix exclu : l'agent
+  n'a fait que les instruire.
+
+**Erreurs produites par l'IA et détectées.**
+- `tools/traceability.sh` rattachait un cas de test à **toutes** les
+  spécifications citées dans son fichier, y compris celles listées sous « ce
+  que ce cas ne vérifie pas ». `SPEC-BOOKING-06` est ainsi apparue couverte
+  par un cas qui ne la teste pas → repéré en régénérant la matrice après le
+  premier palier, corrigé en ne lisant que la ligne « Spécification : ».
+  **C'est le même piège qu'au J3, dans l'autre sens** : un identifiant cité
+  en prose n'est pas un lien.
+- Deux critères se sont retrouvés non couverts alors que le comportement
+  l'était, `SPEC-BOOKING-10` AC-5 et `SPEC-ADMIN-02` AC-4, parce que le cas
+  correspondant n'était rattaché qu'à une seule des deux spécifications qui
+  décrivent la même règle → repéré par le décompte des critères couverts,
+  corrigé en rattachant ces deux cas à leurs deux spécifications.
+- L'agent avait laissé entendre que l'automatisation des tests pouvait
+  commencer aujourd'hui. L'équipe a demandé vérification plutôt que de le
+  prendre pour acquis : le README §6bis interdit toute tâche confiée à
+  l'agent avant le plan de délégation, daté de J7. La lecture de l'équipe
+  était la bonne.
+
+**Ce qui a été généré aujourd'hui.**
+- `docs/strategie-de-test.md`, `tests/cases/TEMPLATE.md` (nouveaux)
+- 82 cas de test, `CASE-BOOKING-01` à `37`, `CASE-CANCEL-01` à `24`,
+  `CASE-ADMIN-01` à `15`, `CASE-NFR-01` à `06`
+- `docs/adr/ADR-004-envoi-des-sms.md`,
+  `docs/adr/ADR-005-horloge-injectable.md` (nouveaux)
+- `docs/architecture.md` (v2 → v3), `docs/planning.md` (nouveau)
+- `tools/traceability.sh` (deux corrections), `docs/traceability-trous.md`,
+  `docs/traceability.md` (régénérée)
+
+**Questions ouvertes pour le client.**
+- Le nom exact de la plateforme d'envoi dépend de trois vérifications qui ne
+  se font pas depuis le dépôt : couverture du plan de numérotation du
+  territoire, expéditeur au nom de l'entreprise, contrat de sous-traitance.
+- Le texte des trois messages automatiques, toujours pas fourni. `ADR-004`
+  ajoute une contrainte : un expéditeur alphanumérique ne reçoit pas de
+  réponse, le message doit donc dire au client comment joindre le gérant.
+- Les neuf autres questions du §11, inchangées depuis vendredi.
