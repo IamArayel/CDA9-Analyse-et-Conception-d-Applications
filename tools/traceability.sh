@@ -39,7 +39,7 @@ RX_REQ='REQ-[0-9][0-9][0-9]'
 RX_SPEC='SPEC-[A-Z0-9]+-[0-9][0-9]'
 RX_CASE_ANY='CASE[-_][A-Z0-9]+[-_][0-9][0-9]'
 RX_SRC='CR-[0-9][0-9]/Q[0-9][0-9]'
-RX_DEDUIT='d[ée]duit'
+RX_DEDUIT='d(é|e)duit'
 # Une exigence se *définit* sur une ligne de tableau qui commence par son
 # identifiant. Partout ailleurs (§11, §14, glossaire), un REQ n'est qu'une
 # mention en prose : la contrôler comme une définition produirait des ruptures
@@ -75,7 +75,7 @@ if [ -f "$CDC" ]; then
         else sub(/ *\(.*/, "", prio)
         src = ""
         if (match($0, rxsrc)) src = substr($0, RSTART, RLENGTH)
-        else if (tolower($0) ~ /d[eé]duit/) src = "déduit"
+        else if (tolower($0) ~ /d(é|e)duit/) src = "déduit"
         print req "\t" src "\t" prio
       }'
   )
