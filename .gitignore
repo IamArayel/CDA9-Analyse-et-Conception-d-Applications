@@ -431,3 +431,8 @@ FodyWeavers.xsd
 # Propres au projet
 docs/uml/*.png 
 docs/uml/sequences/*.png
+###> php / phpunit ###
+/vendor/
+/.phpunit.cache/
+/.phpunit.result.cache
+###< php / phpunit ###
