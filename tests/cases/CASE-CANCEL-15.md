@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3, AC-4
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Alors la date d'envoi de l'alerte lui est indiquée
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_15_creneau_vide_annulable_et_date_dalerte_affichee` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/ConsultationDunCreneauTest.php` |
 | Doublures | horloge |

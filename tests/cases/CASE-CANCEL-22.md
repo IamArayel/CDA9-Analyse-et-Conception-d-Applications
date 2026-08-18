@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -34,5 +34,5 @@ Et un rappel déjà parti pour une autre sortie n'est pas rejoué
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_22_horaire_de_rappel_modifie_applique_aux_envois_a_venir` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/MessageDeRappelTest.php` |
 | Doublures | horloge, envoi de messages |

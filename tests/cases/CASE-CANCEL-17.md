@@ -4,7 +4,7 @@
 **Critères couverts :** AC-2, AC-3
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Et la sortie a lieu
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_17_aucune_annulation_sans_decision_du_gerant` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AnnulationParLeGerantTest.php` |
 | Doublures | horloge, envoi de messages |

@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Et le créneau reste à l'état « programmée »
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_14_consultation_affiche_les_inscrits_sans_effet_de_bord` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/ConsultationDunCreneauTest.php` |
 | Doublures | horloge |

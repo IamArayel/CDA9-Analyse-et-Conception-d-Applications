@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et l'alerte préalable n'était donc pas un passage obligé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_16_annulation_avec_ou_sans_alerte_prealable` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AnnulationParLeGerantTest.php` |
 | Doublures | horloge, envoi de messages |

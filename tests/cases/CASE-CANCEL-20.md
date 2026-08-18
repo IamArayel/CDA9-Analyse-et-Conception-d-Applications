@@ -4,7 +4,7 @@
 **Critères couverts :** AC-4, AC-5
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et la validation du client B est refusée, avec le motif d'annulation
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_20_reservation_en_cours_sur_creneau_annule_sans_debit` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/RepercussionCoteClientTest.php` |
 | Doublures | horloge, prestataire de paiement |

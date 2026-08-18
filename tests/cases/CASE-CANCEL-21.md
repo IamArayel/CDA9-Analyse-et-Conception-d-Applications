@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -39,5 +39,5 @@ Et le gérant n'a effectué aucune action
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_21_rappel_24h_avant_sur_deux_canaux` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/MessageDeRappelTest.php` |
 | Doublures | horloge, envoi de messages |

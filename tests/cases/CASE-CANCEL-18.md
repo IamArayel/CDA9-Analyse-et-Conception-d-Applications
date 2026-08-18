@@ -4,7 +4,7 @@
 **Critères couverts :** AC-4, AC-5
 **Type :** erreur
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -39,5 +39,5 @@ Alors l'action est refusée
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_18_double_annulation_et_creneau_passe_sans_effet` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AnnulationParLeGerantTest.php` |
 | Doublures | horloge, envoi de messages, prestataire de paiement |

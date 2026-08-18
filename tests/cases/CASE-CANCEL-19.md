@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2, AC-3
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et l'affichage du client s'est mis à jour sans rechargement
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_19_annulation_retire_le_creneau_alerte_le_conserve` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/RepercussionCoteClientTest.php` |
 | Doublures | horloge |

@@ -4,7 +4,7 @@
 **Critères couverts :** AC-5
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -35,5 +35,5 @@ Et non pas jamais
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_23_reservation_tardive_declenche_le_rappel_immediatement` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/MessageDeRappelTest.php` |
 | Doublures | horloge, envoi de messages |

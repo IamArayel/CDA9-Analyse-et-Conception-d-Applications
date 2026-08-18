@@ -4,7 +4,7 @@
 **Critères couverts :** AC-4, AC-6
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Et l'échec de l'e-mail est enregistré
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_24_aucun_rappel_si_annule_et_echec_dun_canal_isole` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/MessageDeRappelTest.php` |
 | Doublures | horloge, envoi de messages |
