@@ -33,11 +33,28 @@ final class EnvoisEnregistres implements Notificateur
     /** Les deux canaux exigés systématiquement par REQ-057. */
     public const LES_DEUX_CANAUX = [self::CANAL_EMAIL, self::CANAL_SMS];
 
+    public const STATUT_ENVOYE = 'ENVOYE';
+    public const STATUT_ECHEC = 'ECHEC';
+
     /**
      * @var list<array{reservation: string, type: string, canal: string,
-     *                 destinataire: string, envoyeLe: DateTimeImmutable}>
+     *                 destinataire: string, envoyeLe: DateTimeImmutable,
+     *                 statut: string}>
      */
     private array $envois = [];
+
+    /** @var list<array{canal: string, destinataire: string}> */
+    private array $echecsProgrammes = [];
+
+    /**
+     * Un canal qui échouera pour ce destinataire, une adresse invalide par
+     * exemple. L'échec d'un canal n'empêche pas l'autre de partir,
+     * cf. SPEC-CANCEL-05 AC-6.
+     */
+    public function feraEchouer(string $canal, string $destinataire): void
+    {
+        $this->echecsProgrammes[] = ['canal' => $canal, 'destinataire' => $destinataire];
+    }
 
     public function envoyer(
         string $referenceDeReservation,
@@ -45,21 +62,38 @@ final class EnvoisEnregistres implements Notificateur
         string $canal,
         string $destinataire,
         DateTimeImmutable $envoyeLe,
-    ): void {
+    ): bool {
+        $reussi = !$this->estProgrammePourEchouer($canal, $destinataire);
+
         $this->envois[] = [
             'reservation' => $referenceDeReservation,
             'type' => $type,
             'canal' => $canal,
             'destinataire' => $destinataire,
             'envoyeLe' => $envoyeLe,
+            'statut' => $reussi ? self::STATUT_ENVOYE : self::STATUT_ECHEC,
         ];
+
+        return $reussi;
+    }
+
+    private function estProgrammePourEchouer(string $canal, string $destinataire): bool
+    {
+        foreach ($this->echecsProgrammes as $echec) {
+            if ($echec['canal'] === $canal && $echec['destinataire'] === $destinataire) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * Les envois enregistrés, filtrés sur ce qui est précisé.
      *
      * @return list<array{reservation: string, type: string, canal: string,
-     *                    destinataire: string, envoyeLe: DateTimeImmutable}>
+     *                    destinataire: string, envoyeLe: DateTimeImmutable,
+     *                    statut: string}>
      */
     public function envois(
         ?string $type = null,
@@ -122,6 +156,29 @@ final class EnvoisEnregistres implements Notificateur
         sort($destinataires);
 
         return $destinataires;
+    }
+
+    /**
+     * Les envois dont la trace porte un échec.
+     *
+     * @return list<array{reservation: string, type: string, canal: string,
+     *                    destinataire: string, envoyeLe: DateTimeImmutable,
+     *                    statut: string}>
+     */
+    public function envoisEnEchec(): array
+    {
+        return array_values(array_filter(
+            $this->envois,
+            static fn (array $envoi): bool => $envoi['statut'] === self::STATUT_ECHEC,
+        ));
+    }
+
+    /** Le statut enregistré pour un envoi, ou null s'il n'a jamais été tenté. */
+    public function statutDenvoi(string $type, string $canal, string $destinataire): ?string
+    {
+        $envois = $this->envois($type, $canal, $destinataire);
+
+        return $envois === [] ? null : $envois[0]['statut'];
     }
 
     /** L'instant auquel un message est parti, ou null s'il n'est jamais parti. */

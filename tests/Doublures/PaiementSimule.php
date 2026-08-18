@@ -15,18 +15,38 @@ use App\Domaine\PrestataireDePaiement;
  */
 final class PaiementSimule implements PrestataireDePaiement
 {
+    /** Le prestataire accepte, sauf si le cas de test lui demande de refuser. */
+    private bool $refuseraLaProchaine = false;
+
     /** @var list<array{reservation: string, montant: int}> */
     private array $encaissements = [];
 
     /** @var list<array{reservation: string, montant: int}> */
     private array $remboursements = [];
 
-    public function encaisser(string $referenceDeReservation, int $montantEnCentimes): void
+    /**
+     * Nous testons nos réactions à ses réponses, pas son fonctionnement : le
+     * cas de test choisit la réponse, et nous observons ce que nous en faisons.
+     */
+    public function refuseraLaProchaineTransaction(): void
     {
+        $this->refuseraLaProchaine = true;
+    }
+
+    public function encaisser(string $referenceDeReservation, int $montantEnCentimes): bool
+    {
+        if ($this->refuseraLaProchaine) {
+            $this->refuseraLaProchaine = false;
+
+            return false;
+        }
+
         $this->encaissements[] = [
             'reservation' => $referenceDeReservation,
             'montant' => $montantEnCentimes,
         ];
+
+        return true;
     }
 
     public function rembourser(string $referenceDeReservation, int $montantEnCentimes): void
@@ -65,6 +85,23 @@ final class PaiementSimule implements PrestataireDePaiement
     public function remboursementsDemandes(): array
     {
         return $this->remboursements;
+    }
+
+    public function nombreDencaissements(): int
+    {
+        return count($this->encaissements);
+    }
+
+    /** Le montant encaissé pour une réservation, en centimes, ou null si aucun. */
+    public function montantEncaisse(string $referenceDeReservation): ?int
+    {
+        foreach ($this->encaissements as $encaissement) {
+            if ($encaissement['reservation'] === $referenceDeReservation) {
+                return $encaissement['montant'];
+            }
+        }
+
+        return null;
     }
 
     public function nombreDeRemboursements(): int

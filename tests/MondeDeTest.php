@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
+use App\Application\AcheterUnBonCadeau;
+use App\Application\AppliquerUnCode;
 use App\Application\ConfirmerLePaiement;
 use App\Application\CreerReservation;
+use App\Application\EmettreUnAvoir;
 use App\Application\ProgrammerUneSortie;
 use App\Application\ReglerLesParametres;
 use App\Tests\Doublures\EnvoisEnregistres;
@@ -51,6 +54,10 @@ final class MondeDeTest
     /**
      * Une réservation payée, donc confirmée et comptée dans les inscrits.
      *
+     * Le montant n'est pas fourni : il est calculé par le domaine à partir des
+     * tarifs de référence, comme il le sera en production. Un cas qui attend
+     * 160 € l'exprime par le nombre d'adultes et d'enfants, pas par le nombre.
+     *
      * @param array{nom: string, prenom: string, email: string,
      *              telephone_mobile: string, langue: string} $client
      *
@@ -61,11 +68,10 @@ final class MondeDeTest
         array $client,
         int $adultes,
         int $enfants = 0,
-        ?int $montant = null,
     ): string {
         $reservation = $this->reservationImmobilisee($sortie, $client, $adultes, $enfants);
 
-        (new ConfirmerLePaiement($this->horloge))->executer($reservation, $montant);
+        (new ConfirmerLePaiement($this->horloge, $this->paiement))->executer($reservation);
 
         return $reservation;
     }
@@ -110,6 +116,52 @@ final class MondeDeTest
                 adultes: 1,
             );
         }
+    }
+
+    /**
+     * Un bon cadeau acheté et payé, donc utilisable.
+     *
+     * @return string le code délivré à l'acheteur
+     */
+    public function bonCadeauAchete(int $montant, string $jourDachat): string
+    {
+        $this->horloge->nousSommesLe($jourDachat.' 10:00');
+
+        return (new AcheterUnBonCadeau($this->horloge, $this->paiement))
+            ->executer($montant, JeuDeDonneesDeReference::CLIENT_MARIE);
+    }
+
+    /**
+     * Un bon cadeau déjà consommé sur une réservation antérieure.
+     *
+     * @return string le code, désormais inutilisable
+     */
+    public function bonCadeauDejaUtilise(int $montant, string $jourDachat, string $sortie): string
+    {
+        $code = $this->bonCadeauAchete($montant, $jourDachat);
+
+        $reservation = $this->reservationImmobilisee(
+            $sortie,
+            JeuDeDonneesDeReference::CLIENT_MARIE,
+            adultes: 1,
+        );
+        (new AppliquerUnCode())->executer($reservation, $code);
+        (new ConfirmerLePaiement($this->horloge, $this->paiement))->executer($reservation);
+
+        return $code;
+    }
+
+    /**
+     * Un avoir émis au bénéfice d'un client, cf. SPEC-ADMIN-06.
+     *
+     * @return string le code de l'avoir
+     */
+    public function avoirEmis(int $montant, string $jourDemission): string
+    {
+        $this->horloge->nousSommesLe($jourDemission.' 10:00');
+
+        return (new EmettreUnAvoir($this->horloge))
+            ->executer($montant, JeuDeDonneesDeReference::CLIENT_MARIE);
     }
 
     /** Les réglages de l'espace de gestion, cf. SPEC-CANCEL-06 AC-9. */

@@ -96,6 +96,24 @@ final class JeuDeDonneesDeReference
     ];
 
     /**
+     * Le prix d'une sortie dauphins, en centimes, adultes et enfants confondus.
+     *
+     * Le calcul appartient au domaine (SPEC-BOOKING-06) ; il est répété ici
+     * pour que les montants attendus d'un cas se lisent en clair, « le prix de
+     * deux adultes », plutôt qu'en nombre nu.
+     */
+    public static function prixDauphins(int $adultes, int $enfants = 0): int
+    {
+        return $adultes * self::DAUPHINS_PRIX_ADULTE + $enfants * self::DAUPHINS_PRIX_ENFANT;
+    }
+
+    /** Le prix d'une sortie baleines, en centimes. */
+    public static function prixBaleines(int $adultes, int $enfants = 0): int
+    {
+        return $adultes * self::BALEINES_PRIX_ADULTE + $enfants * self::BALEINES_PRIX_ENFANT;
+    }
+
+    /**
      * Un instant du fuseau d'exploitation, écrit comme les cas de test
      * l'écrivent : « 2026-07-19 18:00 ».
      */
