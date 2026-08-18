@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Et les gabarits des trois messages automatiques existent dans les deux langues
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_NFR_02_catalogues_de_traduction_complets` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/CataloguesDeTraductionTest.php` |
 | Doublures | aucune |

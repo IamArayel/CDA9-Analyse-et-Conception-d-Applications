@@ -4,7 +4,7 @@
 **Critères couverts :** AC-2, AC-3
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Alors les messages d'alerte et de confirmation suivent la même règle
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_NFR_01_messages_automatiques_dans_la_langue_choisie` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/LangueDesMessagesTest.php` |
 | Doublures | horloge, envoi de messages |

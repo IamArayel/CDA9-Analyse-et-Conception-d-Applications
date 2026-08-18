@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3, AC-4
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -39,5 +39,5 @@ Et elles ne disparaissent qu'après le 20 juillet 2027
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_NFR_04_purge_a_trois_mois_sauf_bon_cadeau_vivant` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/DonneesPersonnellesTest.php` |
 | Doublures | horloge |

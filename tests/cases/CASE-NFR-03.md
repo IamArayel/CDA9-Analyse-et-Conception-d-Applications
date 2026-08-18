@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -35,5 +35,5 @@ Et aucun numéro de carte, aucune date d'expiration, aucun cryptogramme
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_NFR_03_donnees_minimales_et_aucune_donnee_de_carte` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/DonneesPersonnellesTest.php` |
 | Doublures | prestataire de paiement |
