@@ -1,4 +1,4 @@
-# Journal de projet — équipe `<NOM>`
+# Journal de projet — équipe `Le Trio`
 
 Une entrée par jour, remplie au créneau 16h15. Aucune rubrique ne reste vide sans
 justification.
@@ -586,3 +586,47 @@ le rendu de vendredi : nous passons à l'étape suivante.
   ajoute une contrainte : un expéditeur alphanumérique ne reçoit pas de
   réponse, le message doit donc dire au client comment joindre le gérant.
 - Les neuf autres questions du §11, inchangées depuis vendredi.
+
+---
+
+## J7 - 2026-08-18
+
+**Présents.** Équipe complète de développeurs. Journée d'exécution : les arbitrages de fond ont été rendus vendredi et lundi, aujourd'hui nous les appliquons.
+
+**Décisions.**
+- **Les 25 plans de délégation sont écrits avant la première tâche confiée à l'agent**, comme le README §6bis l'impose. 81 tâches, une par cas automatisable, chacune nommant le test qui doit passer au vert, ce que l'agent reçoit, et ce qu'il ne touche pas.
+- **Quatre spécifications sans plan, et c'est déclaré.** `SPEC-NFR-01` et `SPEC-NFR-03` n'ont qu'un cas `manuel assumé` et ne donnent lieu à aucune production ; `SPEC-NFR-05` et `SPEC-NFR-06` n'ont aucun cas. La distinction avec `SPEC-BOOKING-08`, qui a bien un plan alors que son cas est également manuel, tient à ce que celle-ci demande du code et n'a que sa vérification manuelle. Sans cette ligne, l'écart passerait pour une incohérence.
+- **Les tests sont écrits avant le code.** Les 76 cas de niveau domaine et application sont automatisés en PHPUnit, et **tous au rouge**. C'est attendu et assumé : le socle technique est monté demain, et chaque test nomme en clair la classe de production qui lui manque.
+- **Aucune classe de production écrite aujourd'hui**, alors que quelques interfaces vides auraient suffi à réduire le rouge. Cela reviendrait à produire du code hors du cadre de délégation que nous venions d'écrire, et à rendre la matrice verte sans que rien ne fonctionne.
+- **Les tests figent l'API de production.** Six noms viennent de `architecture.md` §3, huit sont fixés par les tests. Ces huit sont à arbitrer en équipe avant la première tâche de demain, faute de quoi l'agent inventera les siens et les 76 tests resteront rouges pour une mauvaise raison.
+- **Trois ports, et trois seulement** : `Horloge`, `Notificateur`, `PrestataireDePaiement`. Le domaine les définit, l'infrastructure les implémente.
+- **Toute la technique tient dans trois fichiers** : `JeuDeDonneesDeReference` porte les chiffres, `MondeDeTest` les préconditions, `CasDapplication` les doublures. Un cas de test ne connaît rien d'autre, ce qui le laisse s'écrire en langage métier. Ce sont aussi les deux seuls points à rebrancher à Doctrine et à `KernelTestCase` quand le socle existera.
+- **Le monde d'un test est monté par les services applicatifs réels**, jamais par un raccourci de test : un monde monté autrement ne prouverait rien.
+- **Les montants ne s'écrivent plus, ils se composent.** Un cas qui attend 160 € l'exprime par « deux adultes et deux enfants », et le domaine calcule. Un montant écrit en dur laisserait un test passer au vert sur une grille tarifaire fausse.
+- Les ruptures de traçabilité passent de **81 à 5**, toutes déclarées : trois cas de bout en bout qui relèvent de Behat et supposent un socle déployé, deux spécifications au statut brouillon.
+
+**Critiques de l'IA acceptées.**
+- Le §9 de la stratégie se contredisait : il annonçait « une classe par spécification » et donnait `SPEC-BOOKING-03` en exemple, dont les huit cas vivent sur trois niveaux → règle corrigée en « une classe par spécification **et par niveau** », le niveau commandant le rangement - `7763349`
+- Écrire les montants en dur dans le montage du monde laissait passer un calcul de tarif faux → le montant est désormais calculé par le domaine, et le cas n'exprime que la composition - `e535d65`
+- Un identifiant de cas écrit dans un commentaire aurait été compté comme un test par `tools/traceability.sh`, qui lit tout `tests/` → les identifiants ne vivent que dans les noms de méthode. Vérifié : le script ne remonte que les 76 vrais noms - `cdacd6a`
+- `CASE-BOOKING-16` annonçait « une réservation dauphins de 60 € pour 1 adulte et 1 enfant », soit 80 € au tarif de référence, et un surplus perdu de 90 € au lieu de 70 € → cas corrigé. L'écart n'apparaissait qu'en posant le chiffre dans un test - `5645879`
+
+**Critiques de l'IA refusées, et pourquoi.**
+- Aucune aujourd'hui, et la raison est structurelle plutôt que flatteuse : les arbitrages de conception ont été rendus à J5 et J6, ordre des paliers, horloge injectable, organisation de `tests/`. La journée a consisté à les exécuter. Le seul jugement de l'équipe portait sur le grain des commits, et il a servi, voir la rubrique suivante.
+
+**Erreurs produites par l'IA et détectées.**
+- Le plan de commit désignait les fichiers **par motif** plutôt que par la liste réelle des cas. Le premier commit du dernier lot a ainsi emporté quatre classes qui appartenaient à d'autres commits, dont trois du domaine ADMIN, en laissant leurs quatre fichiers de cas derrière lui. Un même plan annonçait par ailleurs « quatorze cas » pour un lot qui en contenait dix → **repéré par l'équipe en demandant la liste exacte des cas de chaque commit, avant de pousser**. Corrigé par un `git reset HEAD~1`, aucun commit n'étant encore parti, puis refait en sept commits vérifiés un par un.
+- Le test de `CASE-CANCEL-05` attendait 160 € pour deux adultes et un enfant en sortie dauphins, soit 130 € au tarif de référence. L'erreur était invisible tant que le montant était écrit à la main → repérée en passant aux montants composés, corrigée en ajustant la composition - `78c4c11`
+
+**Ce qui a été généré aujourd'hui.**
+- 25 plans de délégation, `docs/delegation-SPEC-*.md`, 81 tâches - `4eee4a4` à `8f07933`, `d78a0b3`
+- `composer.json`, `phpunit.xml.dist`, deux suites de test - `c94145e`
+- Socle de test : `tests/JeuDeDonneesDeReference.php`, `tests/MondeDeTest.php`, `tests/CasDapplication.php`, `tests/Doublures/` - `cdacd6a`, `e535d65`, `6f344ae`
+- 76 tests PHPUnit répartis en 36 classes, `tests/Domaine/` et `tests/Application/` - `e949c9d`, `0e68db7`, `6cbc389`, `5645879`, `33c3dc1`, `f5ca249`, `ea059ab`, `065c7f2`, `210b017`, `204553c`
+- `docs/strategie-de-test.md` §9 corrigé, `docs/traceability-trous.md`, `docs/traceability.md` régénérée - `7763349`, `ba62a7c`, `1f43e88`
+
+**Questions ouvertes pour le client.**
+- **Le texte des trois messages automatiques** devient bloquant pour le contenu, et non plus seulement pour la rédaction : les tests vérifient aujourd'hui qu'un message part, sur quel canal, à quel instant, avec quelle langue et quelle prévision, mais aucun ne vérifie ce qu'il dit. Le jour où le texte arrivera, il faudra étendre ces tests.
+- **Le fuseau horaire du lieu d'exploitation** n'a jamais été explicité. Les cas sont tous écrits en heure locale et le code de test porte une constante unique, aujourd'hui neutre, à changer quand le client répondra. Toutes nos règles étant horaires, c'est le point le plus silencieusement risqué du projet.
+- Le nom exact de la plateforme d'envoi, suspendu aux trois vérifications d'ouverture de compte.
+- Les neuf autres questions du §11, inchangées.
