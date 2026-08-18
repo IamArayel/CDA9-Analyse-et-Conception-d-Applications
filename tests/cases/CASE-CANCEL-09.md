@@ -4,7 +4,7 @@
 **Critères couverts :** AC-9
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -34,5 +34,5 @@ Et si le créneau est annulé, la confirmation part le 21 juillet à 07h00
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_09_horaires_modifies_appliques_aux_envois_a_venir` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AlerteMeteoTest.php` |
 | Doublures | horloge, envoi de messages |

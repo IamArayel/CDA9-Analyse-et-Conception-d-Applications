@@ -4,7 +4,7 @@
 **Critères couverts :** AC-7
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -35,5 +35,5 @@ Et il est remboursé intégralement
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_07_client_inscrit_apres_alerte_recoit_la_confirmation` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AlerteMeteoTest.php` |
 | Doublures | horloge, envoi de messages, prestataire de paiement |

@@ -4,7 +4,7 @@
 **Critères couverts :** AC-5
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et chaque client est remboursé de la totalité de ce qu'il a payé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_05_annulation_confirmee_deux_heures_avant_le_depart` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AlerteMeteoTest.php` |
 | Doublures | horloge, envoi de messages, prestataire de paiement |

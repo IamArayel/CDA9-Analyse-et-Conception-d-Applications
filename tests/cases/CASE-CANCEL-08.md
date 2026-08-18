@@ -4,7 +4,7 @@
 **Critères couverts :** AC-8
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -35,5 +35,5 @@ Et il ne reste pas en attente de l'horaire programmé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_08_alerte_posee_apres_lheure_part_immediatement` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AlerteMeteoTest.php` |
 | Doublures | horloge, envoi de messages |

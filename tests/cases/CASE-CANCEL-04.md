@@ -4,7 +4,7 @@
 **Critères couverts :** AC-4
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -39,5 +39,5 @@ Alors la sortie a lieu
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_04_sortie_maintenue_aucun_second_message` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AlerteMeteoTest.php` |
 | Doublures | horloge, envoi de messages |

@@ -4,7 +4,7 @@
 **Critères couverts :** AC-6
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -39,5 +39,5 @@ Alors le créneau n'est plus réservable
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_06_creneau_en_alerte_reste_reservable_jusqua_la_fermeture` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AlerteMeteoTest.php` |
 | Doublures | horloge |

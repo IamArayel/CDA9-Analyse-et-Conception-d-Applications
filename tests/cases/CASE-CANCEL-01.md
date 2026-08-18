@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-10
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et les créneaux de 7h et de 14h restent programmés
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_01_alerte_couvre_les_deux_bateaux_du_creneau` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AlerteMeteoTest.php` |
 | Doublures | horloge, envoi de messages |

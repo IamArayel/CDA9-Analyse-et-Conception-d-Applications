@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et il annonce une décision communiquée 2 heures avant le départ
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_03_message_alerte_la_veille_a_18h_sur_deux_canaux` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AlerteMeteoTest.php` |
 | Doublures | horloge, envoi de messages |

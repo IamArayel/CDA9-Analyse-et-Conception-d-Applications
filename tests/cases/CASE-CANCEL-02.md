@@ -4,7 +4,7 @@
 **Critères couverts :** AC-2
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -35,5 +35,5 @@ Et aucun message d'alerte n'est envoyé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_02_aucune_alerte_sans_action_du_gerant` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AlerteMeteoTest.php` |
 | Doublures | horloge, envoi de messages |
