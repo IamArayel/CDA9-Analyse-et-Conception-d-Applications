@@ -4,7 +4,7 @@
 **Critères couverts :** `SPEC-BOOKING-09` AC-8, `SPEC-BOOKING-10` AC-5
 **Type :** erreur
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Et le montant restant dû reste de 70 €
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_19_non_cumul_bon_cadeau_et_avoir` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/BonCadeauTest.php` |
 | Doublures | horloge |

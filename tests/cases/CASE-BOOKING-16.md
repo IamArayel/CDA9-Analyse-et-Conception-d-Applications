@@ -4,21 +4,21 @@
 **Critères couverts :** AC-4
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
-- Une réservation dauphins de 60 € pour 1 adulte et 1 enfant.
+- Une réservation dauphins de 80 € pour 1 adulte et 1 enfant.
 - Un bon cadeau valide et non utilisé de 150 €.
 
 ## Scénario
 
 ```gherkin
-Étant donné une réservation de 60 € et un bon cadeau de 150 €
+Étant donné une réservation de 80 € et un bon cadeau de 150 €
 Quand le bénéficiaire saisit le code au moment de payer
 Alors le montant restant dû est de 0 €
 Et la réservation est confirmée
-Et aucun avoir n'est produit pour les 90 € non consommés
+Et aucun avoir n'est produit pour les 70 € non consommés
 Et le code ne peut plus servir
 ```
 
@@ -38,5 +38,5 @@ Et le code ne peut plus servir
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_16_surplus_du_bon_cadeau_est_perdu` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/BonCadeauTest.php` |
 | Doublures | prestataire de paiement, horloge |

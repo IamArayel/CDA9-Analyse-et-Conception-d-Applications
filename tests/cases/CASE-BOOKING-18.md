@@ -4,7 +4,7 @@
 **Critères couverts :** AC-6
 **Type :** limite
 **Niveau :** domaine
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Alors il est refusé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_18_bon_cadeau_expire_le_lendemain_de_lanniversaire` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Domaine/ValiditeDunCodeTest.php` |
 | Doublures | horloge |

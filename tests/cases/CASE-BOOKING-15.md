@@ -4,7 +4,7 @@
 **Critères couverts :** AC-2, AC-3
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Alors la réservation est confirmée et le code est marqué utilisé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_15_bon_cadeau_insuffisant_solde_paye_par_carte` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/BonCadeauTest.php` |
 | Doublures | prestataire de paiement, horloge |

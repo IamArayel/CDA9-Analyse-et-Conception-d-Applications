@@ -4,7 +4,7 @@
 **Critères couverts :** AC-5
 **Type :** erreur
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -35,5 +35,5 @@ Et le montant restant dû reste de 130 €
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_17_bon_cadeau_deja_utilise_refuse` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/BonCadeauTest.php` |
 | Doublures | horloge |

@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-7
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Et aucun écran de l'achat ne lui a demandé un type de sortie
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_14_achat_bon_cadeau_delivre_un_code_unique_dun_an` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/BonCadeauTest.php` |
 | Doublures | prestataire de paiement, horloge |
