@@ -4,7 +4,7 @@
 **Critères couverts :** AC-2
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -35,5 +35,5 @@ Et elle passe à l'état « en attente de paiement »
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_01_demande_egale_aux_places_restantes_acceptee` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/CapaciteEtPlacesDisponiblesTest.php` |
 | Doublures | horloge, prestataire de paiement |

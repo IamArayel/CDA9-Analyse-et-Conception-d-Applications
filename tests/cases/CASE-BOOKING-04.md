@@ -4,7 +4,7 @@
 **Critères couverts :** AC-9
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Et un autre client peut la réserver
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_04_immobilisation_expiree_libere_les_places` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/CapaciteEtPlacesDisponiblesTest.php` |
 | Doublures | horloge |

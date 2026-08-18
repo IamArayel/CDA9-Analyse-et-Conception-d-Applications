@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3, AC-8
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -40,5 +40,5 @@ Et il n'a pas atteint l'écran de paiement
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_03_derniere_place_second_client_refuse_avant_paiement` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/CapaciteEtPlacesDisponiblesTest.php` |
 | Doublures | horloge, prestataire de paiement |

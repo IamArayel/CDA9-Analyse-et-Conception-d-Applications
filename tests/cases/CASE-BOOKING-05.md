@@ -4,7 +4,7 @@
 **Critères couverts :** AC-4
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et chacun des 3 clients est remboursé de la totalité de ce qu'il a payé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_05_seuil_non_atteint_annule_et_rembourse` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/CapaciteEtPlacesDisponiblesTest.php` |
 | Doublures | horloge, prestataire de paiement, envoi de messages |

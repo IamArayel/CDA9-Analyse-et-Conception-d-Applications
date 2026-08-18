@@ -4,7 +4,7 @@
 **Critères couverts :** AC-5
 **Type :** limite
 **Niveau :** domaine
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Et aucun remboursement n'est demandé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_06_seuil_exactement_atteint_maintient_la_sortie` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Domaine/SeuilDeMaintienTest.php` |
 | Doublures | horloge |

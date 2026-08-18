@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1
 **Type :** erreur
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Et le motif indiqué est le nombre de places disponibles
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_02_demande_superieure_aux_places_restantes_refusee` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/CapaciteEtPlacesDisponiblesTest.php` |
 | Doublures | horloge |

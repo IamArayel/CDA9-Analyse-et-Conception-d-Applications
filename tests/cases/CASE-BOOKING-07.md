@@ -4,7 +4,7 @@
 **Critères couverts :** AC-6
 **Type :** erreur
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Et le motif est l'indisponibilité du naturaliste
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_07_seconde_sortie_baleines_refusee_sur_le_creneau` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/CapaciteEtPlacesDisponiblesTest.php` |
 | Doublures | horloge |
