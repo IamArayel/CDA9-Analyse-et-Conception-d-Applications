@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Et une nouvelle réservation pour 2 adultes est calculée à 110 €
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_04_tarif_modifie_nimpacte_pas_les_reservations_payees` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/GrilleTarifaireTest.php` |
 | Doublures | horloge |

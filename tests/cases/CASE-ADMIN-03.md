@@ -4,7 +4,7 @@
 **Critères couverts :** AC-2
 **Type :** limite
 **Niveau :** domaine
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Alors il est accepté
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_03_mot_de_passe_non_conforme_refuse` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Domaine/ComplexiteDuMotDePasseTest.php` |
 | Doublures | aucune |

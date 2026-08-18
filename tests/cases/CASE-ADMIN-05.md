@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3
 **Type :** erreur
 **Niveau :** domaine
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -35,5 +35,5 @@ Et la grille reste inchangée
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_05_tarif_negatif_ou_nul_refuse` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Domaine/ValiditeDunTarifTest.php` |
 | Doublures | aucune |

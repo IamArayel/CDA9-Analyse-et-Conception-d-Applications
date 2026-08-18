@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -34,5 +34,5 @@ Et aucune erreur n'est affichée
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_07_export_periode_sans_reservation_document_lisible` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/ExportDuPlanningTest.php` |
 | Doublures | horloge |

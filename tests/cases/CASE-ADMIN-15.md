@@ -4,7 +4,7 @@
 **Critères couverts :** AC-4
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et il reste acquis même si la sortie a finalement lieu
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_15_client_renoncant_apres_alerte_rembourse_en_totalite` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/IssueDannulationClientTest.php` |
 | Doublures | horloge, prestataire de paiement |

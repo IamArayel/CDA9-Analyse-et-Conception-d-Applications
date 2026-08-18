@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et il est proposé pour les sorties dauphins comme pour les sorties baleines
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_10_bateau_cree_apparait_avec_sa_capacite` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/FlotteTest.php` |
 | Doublures | horloge |

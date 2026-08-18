@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3, AC-5
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Alors l'enregistrement est refusé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_14_report_et_remboursement_ne_produisent_aucun_code` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/IssueDannulationClientTest.php` |
 | Doublures | horloge |

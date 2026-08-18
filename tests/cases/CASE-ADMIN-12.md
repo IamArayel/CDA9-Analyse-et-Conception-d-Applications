@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3, AC-4
 **Type :** erreur
 **Niveau :** domaine
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Alors la création est refusée
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_12_nom_pris_ou_capacite_invalide_refuses` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Domaine/CreationDunBateauTest.php` |
 | Doublures | aucune |

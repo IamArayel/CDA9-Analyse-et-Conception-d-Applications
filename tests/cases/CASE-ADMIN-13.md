@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Et il porte un montant de 170 € et une expiration au 20 juillet 2027
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_13_enregistrement_avoir_produit_un_code_dun_an` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/IssueDannulationClientTest.php` |
 | Doublures | horloge |

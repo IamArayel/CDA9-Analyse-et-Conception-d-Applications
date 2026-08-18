@@ -4,7 +4,7 @@
 **Critères couverts :** AC-5
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -34,5 +34,5 @@ Alors la privatisation devient proposée au tarif de 450 €
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_11_bateau_sans_forfait_pas_de_privatisation` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/FlotteTest.php` |
 | Doublures | horloge |

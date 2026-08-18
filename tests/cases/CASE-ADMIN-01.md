@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -34,5 +34,5 @@ Et il y retrouve les tarifs, le planning, les horaires et la flotte
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_01_compte_unique_accede_a_lespace_de_gestion` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AccesALespaceDeGestionTest.php` |
 | Doublures | aucune |

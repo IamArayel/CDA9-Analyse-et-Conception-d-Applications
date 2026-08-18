@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2, AC-3
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Alors les trois créneaux sont de nouveau proposés le 25 décembre
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_08_jours_de_fermeture_par_defaut_et_modifiables` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/JoursDeFermetureTest.php` |
 | Doublures | horloge |

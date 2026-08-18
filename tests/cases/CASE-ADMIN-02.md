@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3, AC-4
 **Type :** erreur
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Alors aucune donnée de gestion n'est affichée
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_02_acces_refuse_sans_session_ou_identifiants_errones` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AccesALespaceDeGestionTest.php` |
 | Doublures | aucune |

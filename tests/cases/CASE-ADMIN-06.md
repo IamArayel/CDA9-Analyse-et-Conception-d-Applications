@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2, AC-4
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et la réservation en attente de paiement n'y figure pas
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_06_export_planning_pdf_groupe_par_creneau` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/ExportDuPlanningTest.php` |
 | Doublures | horloge |

@@ -4,7 +4,7 @@
 **Critères couverts :** AC-4
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Et aucune n'est annulée ni remboursée automatiquement
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_09_fermeture_date_reservee_naffecte_pas_les_reservations` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/JoursDeFermetureTest.php` |
 | Doublures | horloge, prestataire de paiement |
