@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-6
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Et aucun écran ne lui a demandé l'âge d'un enfant
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_20_reservation_une_seule_personne_acceptee` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/FormulaireDeReservationTest.php` |
 | Doublures | horloge |

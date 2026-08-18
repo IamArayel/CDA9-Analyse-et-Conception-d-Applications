@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Et le fait que 12h00 soit passé ne la refuse pas
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_28_validation_avant_midi_paiement_apres_accepte` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/PaiementApresFermetureTest.php` |
 | Doublures | horloge, prestataire de paiement |

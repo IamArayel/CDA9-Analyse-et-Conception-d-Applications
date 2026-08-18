@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2, AC-4
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Et le code est marqué utilisé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_33_avoir_deduit_quel_que_soit_le_type_de_sortie` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AvoirTest.php` |
 | Doublures | prestataire de paiement, horloge |

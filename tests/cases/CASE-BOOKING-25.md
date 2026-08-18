@@ -4,7 +4,7 @@
 **Critères couverts :** AC-4
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Alors les trois créneaux sont proposés, en sortie dauphins
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_25_jour_de_fermeture_aucun_creneau` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/CalendrierDesSortiesTest.php` |
 | Doublures | horloge |

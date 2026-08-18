@@ -4,7 +4,7 @@
 **Critères couverts :** AC-4, AC-7, AC-8
 **Type :** erreur
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -39,5 +39,5 @@ Et le numéro est enregistré sans point, tiret ni espace
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_23_coordonnees_controlees_et_numero_normalise` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/FormulaireDeReservationTest.php` |
 | Doublures | aucune |

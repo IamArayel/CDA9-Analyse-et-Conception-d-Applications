@@ -4,7 +4,7 @@
 **Critères couverts :** AC-4
 **Type :** erreur
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -35,5 +35,5 @@ Et Le Grand Bleu, libre, reste privatisable
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_30_privatisation_refusee_si_places_deja_vendues` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/PrivatisationTest.php` |
 | Doublures | horloge |

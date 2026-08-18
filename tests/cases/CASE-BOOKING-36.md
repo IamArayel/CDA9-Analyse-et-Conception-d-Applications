@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3, AC-4
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et l'affichage passe en anglais
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_36_francais_par_defaut_et_bascule_sans_perte` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/LangueDuParcoursTest.php` |
 | Doublures | aucune |

@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2, AC-3, AC-5
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Et Le Grand Bleu reste réservable au même créneau
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_29_privatisation_bloque_le_bateau_au_forfait` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/PrivatisationTest.php` |
 | Doublures | prestataire de paiement, horloge |

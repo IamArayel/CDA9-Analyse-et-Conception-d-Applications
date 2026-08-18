@@ -4,7 +4,7 @@
 **Critères couverts :** `SPEC-BOOKING-06` AC-3 et AC-4, `SPEC-ADMIN-02` AC-4
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et il est exprimé en euros, y compris pour un client ayant choisi l'anglais
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_32_montant_affiche_egal_au_montant_encaisse` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/MontantFigeTest.php` |
 | Doublures | prestataire de paiement, horloge |

@@ -4,7 +4,7 @@
 **Critères couverts :** AC-5
 **Type :** erreur
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -34,5 +34,5 @@ Et le motif est que les sorties baleines ne sont proposées que du 15 juin au 31
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_26_sortie_baleines_hors_saison_refusee` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/CalendrierDesSortiesTest.php` |
 | Doublures | horloge |
