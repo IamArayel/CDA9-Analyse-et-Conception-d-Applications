@@ -150,8 +150,16 @@ tests/
 ├── Domaine/          PHPUnit, une classe par spécification
 ├── Application/      PHPUnit, une classe par spécification, avec la base
 ├── BoutEnBout/       Behat, un fichier .feature par parcours
-└── Doublures/        horloge figée, paiement, envois
+├── Doublures/        horloge figée, paiement, envois
+├── CasDapplication.php          socle des tests de niveau application
+├── MondeDeTest.php              l'état du monde avant un cas, en vocabulaire métier
+└── JeuDeDonneesDeReference.php  le jeu du §7, construit à un seul endroit
 ```
+
+Les trois fichiers de la racine sont les seuls points de contact entre les cas
+et la technique. `CasDapplication` monte les doublures ; `MondeDeTest` monte
+les préconditions ; `JeuDeDonneesDeReference` porte les chiffres. Un test ne
+connaît rien d'autre, ce qui le laisse s'écrire en langage métier.
 
 **Un outil par niveau**, conformément à `ADR-001` :
 
@@ -161,10 +169,12 @@ tests/
 | Application | PHPUnit | les cas d'usage avec la base, doublures branchées |
 | Bout en bout | Behat | les trois parcours, le scénario Gherkin du cas repris tel quel |
 
-**Une classe de test par spécification, une méthode par cas.**
-`SPEC-BOOKING-03` donne une classe qui contient huit méthodes, une par cas
-de `CASE-BOOKING-01` à `08`. La matrice se remplit alors toute seule, et un
-cas orphelin se voit immédiatement.
+**Une classe de test par spécification et par niveau, une méthode par cas.**
+`SPEC-BOOKING-03` porte huit cas répartis sur trois niveaux : six méthodes
+dans une classe de `tests/Application/`, une dans `tests/Domaine/`, et un
+scénario Behat pour `CASE-BOOKING-08`. Le niveau commande le rangement, la
+spécification commande la classe. La matrice se remplit alors toute seule, et
+un cas orphelin se voit immédiatement.
 
 Le nom de la méthode **contient l'identifiant du cas**, avec des tirets bas :
 
@@ -191,7 +201,8 @@ règles métier, l'unicité du naturaliste et le non-cumul des codes.
 chaque test part de lui. Un chiffre inattendu dans un test signale alors une
 régression, pas un jeu de données différent.
 
-**Exécution** : `php bin/phpunit` pour les deux premiers niveaux,
-`vendor/bin/behat` pour le troisième. Les deux commandes doivent passer avant
+**Exécution** : `vendor/bin/phpunit` pour les deux premiers niveaux,
+`vendor/bin/behat` pour le troisième. La commande deviendra `php bin/phpunit`
+le jour où le pont PHPUnit de Symfony entrera dans le projet. Les deux commandes doivent passer avant
 tout commit de fin de journée, au même titre que
 `tools/traceability.sh --check`.
