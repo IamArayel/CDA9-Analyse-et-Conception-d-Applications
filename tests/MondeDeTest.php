@@ -11,6 +11,7 @@ use App\Application\CreerReservation;
 use App\Application\EmettreUnAvoir;
 use App\Application\ProgrammerUneSortie;
 use App\Application\ReglerLesParametres;
+use App\Application\SaisirLaPrevisionMeteo;
 use App\Tests\Doublures\EnvoisEnregistres;
 use App\Tests\Doublures\HorlogeFigee;
 use App\Tests\Doublures\PaiementSimule;
@@ -59,7 +60,7 @@ final class MondeDeTest
      * 160 € l'exprime par le nombre d'adultes et d'enfants, pas par le nombre.
      *
      * @param array{nom: string, prenom: string, email: string,
-     *              telephone_mobile: string, langue: string} $client
+     *              telephone_mobile: string, langue: string|null} $client
      *
      * @return string la référence de la réservation
      */
@@ -71,7 +72,7 @@ final class MondeDeTest
     ): string {
         $reservation = $this->reservationImmobilisee($sortie, $client, $adultes, $enfants);
 
-        (new ConfirmerLePaiement($this->horloge, $this->paiement))->executer($reservation);
+        (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))->executer($reservation);
 
         return $reservation;
     }
@@ -81,7 +82,7 @@ final class MondeDeTest
      * payée : ses places sont immobilisées, cf. ADR-003.
      *
      * @param array{nom: string, prenom: string, email: string,
-     *              telephone_mobile: string, langue: string} $client
+     *              telephone_mobile: string, langue: string|null} $client
      *
      * @return string la référence de la réservation
      */
@@ -146,7 +147,7 @@ final class MondeDeTest
             adultes: 1,
         );
         (new AppliquerUnCode())->executer($reservation, $code);
-        (new ConfirmerLePaiement($this->horloge, $this->paiement))->executer($reservation);
+        (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))->executer($reservation);
 
         return $code;
     }
@@ -168,9 +169,22 @@ final class MondeDeTest
     public function parametresDenvoi(
         ?string $heureDenvoiDeLalerte = null,
         ?int $delaiDeConfirmationEnHeures = null,
+        ?int $delaiDeRappelEnHeures = null,
     ): void {
-        (new ReglerLesParametres())
-            ->executer($heureDenvoiDeLalerte, $delaiDeConfirmationEnHeures);
+        (new ReglerLesParametres())->executer(
+            $heureDenvoiDeLalerte,
+            $delaiDeConfirmationEnHeures,
+            $delaiDeRappelEnHeures,
+        );
+    }
+
+    /**
+     * La prévision météo du jour, saisie par le gérant : l'application
+     * n'interroge aucun service externe, cf. SPEC-CANCEL-05.
+     */
+    public function previsionMeteo(string $jour, string $prevision): void
+    {
+        (new SaisirLaPrevisionMeteo($this->horloge))->executer($jour, $prevision);
     }
 
     public function messages(): EnvoisEnregistres

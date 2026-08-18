@@ -244,7 +244,7 @@ final class PaiementTest extends CasDapplication
 
     private function confirmerLePaiement(string $reservation): ResultatDePaiement
     {
-        return (new ConfirmerLePaiement($this->horloge, $this->paiement))
+        return (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))
             ->executer($reservation);
     }
 

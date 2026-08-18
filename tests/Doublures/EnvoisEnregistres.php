@@ -39,7 +39,7 @@ final class EnvoisEnregistres implements Notificateur
     /**
      * @var list<array{reservation: string, type: string, canal: string,
      *                 destinataire: string, envoyeLe: DateTimeImmutable,
-     *                 statut: string}>
+     *                 statut: string, donnees: array<string, string>}>
      */
     private array $envois = [];
 
@@ -56,12 +56,20 @@ final class EnvoisEnregistres implements Notificateur
         $this->echecsProgrammes[] = ['canal' => $canal, 'destinataire' => $destinataire];
     }
 
+    /**
+     * Les données variables du message, la prévision météo par exemple. Le
+     * contenu rédactionnel n'est pas fourni par le client et n'est donc pas
+     * vérifié ; ce qui l'est, c'est ce que le message transporte.
+     *
+     * @param array<string, string> $donnees
+     */
     public function envoyer(
         string $referenceDeReservation,
         string $type,
         string $canal,
         string $destinataire,
         DateTimeImmutable $envoyeLe,
+        array $donnees = [],
     ): bool {
         $reussi = !$this->estProgrammePourEchouer($canal, $destinataire);
 
@@ -72,6 +80,7 @@ final class EnvoisEnregistres implements Notificateur
             'destinataire' => $destinataire,
             'envoyeLe' => $envoyeLe,
             'statut' => $reussi ? self::STATUT_ENVOYE : self::STATUT_ECHEC,
+            'donnees' => $donnees,
         ];
 
         return $reussi;
@@ -93,7 +102,7 @@ final class EnvoisEnregistres implements Notificateur
      *
      * @return list<array{reservation: string, type: string, canal: string,
      *                    destinataire: string, envoyeLe: DateTimeImmutable,
-     *                    statut: string}>
+     *                    statut: string, donnees: array<string, string>}>
      */
     public function envois(
         ?string $type = null,
@@ -163,7 +172,7 @@ final class EnvoisEnregistres implements Notificateur
      *
      * @return list<array{reservation: string, type: string, canal: string,
      *                    destinataire: string, envoyeLe: DateTimeImmutable,
-     *                    statut: string}>
+     *                    statut: string, donnees: array<string, string>}>
      */
     public function envoisEnEchec(): array
     {
@@ -179,6 +188,18 @@ final class EnvoisEnregistres implements Notificateur
         $envois = $this->envois($type, $canal, $destinataire);
 
         return $envois === [] ? null : $envois[0]['statut'];
+    }
+
+    /**
+     * Les données transportées par un message.
+     *
+     * @return array<string, string>
+     */
+    public function donneesDenvoi(string $type, string $canal, string $destinataire): array
+    {
+        $envois = $this->envois($type, $canal, $destinataire);
+
+        return $envois === [] ? [] : $envois[0]['donnees'];
     }
 
     /** L'instant auquel un message est parti, ou null s'il n'est jamais parti. */

@@ -81,7 +81,7 @@ final class BonCadeauTest extends CasDapplication
         );
 
         $encaissementsAvant = $this->paiement->nombreDencaissements();
-        (new ConfirmerLePaiement($this->horloge, $this->paiement))->executer($reservation);
+        (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))->executer($reservation);
 
         self::assertSame(
             $encaissementsAvant + 1,
@@ -129,7 +129,7 @@ final class BonCadeauTest extends CasDapplication
             'un bon de 150 € couvre une réservation de 80 €',
         );
 
-        (new ConfirmerLePaiement($this->horloge, $this->paiement))->executer($reservation);
+        (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))->executer($reservation);
 
         self::assertSame(
             StatutDeReservation::CONFIRMEE,
