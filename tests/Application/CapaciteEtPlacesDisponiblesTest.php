@@ -173,24 +173,9 @@ final class CapaciteEtPlacesDisponiblesTest extends CasDapplication
         $sortie = $this->sortieDauphinsDuTiKap();
 
         // Trois réservations, cinq participants, un de moins que le seuil.
-        $marie = $this->monde->reservationPayee(
-            $sortie,
-            Reference::CLIENT_MARIE,
-            adultes: 2,
-            montant: Reference::euros(100),
-        );
-        $john = $this->monde->reservationPayee(
-            $sortie,
-            Reference::CLIENT_JOHN,
-            adultes: 2,
-            montant: Reference::euros(100),
-        );
-        $karim = $this->monde->reservationPayee(
-            $sortie,
-            Reference::CLIENT_KARIM,
-            adultes: 1,
-            montant: Reference::euros(50),
-        );
+        $marie = $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $john = $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 2);
+        $karim = $this->monde->reservationPayee($sortie, Reference::CLIENT_KARIM, adultes: 1);
 
         $this->horloge->nousSommesLe('2026-07-19 10:00');
         (new ControlerSeuilDeMaintien($this->horloge, $this->paiement, $this->messages))
@@ -205,9 +190,9 @@ final class CapaciteEtPlacesDisponiblesTest extends CasDapplication
             $this->paiement->nombreDeRemboursements(),
             'chacun des trois clients est remboursé',
         );
-        self::assertSame(Reference::euros(100), $this->paiement->montantRembourse($marie));
-        self::assertSame(Reference::euros(100), $this->paiement->montantRembourse($john));
-        self::assertSame(Reference::euros(50), $this->paiement->montantRembourse($karim));
+        self::assertSame(Reference::prixDauphins(2), $this->paiement->montantRembourse($marie));
+        self::assertSame(Reference::prixDauphins(2), $this->paiement->montantRembourse($john));
+        self::assertSame(Reference::prixDauphins(1), $this->paiement->montantRembourse($karim));
         self::assertFalse(
             $this->creneauDeReference()->estReservable(),
             'le créneau n\'est plus proposé à la réservation',
