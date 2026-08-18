@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2, AC-3
 **Type :** limite
 **Niveau :** domaine
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -40,5 +40,5 @@ Alors seule la sortie dauphins est proposée
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_24_saison_baleines_bornes_incluses` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Domaine/OffreDeCreneauxTest.php` |
 | Doublures | horloge |

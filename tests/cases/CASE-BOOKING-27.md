@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2, AC-4
 **Type :** limite
 **Niveau :** domaine
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -41,5 +41,5 @@ Alors il ne l'est plus
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_27_fermeture_des_creneaux_a_midi` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Domaine/FermetureDesReservationsTest.php` |
 | Doublures | horloge |

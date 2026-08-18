@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3, AC-6
 **Type :** erreur
 **Niveau :** domaine
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Alors il est refusé car sa validité d'un an est dépassée
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_34_avoir_utilise_ou_expire_refuse` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Domaine/ValiditeDunAvoirTest.php` |
 | Doublures | horloge |

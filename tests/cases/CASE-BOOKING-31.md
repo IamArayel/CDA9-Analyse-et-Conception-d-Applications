@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-2
 **Type :** nominal
 **Niveau :** domaine
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Alors il est de 130 €
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_31_montant_selon_la_grille_du_type_de_sortie` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Domaine/CalculDuMontantTest.php` |
 | Doublures | aucune |

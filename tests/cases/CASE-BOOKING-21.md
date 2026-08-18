@@ -4,7 +4,7 @@
 **Critères couverts :** AC-2, AC-3
 **Type :** erreur
 **Niveau :** domaine
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et le motif est qu'un adulte au moins est requis dès qu'un enfant est déclaré
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_21_reservation_sans_participant_ou_sans_adulte_refusee` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Domaine/CompositionDeLaReservationTest.php` |
 | Doublures | aucune |
