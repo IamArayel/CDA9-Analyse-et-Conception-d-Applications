@@ -42,28 +42,28 @@ une exigence que plus aucune spécification ne reprend · un cas de test utilis�
 
 | SPEC | REQ | Source | Cas de test | Tests | Commits |
 |---|---|---|---|---|---|
-| `SPEC-ADMIN-01` | `REQ-031`, `REQ-032`, `REQ-034`, `REQ-104` | `CR-02/Q03`, `CR-02/Q10`, `déduit` | `CASE-ADMIN-01`, `CASE-ADMIN-02`, `CASE-ADMIN-03` | — | `3877256` |
+| `SPEC-ADMIN-01` | `REQ-031`, `REQ-032`, `REQ-034`, `REQ-104` | `CR-02/Q03`, `CR-02/Q10`, `déduit` | `CASE-ADMIN-01`, `CASE-ADMIN-02`, `CASE-ADMIN-03` | — | `876412a`, `3877256` |
 | `SPEC-ADMIN-02` | `REQ-016`, `REQ-028` | `CR-01/Q07`, `CR-02/Q03` | `CASE-ADMIN-04`, `CASE-ADMIN-05`, `CASE-BOOKING-32` | — | `ba29c7a`, `ab844db` |
-| `SPEC-ADMIN-03` | `REQ-029` | `CR-02/Q03` | `CASE-ADMIN-06`, `CASE-ADMIN-07` | — | `277679f` |
+| `SPEC-ADMIN-03` | `REQ-029` | `CR-02/Q03` | `CASE-ADMIN-06`, `CASE-ADMIN-07` | — | `e34934b`, `277679f` |
 | `SPEC-ADMIN-04` | `REQ-038`, `REQ-039` | `CR-03/Q01` | `CASE-ADMIN-08`, `CASE-ADMIN-09` | — | `036f3f4`, `6195bfd` |
-| `SPEC-ADMIN-05` | `REQ-041` | `CR-03/Q06` | `CASE-ADMIN-10`, `CASE-ADMIN-11`, `CASE-ADMIN-12` | — | `1ef9ddd` |
+| `SPEC-ADMIN-05` | `REQ-041` | `CR-03/Q06` | `CASE-ADMIN-10`, `CASE-ADMIN-11`, `CASE-ADMIN-12` | — | `2e21f71`, `1ef9ddd` |
 | `SPEC-ADMIN-06` | `REQ-019`, `REQ-050`, `REQ-056` | `CR-01/Q13`, `CR-03/Q05`, `CR-05/Q10` | `CASE-ADMIN-13`, `CASE-ADMIN-14`, `CASE-ADMIN-15` | — | `548ad16`, `51dba2a` |
-| `SPEC-BOOKING-01` | `REQ-001`, `REQ-008`, `REQ-009`, `REQ-015`, `REQ-036` | `CR-01/Q02`, `CR-02/Q02`, `CR-02/Q12`, `CR-02/Q18` | `CASE-BOOKING-20`, `CASE-BOOKING-21`, `CASE-BOOKING-22`, `CASE-BOOKING-23` | — | `27aa920`, `89943cf`, `db1251e` |
-| `SPEC-BOOKING-02` | `REQ-010`, `REQ-011`, `REQ-038` | `CR-01/Q05`, `CR-03/Q01` | `CASE-BOOKING-24`, `CASE-BOOKING-25`, `CASE-BOOKING-26` | — | `6ef0ea9` |
-| `SPEC-BOOKING-03` | `REQ-002`, `REQ-003`, `REQ-004`, `REQ-007`, `REQ-033`, `REQ-059` | `CR-01/Q01`, `CR-01/Q02`, `CR-01/Q08`, `CR-02/Q10`, `CR-02/Q16`, `déduit` | `CASE-BOOKING-01`, `CASE-BOOKING-02`, `CASE-BOOKING-03`, `CASE-BOOKING-04`, `CASE-BOOKING-05`, `CASE-BOOKING-06`, `CASE-BOOKING-07`, `CASE-BOOKING-08` | — | `bee544a` |
-| `SPEC-BOOKING-04` | `REQ-005` | `CR-01/Q09` | `CASE-BOOKING-27`, `CASE-BOOKING-28` | — | `67e6509` |
+| `SPEC-BOOKING-01` | `REQ-001`, `REQ-008`, `REQ-009`, `REQ-015`, `REQ-036` | `CR-01/Q02`, `CR-02/Q02`, `CR-02/Q12`, `CR-02/Q18` | `CASE-BOOKING-20`, `CASE-BOOKING-21`, `CASE-BOOKING-22`, `CASE-BOOKING-23` | — | `9a16808`, `27aa920`, `89943cf`, `db1251e` |
+| `SPEC-BOOKING-02` | `REQ-010`, `REQ-011`, `REQ-038` | `CR-01/Q05`, `CR-03/Q01` | `CASE-BOOKING-24`, `CASE-BOOKING-25`, `CASE-BOOKING-26` | — | `7e7798f`, `6ef0ea9` |
+| `SPEC-BOOKING-03` | `REQ-002`, `REQ-003`, `REQ-004`, `REQ-007`, `REQ-033`, `REQ-059` | `CR-01/Q01`, `CR-01/Q02`, `CR-01/Q08`, `CR-02/Q10`, `CR-02/Q16`, `déduit` | `CASE-BOOKING-01`, `CASE-BOOKING-02`, `CASE-BOOKING-03`, `CASE-BOOKING-04`, `CASE-BOOKING-05`, `CASE-BOOKING-06`, `CASE-BOOKING-07`, `CASE-BOOKING-08` | — | `40462fa`, `bee544a` |
+| `SPEC-BOOKING-04` | `REQ-005` | `CR-01/Q09` | `CASE-BOOKING-27`, `CASE-BOOKING-28` | — | `4eee4a4`, `67e6509` |
 | `SPEC-BOOKING-05` | `REQ-006`, `REQ-014` | `CR-01/Q03`, `CR-01/Q07` | `CASE-BOOKING-29`, `CASE-BOOKING-30` | — | `f376bb8` |
-| `SPEC-BOOKING-06` | `REQ-012`, `REQ-014`, `REQ-015` | `CR-01/Q04`, `CR-01/Q07`, `CR-02/Q02` | `CASE-BOOKING-31`, `CASE-BOOKING-32` | — | `d297463` |
-| `SPEC-BOOKING-07` | `REQ-017`, `REQ-018` | `CR-01/Q10`, `CR-01/Q11` | `CASE-BOOKING-09`, `CASE-BOOKING-10`, `CASE-BOOKING-11`, `CASE-BOOKING-12`, `CASE-BOOKING-13` | — | `0d28879` |
-| `SPEC-BOOKING-08` | `REQ-035`, `REQ-101` | `déduit` | `CASE-BOOKING-37` | — | `8091450` |
-| `SPEC-BOOKING-09` | `REQ-043`, `REQ-044`, `REQ-045`, `REQ-046`, `REQ-047`, `REQ-048`, `REQ-049` | `CR-03/Q07`, `CR-04/Q01` | `CASE-BOOKING-14`, `CASE-BOOKING-15`, `CASE-BOOKING-16`, `CASE-BOOKING-17`, `CASE-BOOKING-18`, `CASE-BOOKING-19` | — | `33656ed`, `deaf28b`, `392a2ab` |
+| `SPEC-BOOKING-06` | `REQ-012`, `REQ-014`, `REQ-015` | `CR-01/Q04`, `CR-01/Q07`, `CR-02/Q02` | `CASE-BOOKING-31`, `CASE-BOOKING-32` | — | `d4567f3`, `d297463` |
+| `SPEC-BOOKING-07` | `REQ-017`, `REQ-018` | `CR-01/Q10`, `CR-01/Q11` | `CASE-BOOKING-09`, `CASE-BOOKING-10`, `CASE-BOOKING-11`, `CASE-BOOKING-12`, `CASE-BOOKING-13` | — | `87891be`, `0d28879` |
+| `SPEC-BOOKING-08` | `REQ-035`, `REQ-101` | `déduit` | `CASE-BOOKING-37` | — | `45cf006`, `8091450` |
+| `SPEC-BOOKING-09` | `REQ-043`, `REQ-044`, `REQ-045`, `REQ-046`, `REQ-047`, `REQ-048`, `REQ-049` | `CR-03/Q07`, `CR-04/Q01` | `CASE-BOOKING-14`, `CASE-BOOKING-15`, `CASE-BOOKING-16`, `CASE-BOOKING-17`, `CASE-BOOKING-18`, `CASE-BOOKING-19` | — | `00e60f8`, `33656ed`, `deaf28b`, `392a2ab` |
 | `SPEC-BOOKING-10` | `REQ-050`, `REQ-051` | `CR-03/Q05`, `CR-04/Q04` | `CASE-BOOKING-19`, `CASE-BOOKING-33`, `CASE-BOOKING-34` | — | `dfee14e`, `deaf28b`, `721ed6e` |
 | `SPEC-BOOKING-11` | `REQ-040`, `REQ-102` | `CR-03/Q02` | `CASE-BOOKING-35`, `CASE-BOOKING-36` | — | `5b321ff` |
-| `SPEC-CANCEL-01` | `REQ-022` | `CR-02/Q05` | `CASE-CANCEL-14`, `CASE-CANCEL-15` | — | `bc37c97`, `4ae1077` |
+| `SPEC-CANCEL-01` | `REQ-022` | `CR-02/Q05` | `CASE-CANCEL-14`, `CASE-CANCEL-15` | — | `369540d`, `bc37c97`, `4ae1077` |
 | `SPEC-CANCEL-02` | `REQ-021` | `CR-02/Q04` | `CASE-CANCEL-16`, `CASE-CANCEL-17`, `CASE-CANCEL-18` | — | `8e58d34` |
-| `SPEC-CANCEL-03` | `REQ-004` | `CR-01/Q08` | `CASE-CANCEL-19`, `CASE-CANCEL-20` | — | `41f7eba` |
+| `SPEC-CANCEL-03` | `REQ-004` | `CR-01/Q08` | `CASE-CANCEL-19`, `CASE-CANCEL-20` | — | `dc850b2`, `41f7eba` |
 | `SPEC-CANCEL-04` | `REQ-023`, `REQ-026`, `REQ-058` | `CR-05/Q03`, `CR-05/Q11`, `CR-05/Q12` | `CASE-CANCEL-10`, `CASE-CANCEL-11`, `CASE-CANCEL-12`, `CASE-CANCEL-13` | — | `98a7f23` |
-| `SPEC-CANCEL-05` | `REQ-025`, `REQ-042`, `REQ-057` | `CR-02/Q08`, `CR-03/Q03`, `CR-05/Q02` | `CASE-CANCEL-21`, `CASE-CANCEL-22`, `CASE-CANCEL-23`, `CASE-CANCEL-24` | — | `c7abfe7`, `ab148cc` |
+| `SPEC-CANCEL-05` | `REQ-025`, `REQ-042`, `REQ-057` | `CR-02/Q08`, `CR-03/Q03`, `CR-05/Q02` | `CASE-CANCEL-21`, `CASE-CANCEL-22`, `CASE-CANCEL-23`, `CASE-CANCEL-24` | — | `c6f02a7`, `c7abfe7`, `ab148cc` |
 | `SPEC-CANCEL-06` | `REQ-052`, `REQ-053`, `REQ-054`, `REQ-055`, `REQ-060` | `CR-05/Q01`, `CR-05/Q06`, `CR-05/Q08`, `CR-05/Q16` | `CASE-CANCEL-01`, `CASE-CANCEL-02`, `CASE-CANCEL-03`, `CASE-CANCEL-04`, `CASE-CANCEL-05`, `CASE-CANCEL-06`, `CASE-CANCEL-07`, `CASE-CANCEL-08`, `CASE-CANCEL-09` | — | `cdb26fa` |
 | `SPEC-NFR-01` | `REQ-100` | `déduit` | `CASE-NFR-05` | — | `347a598` |
 | `SPEC-NFR-02` | `REQ-040`, `REQ-102` | `CR-03/Q02` | `CASE-NFR-01`, `CASE-NFR-02` | — | `15d9de4`, `0944f07` |
@@ -94,6 +94,7 @@ n'est pas une faute. Un trou qu'on découvre à notre place en est une.**
 | Quoi | Depuis | Pourquoi | Ce qu'on en fait |
 |---|---|---|---|
 | `SPEC-NFR-05` et `SPEC-NFR-06` sont sans cas de test | J3 | statut brouillon, aucun critère technique : leurs `AC` sont des actions de projet, poser une question au client et consigner sa réponse, pas des comportements logiciels | aucun cas ne sera écrit ; la vérification est de reposer les deux questions au prochain entretien |
+| Quatre spécifications sans plan de délégation | J7 | `SPEC-NFR-01` et `SPEC-NFR-03` n'ont qu'un cas `manuel assumé` et **ne donnent lieu à aucune production** : une mesure de charge et une vérification documentaire, toutes deux faites par l'équipe. `SPEC-NFR-05` et `SPEC-NFR-06` n'ont aucun cas. Rien n'étant confié à l'agent, il n'y a rien à cadrer | aucun plan ne sera écrit ; la distinction avec `SPEC-BOOKING-08`, qui a bien un plan, tient à ce que celle-ci demande du code et n'a que sa vérification manuelle |
 | 3 cas de test sont `manuel assumé` | J6 | rendu multi-support, charge et coût documenté ne se testent pas en continu, motifs au §4 de `docs/strategie-de-test.md` | `CASE-BOOKING-37` avant J10, `CASE-NFR-05` avant la mise en production, `CASE-NFR-06` à la revue croisée de J9 |
 | Les 79 cas automatisables n'ont aucun test | J6 | les cas viennent d'être écrits ; l'automatisation est une tâche de production de l'agent, qui ne peut pas être lancée avant le plan de délégation (README §6bis) | à partir de J7, dans l'ordre de `docs/strategie-de-test.md` §8 |
 | Texte des trois messages automatiques, en français et en anglais | J3 | jamais fourni par le client, ni pour le rappel, ni pour l'alerte, ni pour la confirmation d'annulation (`CR-05/Q15`) | reposé au prochain entretien ; sans lui, `SPEC-CANCEL-05` et `SPEC-CANCEL-06` ne sont testables que sur leur déclenchement, pas sur leur contenu |
