@@ -4,7 +4,7 @@
 **Critères couverts :** AC-4
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et les places ne sont décomptées qu'une fois
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_11_double_soumission_un_seul_debit` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/PaiementTest.php` |
 | Doublures | prestataire de paiement, horloge |

@@ -4,7 +4,7 @@
 **Critères couverts :** AC-7
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -39,5 +39,5 @@ Et la réservation du client B n'est pas affectée
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_13_paiement_apres_expiration_place_vendue_rembourse` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/PaiementTest.php` |
 | Doublures | prestataire de paiement, horloge |

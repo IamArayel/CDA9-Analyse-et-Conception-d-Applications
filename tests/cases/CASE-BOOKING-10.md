@@ -4,7 +4,7 @@
 **Critères couverts :** AC-2
 **Type :** erreur
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et le client n'est pas débité
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_10_paiement_refuse_ne_confirme_ni_ne_decompte` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/PaiementTest.php` |
 | Doublures | prestataire de paiement, horloge |

@@ -4,7 +4,7 @@
 **Critères couverts :** AC-6
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Et aucun appel n'est fait au prestataire de paiement
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_12_montant_du_nul_confirme_sans_paiement_carte` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/PaiementTest.php` |
 | Doublures | prestataire de paiement, horloge |

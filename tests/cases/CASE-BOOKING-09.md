@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-3, AC-5
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et le créneau passe de 6 à 3 places disponibles
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_09_paiement_confirme_decompte_les_places` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/PaiementTest.php` |
 | Doublures | prestataire de paiement, horloge |
