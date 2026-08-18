@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-3, AC-4
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et le gérant n'a passé aucun appel téléphonique
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_10_annulation_previent_par_ecrit_et_rembourse_en_totalite` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AnnulationEtRemboursementTest.php` |
 | Doublures | envoi de messages, prestataire de paiement, horloge |

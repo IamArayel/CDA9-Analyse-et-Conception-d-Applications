@@ -4,7 +4,7 @@
 **Critères couverts :** AC-5
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -37,5 +37,5 @@ Et son client reçoit le message d'annulation
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_12_reservation_non_payee_aucun_remboursement` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AnnulationEtRemboursementTest.php` |
 | Doublures | envoi de messages, prestataire de paiement, horloge |

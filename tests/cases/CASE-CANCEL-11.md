@@ -4,7 +4,7 @@
 **Critères couverts :** AC-2
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -36,5 +36,5 @@ Et le remboursement intégral est la seule issue
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_11_aucun_choix_propose_apres_annulation_gerant` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AnnulationEtRemboursementTest.php` |
 | Doublures | envoi de messages, prestataire de paiement |

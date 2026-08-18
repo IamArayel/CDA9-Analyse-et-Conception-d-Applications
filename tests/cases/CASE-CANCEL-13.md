@@ -4,7 +4,7 @@
 **Critères couverts :** AC-6
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Et l'envoi e-mail en échec est enregistré comme tel
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_CANCEL_13_trace_des_envois_type_canal_et_date` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/AnnulationEtRemboursementTest.php` |
 | Doublures | envoi de messages |
