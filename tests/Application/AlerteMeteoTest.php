@@ -178,7 +178,7 @@ final class AlerteMeteoTest extends CasDapplication
         );
         self::assertSame(
             2,
-            $this->messages->nombreDenvois(),
+            $this->messages->nombreDenvois(EnvoisEnregistres::TYPE_ALERTE_METEO),
             'un seul message par canal a été envoyé à ce client, celui de l\'alerte',
         );
 

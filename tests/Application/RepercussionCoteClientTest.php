@@ -40,11 +40,14 @@ final class RepercussionCoteClientTest extends CasDapplication
         $this->sortie(Reference::CRENEAU_MILIEU_DE_MATINEE);
         $this->sortie(Reference::CRENEAU_APRES_MIDI);
 
+        // Le calendrier propose les créneaux d'une journée ouverte, qu'une
+        // sortie y soit déjà programmée ou non : le client choisit un créneau,
+        // la sortie suit. Ce cas vérifie ce que l'alerte et l'annulation y
+        // changent, pas la composition de la liste, qui relève de
+        // SPEC-BOOKING-02.
         $this->horloge->nousSommesLe('2026-07-19 09:00');
-        self::assertSame(
-            [Reference::CRENEAU_MILIEU_DE_MATINEE, Reference::CRENEAU_APRES_MIDI],
-            $this->creneauxProposes(),
-        );
+        self::assertContains(Reference::CRENEAU_MILIEU_DE_MATINEE, $this->creneauxProposes());
+        self::assertContains(Reference::CRENEAU_APRES_MIDI, $this->creneauxProposes());
 
         ($this->service(MettreEnAlerte::class))
             ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_APRES_MIDI);
@@ -64,10 +67,15 @@ final class RepercussionCoteClientTest extends CasDapplication
         ($this->service(AnnulerCreneau::class))
             ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
 
-        self::assertSame(
-            [Reference::CRENEAU_APRES_MIDI],
+        self::assertNotContains(
+            Reference::CRENEAU_MILIEU_DE_MATINEE,
             $this->creneauxProposes(),
             'le créneau annulé n\'est plus proposé à la réservation',
+        );
+        self::assertContains(
+            Reference::CRENEAU_APRES_MIDI,
+            $this->creneauxProposes(),
+            'celui qui est seulement en alerte reste proposé',
         );
     }
 
