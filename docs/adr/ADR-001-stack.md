@@ -76,6 +76,21 @@ d'admissibilité n°1 non rempli par l'équipe.)*
 Symfony/PHP + MySQL, paiement délégué à Stripe, hébergement mutualisé
 Hostinger.
 
+**Versions épinglées à J8 (2026-08-19)**, au moment de monter le socle. Elles
+n'étaient pas fixées à J2, faute de savoir ce que le modèle de données
+exigerait ; elles le sont maintenant.
+
+| Élément | Version | Ce qui la contraint |
+|---|---|---|
+| PHP | 8.4 | extensions `pdo_mysql`, `intl`, `mbstring` requises |
+| Symfony | 7.x | aucune contrainte basse propre au projet, voir `ADR-005` |
+| MySQL | 9.3 | contraintes `CHECK` réellement appliquées à partir de 8.0.16, cf. `ADR-002` |
+| PHPUnit | 11.x | déjà en place depuis J7 |
+
+Le composant d'horloge de Symfony **n'est pas utilisé** : le domaine définit sa
+propre interface `Horloge` (`ADR-005`). Aucune version minimale de framework
+n'en découle, contrairement à ce que l'ADR laissait supposer à J6.
+
 ## 6. Raisons
 
 Les trois développeurs pratiquent déjà Symfony/PHP, ce qui garantit une

@@ -97,10 +97,12 @@ toute l'application.
   schéma : elle repose sur une colonne générée, dont le rôle est documenté
   dans `mcd-mld.md` §7 et en note du diagramme `uml/mld.puml`.
 - Les contraintes `CHECK` supposent **MySQL 8.0.16 ou plus**, ou MariaDB
-  10.2 ou plus. La version exacte fournie par Hostinger doit être vérifiée
-  **avant la première migration** : si elle est antérieure, le non-cumul et
-  les bornes de participants redescendent dans la couche applicative, et
-  cette conséquence doit alors être écrite dans `architecture.md` §5.
+  10.2 ou plus. **Vérifié à J8 sur l'environnement de développement, avant la
+  première migration : MySQL 9.3.** Le non-cumul et les bornes de participants
+  restent donc portés par la base. La version fournie par Hostinger reste à
+  contrôler à l'ouverture de l'hébergement : si elle était antérieure, ces
+  deux règles redescendraient dans la couche applicative et la conséquence
+  serait à écrire dans `architecture.md` §5.
 - Le verrouillage pessimiste sérialise les confirmations de paiement d'un
   même créneau. C'est sans effet à la volumétrie attendue (`REQ-100`), et ce
   serait le premier point à mesurer si elle augmentait.

@@ -96,10 +96,11 @@ bout.
   inexécutables.
 - **Une interface de plus** dans le domaine, et deux implémentations dans
   l'infrastructure.
-- **Le composant d'horloge du framework suppose une version minimale** qui
-  n'est pas fixée dans `ADR-001`. À vérifier avant la première tâche confiée
-  à l'agent ; à défaut, une interface écrite à la main suffit, l'idée ne
-  dépend d'aucune bibliothèque.
+- **Aucune version minimale de framework n'en découle.** Le point était laissé
+  ouvert à J6, à vérifier avant la première tâche confiée à l'agent. Vérifié à
+  J8 : les 76 tests écrits à J7 s'appuient sur `App\Domaine\Horloge`, une
+  interface écrite à la main, et non sur le composant d'horloge du framework.
+  L'idée ne dépend d'aucune bibliothèque, et la contrainte de version tombe.
 
 ## Ce qui nous ferait revenir dessus
 
