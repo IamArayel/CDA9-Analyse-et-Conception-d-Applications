@@ -761,3 +761,100 @@ une exigence `Must`.
 - Le texte des trois messages automatiques, toujours pas fourni. Des gabarits
   provisoires sont écrits, ne disant que ce que les spécifications
   établissent.
+
+### J8, second créneau - la descente du CR-06
+
+Le sixième entretien est arrivé en fin d'après-midi. Plutôt que de le laisser
+pour le lendemain, l'équipe a fait descendre le changement **le soir même**,
+du cahier des charges jusqu'aux tests. Ce qui suit s'ajoute donc à la journée
+ci-dessus, et non à J9.
+
+**Décisions.**
+- **La chaîne descend, le code ne bouge pas.** Cahier des charges v6, dix
+  spécifications, modèle de données, UML, `ADR-006`, 91 cas de test et
+  85 tests. Le code reste en v5, et le lot qui le mettra à jour est
+  conditionné à un **point d'arrêt le 21/08 à 09h00**. Trois arguments, écrits
+  au §9 de `impact-CR-004.md` : trois questions client sans réponse, douze
+  tests verts qui deviendraient faux, et un barème qui note la chaîne
+  documentaire 30 % contre 12 % pour le code.
+- **Trois hypothèses d'équipe** rendent la rédaction possible malgré les
+  questions ouvertes : l'acompte est retenu en totalité en deçà de 24 heures,
+  la part d'acompte excédant la commission est remboursée, et la fenêtre de
+  paiement est uniforme sans exception pour une réservation tardive. Toutes
+  trois sont sourcées `déduit` et reposées au §11.
+- **Une table plutôt que trois colonnes.** `PAIEMENT` porte les deux
+  transactions et l'historique des pointages. Trois colonnes sur `reservation`
+  auraient dit où en est une réservation, pas comment on y est arrivé, et
+  `REQ-113` exige qu'un pointage annulé laisse une trace.
+- **Les tests v6 sont écrits avant le code**, comme les 76 premiers l'ont été
+  à J7. 21 tests rouges sur la branche `feat-modification-acompte`, qui ne
+  rejoindra `main` qu'au vert.
+
+**Critiques de l'IA acceptées.**
+- Les cas de test étaient repris en v6 pendant que leurs tests restaient en
+  v5 : **douze tests passaient au vert en affirmant le contraire de leur
+  cas**. L'agent a signalé que c'était le seul artefact activement trompeur du
+  dépôt → les 17 assertions concernées ont été reprises le soir même -
+  `8baf585`
+- `CASE-BOOKING-39` passait aussi bien en v5 qu'en v6, donc ne prouvait rien →
+  assertion ajoutée sur le solde restant dû du sixième inscrit - `581f581`
+- Le plafonnement de la retenue n'était défini que dans une tranche du barème
+  sur trois ; dans les deux autres, l'acompte excède la commission et une part
+  revient au client → `CASE-ADMIN-16` exerce les deux sens, et la question 19
+  est posée au client - `8e50b77`
+- `reservationPayee` était devenue un nom faux, le client ne payant plus que
+  30 % → renommée `reservationConfirmee`, 52 occurrences - `8baf585`
+
+**Critiques de l'IA refusées, et pourquoi.**
+- **Prévenir le client qu'un solde lui reste dû.** L'agent a relevé qu'aucun
+  message ne le lui dira, alors que le rappel part précisément à l'ouverture
+  de la fenêtre de paiement. Refusé : le gérant l'a demandé deux fois,
+  `CR-06/Q16` et `Q17`. La conséquence est écrite dans la règle de
+  `SPEC-BOOKING-12`, elle n'est pas corrigée à sa place.
+- **Interdire le pointage d'un solde après le départ de la sortie.** Refusé :
+  un jour chargé, le gérant régularise au retour, et le lui interdire
+  produirait des réservations éternellement non soldées. Écrit en cas limite 6
+  de `SPEC-ADMIN-07`.
+
+**Erreurs produites par l'IA et détectées.**
+- L'agent a affirmé qu'une réservation à moins de 24 heures était impossible
+  sur les créneaux de 7h et 10h. **Faux**, et il s'en est aperçu en rédigeant
+  `CR-06` : pour un départ à 7h, la fermeture à midi la veille tombe 19 heures
+  avant, la fenêtre existe et fait cinq heures. Corrigé avant que l'analyse
+  d'impact ne s'appuie dessus.
+- L'agent a d'abord recommandé de **ne pas descendre la chaîne**, puis s'est
+  contredit une heure plus tard en constatant que la branche existait déjà et
+  que l'ordre de la chaîne servait de filet. L'équipe a tranché sur la seconde
+  version, mais le revirement est noté : une recommandation rendue trop vite
+  n'avait pas pesé le dépôt réel.
+- `CASE-BOOKING-39` a été écrit avec l'ancien constructeur de
+  `ControlerSeuilDeMaintien`, à trois arguments → repéré par un rouge dont le
+  message ne parlait pas de la v6 mais d'un `TypeError`, corrigé - `581f581`
+- Un bloc de code parasite a été laissé dans `SoldeDeLaReservationTest`, un
+  `new AnnulerCreneau(...)` inutile issu d'une réécriture → repéré au contrôle
+  de syntaxe, retiré avant commit.
+- Deux artefacts datés **J9** alors que tout s'est passé à J8, `ADR-006` et la
+  ligne des 21 tests rouges → corrigés en écrivant cette entrée.
+
+**Ce qui a été généré aujourd'hui, second créneau.**
+- `docs/compte-rendu-entretien-06.md`, `docs/impact-CR-004.md` - `58d08f8`,
+  `49acdc0`
+- Cahier des charges v6, `REQ-108` à `REQ-119`, `R-25` à `R-30`, six questions
+  au §11 - `1c9bfb2` et le commit qui le précède
+- `SPEC-BOOKING-07` refondue, `SPEC-BOOKING-12` et `SPEC-ADMIN-07` créées, sept
+  spécifications reprises - `916d0a6`, `be32351`, `2447e1d`
+- Table `PAIEMENT` au MCD et au MLD, `etats-reservation.puml`, séquence de
+  réservation en v2, `ADR-006` - `d11260b`, `73037f5`, `65371ba`, `8442411`
+- Douze cas repris, neuf créés, quatre étendus - `c2eddea`, `8e50b77`,
+  `48a54b8`
+- Dix-sept assertions reprises, neuf tests créés - `8baf585`, `581f581`
+- Déclarations de traçabilité - `0237557`, `ad83b49`
+
+**Questions ouvertes pour le client.**
+- Les huit questions du §8 de `CR-06`, dont trois sont couvertes par une
+  hypothèse d'équipe et cinq restent entières.
+- La plus coûteuse est la facture unique acquittée, `REQ-119`, qui contredit
+  `REQ-018` : un solde encaissé au quai est invisible du prestataire, donc
+  d'une facture qu'il émettrait.
+- La « boutique » évoquée au point 4 de l'entretien reste un lieu inconnu de
+  la mission.
