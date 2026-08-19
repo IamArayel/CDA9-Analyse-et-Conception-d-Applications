@@ -6,9 +6,12 @@
 **Niveau :** application
 **Statut :** automatisé
 
+> **Repris en v6, 2026-08-19.** `CR-06` remplace le paiement intégral par un
+> acompte. Le comportement vérifié ne change pas ; les montants, si.
+
 ## Préconditions
 
-- Une réservation en attente de paiement de 130 €.
+- Une réservation en attente de paiement de 130 €, dont **39 € d'acompte**.
 - Le client valide deux fois, par double clic ou par retour arrière du navigateur.
 
 ## Scénario
@@ -16,14 +19,14 @@
 ```gherkin
 Étant donné une réservation en attente de paiement de 130 €
 Quand le client soumet son paiement deux fois de suite
-Alors un seul encaissement de 130 € est demandé au prestataire
+Alors un seul encaissement de 39 € est demandé au prestataire
 Et une seule réservation confirmée existe
 Et les places ne sont décomptées qu'une fois
 ```
 
 ## Résultat attendu
 
-- Un seul appel d'encaissement, pas deux.
+- Un seul appel d'encaissement de l'acompte, pas deux.
 - Une seule réservation confirmée pour ce client sur ce créneau.
 - Le créneau ne perd que le nombre de places de la réservation, pas le double.
 

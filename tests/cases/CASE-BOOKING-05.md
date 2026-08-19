@@ -6,6 +6,9 @@
 **Niveau :** application
 **Statut :** automatisé
 
+> **Repris en v6, 2026-08-19.** `CR-06` remplace le paiement intégral par un
+> acompte. Le comportement vérifié ne change pas ; les montants, si.
+
 ## Préconditions
 
 - Sortie dauphins du 20 juillet à 10h sur le Ti Kap.
@@ -18,13 +21,14 @@
 Et que nous sommes le 19 juillet à 10h00
 Quand le contrôle du seuil de maintien s'exécute
 Alors la sortie passe à l'état « annulée »
-Et chacun des 3 clients est remboursé de la totalité de ce qu'il a payé
+Et chacun des 3 clients est remboursé de la totalité de ce qu'il a versé
 ```
 
 ## Résultat attendu
 
 - La sortie est à l'état « annulée ».
-- Trois remboursements sont demandés au prestataire, chacun égal au montant payé.
+- Trois remboursements sont demandés au prestataire, chacun égal à **l'acompte
+  versé**, et non au montant de la réservation.
 - Le créneau n'est plus proposé à la réservation.
 
 ## Ce que ce cas ne vérifie pas

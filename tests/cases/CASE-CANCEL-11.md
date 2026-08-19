@@ -6,10 +6,13 @@
 **Niveau :** application
 **Statut :** automatisé
 
+> **Repris en v6, 2026-08-19.** `CR-06` remplace le paiement intégral par un
+> acompte. Le comportement vérifié ne change pas ; les montants, si.
+
 ## Préconditions
 
 - Créneau du 20 juillet à 10h, annulé par le gérant.
-- Une réservation confirmée payée 260 €.
+- Une réservation confirmée d'un montant de 260 €, dont 78 € d'acompte versés.
 
 ## Scénario
 
@@ -17,7 +20,7 @@
 Étant donné un créneau annulé par le gérant
 Quand le gérant consulte la fiche du client concerné
 Alors aucun écran ne lui propose d'enregistrer un report, un avoir ou un remboursement
-Et le remboursement intégral est la seule issue
+Et le remboursement de ce qu'il a versé est la seule issue
 ```
 
 ## Résultat attendu

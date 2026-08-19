@@ -6,6 +6,9 @@
 **Niveau :** application
 **Statut :** automatisé
 
+> **Repris en v6, 2026-08-19.** `CR-06` remplace le paiement intégral par un
+> acompte. Le comportement vérifié ne change pas ; les montants, si.
+
 ## Préconditions
 
 - Créneau du 20 juillet à 14h, fermeture à 12h00 le jour même.
