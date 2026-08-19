@@ -5,11 +5,19 @@
 -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
+         bootstrap="tests/bootstrap.php"
          cacheDirectory=".phpunit.cache"
          colors="true"
          displayDetailsOnTestsThatTriggerWarnings="true"
          failOnWarning="true">
+    <php>
+        <!-- Sans cela, tests/bootstrap.php ne charge pas .env.test et le noyau
+             de test reste introuvable. -->
+        <env name="APP_ENV" value="test" force="true"/>
+        <ini name="display_errors" value="1"/>
+        <ini name="error_reporting" value="-1"/>
+    </php>
+
     <testsuites>
         <testsuite name="Domaine">
             <directory>tests/Domaine</directory>

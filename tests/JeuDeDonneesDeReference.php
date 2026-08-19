@@ -68,6 +68,14 @@ final class JeuDeDonneesDeReference
     public const DELAI_DE_CONFIRMATION_EN_HEURES = 2;
 
     /**
+     * Le compte unique de l'espace de gestion. Le mot de passe respecte la
+     * règle de complexité de SPEC-ADMIN-01, et n'est jamais stocké en clair :
+     * le monde de test n'en met en base que le condensat.
+     */
+    public const EMAIL_DU_GERANT = 'gerant@ti-baleine.test';
+    public const MOT_DE_PASSE_DU_GERANT = 'Abc1!def';
+
+    /**
      * Les clients de référence. Le §7 ne les nommait pas ; ils sont ajoutés ici
      * pour que deux tests qui parlent du « premier client » parlent du même.
      */

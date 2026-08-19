@@ -12,9 +12,16 @@ use App\Application\EmettreUnAvoir;
 use App\Application\ProgrammerUneSortie;
 use App\Application\ReglerLesParametres;
 use App\Application\SaisirLaPrevisionMeteo;
-use App\Tests\Doublures\EnvoisEnregistres;
+use App\Domaine\Entite\Bateau;
+use App\Domaine\Entite\Gerant;
+use App\Domaine\Entite\JourDeFermeture;
+use App\Domaine\Entite\Parametre;
+use App\Domaine\Entite\Tarif;
+use App\Domaine\TypeDeSortie;
 use App\Tests\Doublures\HorlogeFigee;
-use App\Tests\Doublures\PaiementSimule;
+use App\Tests\JeuDeDonneesDeReference as Reference;
+use Doctrine\ORM\EntityManagerInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  * L'état du monde avant un cas de test, monté en vocabulaire métier.
@@ -25,16 +32,59 @@ use App\Tests\Doublures\PaiementSimule;
  * créent réellement ces objets, jamais par un raccourci de test : un monde
  * monté autrement ne prouverait rien.
  *
- * C'est aussi le seul endroit à rebrancher au conteneur Symfony et à la base
- * de données quand le socle sera livré.
+ * Seules les **données de référence** sont écrites directement en base : ce
+ * sont des données d'exploitation, pas le produit d'un cas d'usage.
  */
 final class MondeDeTest
 {
     public function __construct(
+        private readonly ContainerInterface $conteneur,
+        private readonly EntityManagerInterface $entites,
         private readonly HorlogeFigee $horloge,
-        private readonly EnvoisEnregistres $messages,
-        private readonly PaiementSimule $paiement,
     ) {
+    }
+
+    /**
+     * Le jeu de données de référence de docs/strategie-de-test.md §7 : la
+     * flotte, les tarifs, les jours de fermeture, le compte du gérant et les
+     * réglages d'envoi.
+     */
+    public function chargerLeJeuDeReference(): void
+    {
+        $this->entites->persist(new Bateau(
+            Reference::TI_KAP,
+            Reference::TI_KAP_CAPACITE,
+            Reference::TI_KAP_FORFAIT_PRIVATISATION,
+        ));
+        $this->entites->persist(new Bateau(
+            Reference::LE_GRAND_BLEU,
+            Reference::LE_GRAND_BLEU_CAPACITE,
+            Reference::LE_GRAND_BLEU_FORFAIT_PRIVATISATION,
+        ));
+
+        $this->entites->persist(new Tarif(
+            TypeDeSortie::BALEINES,
+            Reference::BALEINES_PRIX_ADULTE,
+            Reference::BALEINES_PRIX_ENFANT,
+        ));
+        $this->entites->persist(new Tarif(
+            TypeDeSortie::DAUPHINS,
+            Reference::DAUPHINS_PRIX_ADULTE,
+            Reference::DAUPHINS_PRIX_ENFANT,
+        ));
+
+        foreach (Reference::JOURS_DE_FERMETURE as $jour) {
+            $this->entites->persist(new JourDeFermeture(Reference::instant($jour), true));
+        }
+
+        $this->entites->persist(new Gerant(
+            Reference::EMAIL_DU_GERANT,
+            password_hash(Reference::MOT_DE_PASSE_DU_GERANT, PASSWORD_DEFAULT),
+        ));
+
+        $this->entites->persist(new Parametre());
+
+        $this->entites->flush();
     }
 
     /**
@@ -46,9 +96,9 @@ final class MondeDeTest
         string $jour,
         string $heure,
         string $bateau,
-        string $typeDeSortie = JeuDeDonneesDeReference::SORTIE_DAUPHINS,
+        string $typeDeSortie = TypeDeSortie::DAUPHINS,
     ): string {
-        return (new ProgrammerUneSortie($this->horloge))
+        return $this->service(ProgrammerUneSortie::class)
             ->executer($jour, $heure, $bateau, $typeDeSortie);
     }
 
@@ -72,7 +122,7 @@ final class MondeDeTest
     ): string {
         $reservation = $this->reservationImmobilisee($sortie, $client, $adultes, $enfants);
 
-        (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))->executer($reservation);
+        $this->service(ConfirmerLePaiement::class)->executer($reservation);
 
         return $reservation;
     }
@@ -92,10 +142,9 @@ final class MondeDeTest
         int $adultes,
         int $enfants = 0,
     ): string {
-        $resultat = (new CreerReservation($this->horloge))
-            ->executer($sortie, $client, $adultes, $enfants);
-
-        return $resultat->referenceDeReservation();
+        return $this->service(CreerReservation::class)
+            ->executer($sortie, $client, $adultes, $enfants)
+            ->referenceDeReservation();
     }
 
     /**
@@ -128,8 +177,8 @@ final class MondeDeTest
     {
         $this->horloge->nousSommesLe($jourDachat.' 10:00');
 
-        return (new AcheterUnBonCadeau($this->horloge, $this->paiement))
-            ->executer($montant, JeuDeDonneesDeReference::CLIENT_MARIE);
+        return $this->service(AcheterUnBonCadeau::class)
+            ->executer($montant, Reference::CLIENT_MARIE);
     }
 
     /**
@@ -141,13 +190,9 @@ final class MondeDeTest
     {
         $code = $this->bonCadeauAchete($montant, $jourDachat);
 
-        $reservation = $this->reservationImmobilisee(
-            $sortie,
-            JeuDeDonneesDeReference::CLIENT_MARIE,
-            adultes: 1,
-        );
-        (new AppliquerUnCode())->executer($reservation, $code);
-        (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))->executer($reservation);
+        $reservation = $this->reservationImmobilisee($sortie, Reference::CLIENT_MARIE, adultes: 1);
+        $this->service(AppliquerUnCode::class)->executer($reservation, $code);
+        $this->service(ConfirmerLePaiement::class)->executer($reservation);
 
         return $code;
     }
@@ -161,8 +206,8 @@ final class MondeDeTest
     {
         $this->horloge->nousSommesLe($jourDemission.' 10:00');
 
-        return (new EmettreUnAvoir($this->horloge))
-            ->executer($montant, JeuDeDonneesDeReference::CLIENT_MARIE);
+        return $this->service(EmettreUnAvoir::class)
+            ->executer($montant, Reference::CLIENT_MARIE);
     }
 
     /** Les réglages de l'espace de gestion, cf. SPEC-CANCEL-06 AC-9. */
@@ -171,7 +216,7 @@ final class MondeDeTest
         ?int $delaiDeConfirmationEnHeures = null,
         ?int $delaiDeRappelEnHeures = null,
     ): void {
-        (new ReglerLesParametres())->executer(
+        $this->service(ReglerLesParametres::class)->executer(
             $heureDenvoiDeLalerte,
             $delaiDeConfirmationEnHeures,
             $delaiDeRappelEnHeures,
@@ -184,16 +229,18 @@ final class MondeDeTest
      */
     public function previsionMeteo(string $jour, string $prevision): void
     {
-        (new SaisirLaPrevisionMeteo($this->horloge))->executer($jour, $prevision);
+        $this->service(SaisirLaPrevisionMeteo::class)->executer($jour, $prevision);
     }
 
-    public function messages(): EnvoisEnregistres
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $service
+     *
+     * @return T
+     */
+    private function service(string $service): object
     {
-        return $this->messages;
-    }
-
-    public function paiement(): PaiementSimule
-    {
-        return $this->paiement;
+        return $this->conteneur->get($service);
     }
 }
