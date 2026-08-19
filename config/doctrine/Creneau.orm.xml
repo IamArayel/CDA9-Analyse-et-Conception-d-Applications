@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Domaine\Entite\Creneau" table="creneau">
+        <unique-constraints>
+            <unique-constraint name="uniq_creneau_date_heure" columns="date_creneau,heure_depart"/>
+        </unique-constraints>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+
+        <field name="date" type="date_immutable" column="date_creneau" nullable="false"/>
+        <field name="heureDeDepart" type="time_immutable" column="heure_depart" nullable="false"/>
+    </entity>
+</doctrine-mapping>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Domaine\Entite\Sortie" table="sortie">
+        <unique-constraints>
+            <!-- Un bateau n'est engagé qu'une fois sur un créneau. -->
+            <unique-constraint name="uniq_sortie_creneau_bateau" columns="creneau_id,bateau_id"/>
+            <!-- LA règle du naturaliste unique. La colonne est générée par la
+                 base à partir du type de sortie ; l'index posé dessus est ce
+                 qui empêche deux sorties baleines concurrentes sur un même
+                 créneau, cf. mcd-mld.md §7. -->
+            <unique-constraint name="uniq_sortie_creneau_baleines" columns="creneau_baleines"/>
+        </unique-constraints>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+
+        <field name="typeDeSortie" type="string" column="type_sortie" length="20" nullable="false"/>
+        <field name="formule" type="string" column="formule" length="20" nullable="false"/>
+        <field name="statut" type="string" column="statut" length="20" nullable="false"
+               enum-type="App\Domaine\StatutDeSortie"/>
+        <field name="dateDeMiseEnAlerte" type="datetime_immutable" column="date_alerte" nullable="true"/>
+        <!-- Générée par la base, jamais écrite par le code. -->
+        <field name="creneauBaleines" type="integer" column="creneau_baleines" nullable="true"
+               generated="ALWAYS"/>
+
+        <many-to-one field="creneau" target-entity="App\Domaine\Entite\Creneau">
+            <join-column name="creneau_id" referenced-column-name="id" nullable="false"/>
+        </many-to-one>
+        <many-to-one field="bateau" target-entity="App\Domaine\Entite\Bateau">
+            <join-column name="bateau_id" referenced-column-name="id" nullable="false"/>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

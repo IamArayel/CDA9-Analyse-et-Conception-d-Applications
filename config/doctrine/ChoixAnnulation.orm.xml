@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Domaine\Entite\ChoixAnnulation" table="choix_annulation">
+        <unique-constraints>
+            <!-- Une réservation ne porte qu'une issue : on ne rejoue pas une
+                 annulation (SPEC-ADMIN-06 AC-5). -->
+            <unique-constraint name="uniq_choix_annulation_reservation" columns="reservation_id"/>
+        </unique-constraints>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+
+        <field name="type" type="string" column="type" length="20" nullable="false"
+               enum-type="App\Domaine\IssueDannulation"/>
+        <field name="dateDenregistrement" type="datetime_immutable" column="date_enregistrement" nullable="false"/>
+
+        <many-to-one field="reservation" target-entity="App\Domaine\Entite\Reservation">
+            <join-column name="reservation_id" referenced-column-name="id" nullable="false"/>
+        </many-to-one>
+        <!-- Renseigné pour la seule issue « avoir ». -->
+        <many-to-one field="avoir" target-entity="App\Domaine\Entite\Avoir">
+            <join-column name="avoir_id" referenced-column-name="id" nullable="true"/>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

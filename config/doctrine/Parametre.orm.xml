@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Domaine\Entite\Parametre" table="parametre">
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+
+        <field name="heureDouverture" type="string" column="heure_ouverture" length="5" nullable="false"/>
+        <field name="heureDeFermeture" type="string" column="heure_fermeture" length="5" nullable="false"/>
+        <field name="delaiDeRappelEnHeures" type="smallint" column="delai_rappel_heures" nullable="false"/>
+        <field name="heureDalerte" type="string" column="heure_alerte" length="5" nullable="false"/>
+        <field name="delaiDeConfirmationEnHeures" type="smallint" column="delai_confirmation_heures" nullable="false"/>
+    </entity>
+</doctrine-mapping>

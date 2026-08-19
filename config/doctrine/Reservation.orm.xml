@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Domaine\Entite\Reservation" table="reservation">
+        <unique-constraints>
+            <!-- Usage unique d'un code : un second usage est impossible même
+                 sous double soumission. -->
+            <unique-constraint name="uniq_reservation_bon_cadeau" columns="bon_cadeau_id"/>
+            <unique-constraint name="uniq_reservation_avoir" columns="avoir_id"/>
+        </unique-constraints>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+
+        <field name="nomClient" type="string" column="nom_client" length="80" nullable="false"/>
+        <field name="prenomClient" type="string" column="prenom_client" length="80" nullable="false"/>
+        <field name="email" type="string" column="email" length="180" nullable="false"/>
+        <field name="telephoneMobile" type="string" column="telephone_mobile" length="20" nullable="false"/>
+        <field name="nombreDAdultes" type="smallint" column="nombre_adultes" nullable="false"/>
+        <field name="nombreDEnfants" type="smallint" column="nombre_enfants" nullable="false"/>
+        <!-- En centimes, figé à la validation du formulaire. -->
+        <field name="montant" type="integer" column="montant" nullable="false"/>
+        <field name="langue" type="string" column="langue" length="2" nullable="false"/>
+        <field name="statut" type="string" column="statut" length="30" nullable="false"
+               enum-type="App\Domaine\StatutDeReservation"/>
+        <field name="dateDeCreation" type="datetime_immutable" column="date_creation" nullable="false"/>
+        <!-- Échéance de l'immobilisation, évaluée à la lecture (ADR-003). -->
+        <field name="expireLe" type="datetime_immutable" column="expire_le" nullable="false"/>
+
+        <many-to-one field="sortie" target-entity="App\Domaine\Entite\Sortie">
+            <join-column name="sortie_id" referenced-column-name="id" nullable="false"/>
+        </many-to-one>
+        <many-to-one field="bonCadeau" target-entity="App\Domaine\Entite\BonCadeau">
+            <join-column name="bon_cadeau_id" referenced-column-name="id" nullable="true"/>
+        </many-to-one>
+        <many-to-one field="avoir" target-entity="App\Domaine\Entite\Avoir">
+            <join-column name="avoir_id" referenced-column-name="id" nullable="true"/>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

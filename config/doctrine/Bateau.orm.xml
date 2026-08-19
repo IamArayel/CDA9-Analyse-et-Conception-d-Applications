@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Domaine\Entite\Bateau" table="bateau">
+        <unique-constraints>
+            <unique-constraint name="uniq_bateau_nom" columns="nom"/>
+        </unique-constraints>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+
+        <field name="nom" type="string" column="nom" length="60" nullable="false"/>
+        <field name="capacite" type="smallint" column="capacite" nullable="false"/>
+        <!-- En centimes : aucun montant ne dépend d'un arrondi flottant. -->
+        <field name="forfaitDePrivatisation" type="integer" column="forfait_privatisation" nullable="true"/>
+    </entity>
+</doctrine-mapping>

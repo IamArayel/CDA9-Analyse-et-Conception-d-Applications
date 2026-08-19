@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Domaine\Entite\BonCadeau" table="bon_cadeau">
+        <unique-constraints>
+            <unique-constraint name="uniq_bon_cadeau_code" columns="code"/>
+        </unique-constraints>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+
+        <field name="code" type="string" column="code" length="32" nullable="false"/>
+        <field name="montant" type="integer" column="montant" nullable="false"/>
+        <field name="dateDachat" type="datetime_immutable" column="date_achat" nullable="false"/>
+        <field name="dateDexpiration" type="datetime_immutable" column="date_expiration" nullable="false"/>
+        <field name="statut" type="string" column="statut" length="20" nullable="false"
+               enum-type="App\Domaine\StatutDeCode"/>
+    </entity>
+</doctrine-mapping>
