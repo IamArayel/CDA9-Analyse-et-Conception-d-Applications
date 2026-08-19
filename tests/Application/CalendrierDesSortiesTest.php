@@ -94,6 +94,6 @@ final class CalendrierDesSortiesTest extends CasDapplication
 
     private function journee(string $jour): VueDeJournee
     {
-        return (new ConsulterLeCalendrier($this->horloge))->executer($jour);
+        return ($this->service(ConsulterLeCalendrier::class))->executer($jour);
     }
 }

@@ -38,18 +38,18 @@ final class JoursDeFermetureTest extends CasDapplication
     {
         self::assertSame(
             Reference::JOURS_DE_FERMETURE,
-            (new ConsulterLesJoursDeFermeture($this->horloge))->executer(),
+            ($this->service(ConsulterLesJoursDeFermeture::class))->executer(),
             'le 25 décembre et le 1er janvier sont présents sans saisie',
         );
 
-        (new AjouterUnJourDeFermeture($this->horloge))->executer(self::QUINZE_AOUT);
+        ($this->service(AjouterUnJourDeFermeture::class))->executer(self::QUINZE_AOUT);
         self::assertSame(
             [],
             $this->creneauxProposes(self::QUINZE_AOUT),
             'l\'ajout prend effet le jour même de l\'enregistrement',
         );
 
-        (new RetirerUnJourDeFermeture($this->horloge))->executer('2026-12-25');
+        ($this->service(RetirerUnJourDeFermeture::class))->executer('2026-12-25');
         self::assertCount(
             3,
             $this->creneauxProposes('2026-12-25'),
@@ -72,7 +72,7 @@ final class JoursDeFermetureTest extends CasDapplication
         $marie = $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
         $john = $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 2);
 
-        $resultat = (new AjouterUnJourDeFermeture($this->horloge))->executer(self::QUINZE_AOUT);
+        $resultat = ($this->service(AjouterUnJourDeFermeture::class))->executer(self::QUINZE_AOUT);
 
         self::assertTrue($resultat->estAcceptee());
         self::assertCount(
@@ -84,7 +84,7 @@ final class JoursDeFermetureTest extends CasDapplication
         foreach ([$marie, $john] as $reservation) {
             self::assertSame(
                 StatutDeReservation::CONFIRMEE,
-                (new ConsulterUneReservation($this->horloge))->executer($reservation)->statut(),
+                ($this->service(ConsulterUneReservation::class))->executer($reservation)->statut(),
                 'aucune réservation n\'est annulée automatiquement',
             );
         }
@@ -97,6 +97,6 @@ final class JoursDeFermetureTest extends CasDapplication
     /** @return list<string> */
     private function creneauxProposes(string $jour): array
     {
-        return (new ConsulterLeCalendrier($this->horloge))->executer($jour)->creneauxProposes();
+        return ($this->service(ConsulterLeCalendrier::class))->executer($jour)->creneauxProposes();
     }
 }

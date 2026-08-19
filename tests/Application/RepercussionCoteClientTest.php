@@ -46,7 +46,7 @@ final class RepercussionCoteClientTest extends CasDapplication
             $this->creneauxProposes(),
         );
 
-        (new MettreEnAlerte($this->horloge, $this->messages))
+        ($this->service(MettreEnAlerte::class))
             ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_APRES_MIDI);
 
         self::assertContains(
@@ -55,13 +55,13 @@ final class RepercussionCoteClientTest extends CasDapplication
             'le créneau en alerte reste proposé',
         );
         self::assertTrue(
-            (new ConsulterUnCreneau($this->horloge))
+            ($this->service(ConsulterUnCreneau::class))
                 ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_APRES_MIDI)
                 ->risqueDannulationSignale(),
             'avec le risque signalé',
         );
 
-        (new AnnulerCreneau($this->horloge, $this->messages, $this->paiement))
+        ($this->service(AnnulerCreneau::class))
             ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
 
         self::assertSame(
@@ -86,10 +86,10 @@ final class RepercussionCoteClientTest extends CasDapplication
             adultes: 2,
         );
 
-        (new AnnulerCreneau($this->horloge, $this->messages, $this->paiement))
+        ($this->service(AnnulerCreneau::class))
             ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
 
-        $paiementDeA = (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))
+        $paiementDeA = ($this->service(ConfirmerLePaiement::class))
             ->executer($clientA);
 
         self::assertTrue($paiementDeA->estRefuse());
@@ -104,11 +104,11 @@ final class RepercussionCoteClientTest extends CasDapplication
         );
         self::assertSame(
             StatutDeReservation::ANNULEE,
-            (new ConsulterUneReservation($this->horloge))->executer($clientA)->statut(),
+            ($this->service(ConsulterUneReservation::class))->executer($clientA)->statut(),
             'les places immobilisées par A sont libérées',
         );
 
-        $clientB = (new CreerReservation($this->horloge))
+        $clientB = ($this->service(CreerReservation::class))
             ->executer($sortie, Reference::CLIENT_JOHN, adultes: 1);
 
         self::assertTrue($clientB->estRefusee());
@@ -131,7 +131,7 @@ final class RepercussionCoteClientTest extends CasDapplication
     /** @return list<string> */
     private function creneauxProposes(): array
     {
-        return (new ConsulterLeCalendrier($this->horloge))
+        return ($this->service(ConsulterLeCalendrier::class))
             ->executer(Reference::JOUR_EN_SAISON)
             ->creneauxProposes();
     }

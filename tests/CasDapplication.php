@@ -59,6 +59,24 @@ abstract class CasDapplication extends KernelTestCase
         $this->monde->chargerLeJeuDeReference();
     }
 
+    /**
+     * Le service de cas d'usage sous test, pris dans le conteneur.
+     *
+     * Les cas ne l'instancient pas eux-mêmes : un service applicatif reçoit ses
+     * dépôts, et un `new` dans un test figerait une liste de dépendances que le
+     * cas n'a aucune raison de connaître.
+     *
+     * @template T of object
+     *
+     * @param class-string<T> $service
+     *
+     * @return T
+     */
+    protected function service(string $service): object
+    {
+        return static::getContainer()->get($service);
+    }
+
     protected function tearDown(): void
     {
         if (isset($this->entites) && $this->entites->getConnection()->isTransactionActive()) {

@@ -90,6 +90,6 @@ final class ExportDuPlanningTest extends CasDapplication
 
     private function exporter(string $jour): DocumentImprimable
     {
-        return (new ExporterLePlanning($this->horloge))->executer($jour);
+        return ($this->service(ExporterLePlanning::class))->executer($jour);
     }
 }

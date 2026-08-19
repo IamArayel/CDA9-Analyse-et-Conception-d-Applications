@@ -87,7 +87,7 @@ final class ConsultationDunCreneauTest extends CasDapplication
 
         $this->sortie(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MATIN);
         $this->horloge->nousSommesLe('2026-07-19 09:00');
-        (new MettreEnAlerte($this->horloge, $this->messages))
+        ($this->service(MettreEnAlerte::class))
             ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MATIN);
 
         self::assertEquals(
@@ -110,6 +110,6 @@ final class ConsultationDunCreneauTest extends CasDapplication
 
     private function creneau(string $jour, string $heure): VueDeCreneau
     {
-        return (new ConsulterUnCreneau($this->horloge))->executer($jour, $heure);
+        return ($this->service(ConsulterUnCreneau::class))->executer($jour, $heure);
     }
 }

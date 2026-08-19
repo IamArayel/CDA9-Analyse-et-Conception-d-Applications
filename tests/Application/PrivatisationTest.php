@@ -35,7 +35,7 @@ final class PrivatisationTest extends CasDapplication
         $tiKap = $this->sortie(Reference::TI_KAP);
         $grandBleu = $this->sortie(Reference::LE_GRAND_BLEU);
 
-        $privatisation = (new PrivatiserUnBateau($this->horloge))->executer(
+        $privatisation = ($this->service(PrivatiserUnBateau::class))->executer(
             Reference::JOUR_EN_SAISON,
             Reference::CRENEAU_MILIEU_DE_MATINEE,
             Reference::TI_KAP,
@@ -44,7 +44,7 @@ final class PrivatisationTest extends CasDapplication
         );
         self::assertTrue($privatisation->estAcceptee());
 
-        (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))
+        ($this->service(ConfirmerLePaiement::class))
             ->executer($privatisation->referenceDeReservation());
 
         self::assertSame(
@@ -58,7 +58,7 @@ final class PrivatisationTest extends CasDapplication
             'les douze places du Ti Kap sont bloquées, pas seulement quatre',
         );
 
-        $placeIndividuelle = (new CreerReservation($this->horloge))
+        $placeIndividuelle = ($this->service(CreerReservation::class))
             ->executer($tiKap, Reference::CLIENT_JOHN, adultes: 1);
         self::assertTrue(
             $placeIndividuelle->estRefusee(),
@@ -82,7 +82,7 @@ final class PrivatisationTest extends CasDapplication
         $this->sortie(Reference::LE_GRAND_BLEU);
         $this->monde->placesVendues($tiKap, 2);
 
-        $refusee = (new PrivatiserUnBateau($this->horloge))->executer(
+        $refusee = ($this->service(PrivatiserUnBateau::class))->executer(
             Reference::JOUR_EN_SAISON,
             Reference::CRENEAU_MILIEU_DE_MATINEE,
             Reference::TI_KAP,
@@ -101,7 +101,7 @@ final class PrivatisationTest extends CasDapplication
             'les deux réservations existantes ne sont ni annulées ni déplacées',
         );
 
-        $surLautreBateau = (new PrivatiserUnBateau($this->horloge))->executer(
+        $surLautreBateau = ($this->service(PrivatiserUnBateau::class))->executer(
             Reference::JOUR_EN_SAISON,
             Reference::CRENEAU_MILIEU_DE_MATINEE,
             Reference::LE_GRAND_BLEU,
@@ -126,6 +126,6 @@ final class PrivatisationTest extends CasDapplication
 
     private function placesDisponibles(string $sortie): int
     {
-        return (new ConsulterLesPlacesDisponibles($this->horloge))->pour($sortie);
+        return ($this->service(ConsulterLesPlacesDisponibles::class))->pour($sortie);
     }
 }

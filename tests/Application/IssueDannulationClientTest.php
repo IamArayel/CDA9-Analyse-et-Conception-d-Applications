@@ -45,7 +45,7 @@ final class IssueDannulationClientTest extends CasDapplication
         $code = $issue->codeProduit();
         self::assertNotNull($code, 'l\'avoir est la seule issue qui produit un code');
 
-        $vue = (new ConsulterUnCode($this->horloge))->executer($code);
+        $vue = ($this->service(ConsulterUnCode::class))->executer($code);
         self::assertSame(
             Reference::euros(170),
             $vue->montant(),
@@ -98,7 +98,7 @@ final class IssueDannulationClientTest extends CasDapplication
         $reservation = $this->reservationPayee(Reference::CLIENT_MARIE, adultes: 4, enfants: 2);
 
         $this->horloge->nousSommesLe('2026-07-19 09:00');
-        (new MettreEnAlerte($this->horloge, $this->messages))
+        ($this->service(MettreEnAlerte::class))
             ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MATIN);
 
         // Moins de 48 heures du départ : le barème prévoirait 50 %.
@@ -134,7 +134,7 @@ final class IssueDannulationClientTest extends CasDapplication
         IssueDannulation $issue,
         ?int $montant,
     ): ResultatDissue {
-        return (new EnregistrerUneIssueDannulation($this->horloge, $this->paiement))
+        return ($this->service(EnregistrerUneIssueDannulation::class))
             ->executer($reservation, $issue, $montant);
     }
 }

@@ -27,7 +27,7 @@ final class CataloguesDeTraductionTest extends CasDapplication
      */
     public function test_CASE_NFR_02_aucun_contenu_sans_traduction(): void
     {
-        $rapport = (new ComparerLesCatalogues())->executer(['fr', 'en']);
+        $rapport = ($this->service(ComparerLesCatalogues::class))->executer(['fr', 'en']);
 
         self::assertSame(
             [],

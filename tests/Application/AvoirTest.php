@@ -49,7 +49,7 @@ final class AvoirTest extends CasDapplication
             enfants: 1,
         );
 
-        $application = (new AppliquerUnCode())->executer($reservation, $avoir);
+        $application = ($this->service(AppliquerUnCode::class))->executer($reservation, $avoir);
 
         self::assertTrue($application->estAccepte());
         self::assertSame(
@@ -58,7 +58,7 @@ final class AvoirTest extends CasDapplication
             '170 € moins 130 € : 40 € restent à payer par carte',
         );
 
-        (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))->executer($reservation);
+        ($this->service(ConfirmerLePaiement::class))->executer($reservation);
 
         self::assertSame(
             Reference::euros(40),
@@ -66,7 +66,7 @@ final class AvoirTest extends CasDapplication
             'le montant demandé au prestataire est 40 €',
         );
         self::assertFalse(
-            (new ConsulterUnCode($this->horloge))->executer($avoir)->estUtilisable(),
+            ($this->service(ConsulterUnCode::class))->executer($avoir)->estUtilisable(),
             'le code est marqué utilisé',
         );
     }

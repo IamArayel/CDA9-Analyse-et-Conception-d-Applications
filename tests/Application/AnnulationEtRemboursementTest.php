@@ -229,17 +229,17 @@ final class AnnulationEtRemboursementTest extends CasDapplication
 
     private function annuler(): void
     {
-        (new AnnulerCreneau($this->horloge, $this->messages, $this->paiement))
+        ($this->service(AnnulerCreneau::class))
             ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
     }
 
     private function envoyerLesMessagesProgrammes(): void
     {
-        (new EnvoyerLesMessagesProgrammes($this->horloge, $this->messages))->executer();
+        ($this->service(EnvoyerLesMessagesProgrammes::class))->executer();
     }
 
     private function reservation(string $reference): VueDeReservation
     {
-        return (new ConsulterUneReservation($this->horloge))->executer($reference);
+        return ($this->service(ConsulterUneReservation::class))->executer($reference);
     }
 }

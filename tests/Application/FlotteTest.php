@@ -35,7 +35,7 @@ final class FlotteTest extends CasDapplication
      */
     public function test_CASE_ADMIN_10_bateau_cree_apparait_avec_sa_capacite(): void
     {
-        (new CreerUnBateau($this->horloge))->executer(self::LE_PETIT_BLEU, capacite: 8);
+        ($this->service(CreerUnBateau::class))->executer(self::LE_PETIT_BLEU, capacite: 8);
 
         foreach ([Reference::SORTIE_DAUPHINS, Reference::SORTIE_BALEINES] as $type) {
             $sortie = $this->monde->sortieProgrammee(
@@ -49,7 +49,7 @@ final class FlotteTest extends CasDapplication
 
             self::assertSame(
                 8,
-                (new ConsulterLesPlacesDisponibles($this->horloge))->pour($sortie),
+                ($this->service(ConsulterLesPlacesDisponibles::class))->pour($sortie),
                 'la capacité affichée est exactement celle saisie',
             );
         }
@@ -61,7 +61,7 @@ final class FlotteTest extends CasDapplication
      */
     public function test_CASE_ADMIN_11_bateau_sans_forfait_non_privatisable(): void
     {
-        (new CreerUnBateau($this->horloge))->executer(self::LE_PETIT_BLEU, capacite: 8);
+        ($this->service(CreerUnBateau::class))->executer(self::LE_PETIT_BLEU, capacite: 8);
         $this->monde->sortieProgrammee(
             Reference::JOUR_EN_SAISON,
             Reference::CRENEAU_MILIEU_DE_MATINEE,
@@ -75,7 +75,7 @@ final class FlotteTest extends CasDapplication
             'la privatisation est indisponible tant que le forfait est vide',
         );
 
-        (new DefinirLeForfaitDePrivatisation($this->horloge))
+        ($this->service(DefinirLeForfaitDePrivatisation::class))
             ->executer(self::LE_PETIT_BLEU, Reference::euros(450));
 
         self::assertContains(
@@ -85,14 +85,14 @@ final class FlotteTest extends CasDapplication
         );
         self::assertSame(
             Reference::euros(450),
-            (new ConsulterLesFormules($this->horloge))->forfaitDePrivatisation(self::LE_PETIT_BLEU),
+            ($this->service(ConsulterLesFormules::class))->forfaitDePrivatisation(self::LE_PETIT_BLEU),
         );
     }
 
     /** @return list<string> */
     private function formules(): array
     {
-        return (new ConsulterLesFormules($this->horloge))->pour(
+        return ($this->service(ConsulterLesFormules::class))->pour(
             Reference::JOUR_EN_SAISON,
             Reference::CRENEAU_MILIEU_DE_MATINEE,
             self::LE_PETIT_BLEU,

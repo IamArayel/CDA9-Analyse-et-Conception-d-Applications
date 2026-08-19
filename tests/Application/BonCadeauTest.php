@@ -71,7 +71,7 @@ final class BonCadeauTest extends CasDapplication
             enfants: 1,
         );
 
-        $application = (new AppliquerUnCode())->executer($reservation, $code);
+        $application = ($this->service(AppliquerUnCode::class))->executer($reservation, $code);
 
         self::assertTrue($application->estAccepte());
         self::assertSame(
@@ -81,7 +81,7 @@ final class BonCadeauTest extends CasDapplication
         );
 
         $encaissementsAvant = $this->paiement->nombreDencaissements();
-        (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))->executer($reservation);
+        ($this->service(ConfirmerLePaiement::class))->executer($reservation);
 
         self::assertSame(
             $encaissementsAvant + 1,
@@ -121,7 +121,7 @@ final class BonCadeauTest extends CasDapplication
             enfants: 1,
         );
 
-        $application = (new AppliquerUnCode())->executer($reservation, $code);
+        $application = ($this->service(AppliquerUnCode::class))->executer($reservation, $code);
 
         self::assertSame(
             0,
@@ -129,7 +129,7 @@ final class BonCadeauTest extends CasDapplication
             'un bon de 150 € couvre une réservation de 80 €',
         );
 
-        (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))->executer($reservation);
+        ($this->service(ConfirmerLePaiement::class))->executer($reservation);
 
         self::assertSame(
             StatutDeReservation::CONFIRMEE,
@@ -178,7 +178,7 @@ final class BonCadeauTest extends CasDapplication
             adultes: 2,
         );
 
-        $refus = (new AppliquerUnCode())->executer($reservation, $code);
+        $refus = ($this->service(AppliquerUnCode::class))->executer($reservation, $code);
 
         self::assertTrue($refus->estRefuse());
         self::assertSame(
@@ -187,7 +187,7 @@ final class BonCadeauTest extends CasDapplication
             'aucune déduction n\'est appliquée : les 130 € restent dus',
         );
 
-        $codeInexistant = (new AppliquerUnCode())->executer($reservation, 'CODE-QUI-NEXISTE-PAS');
+        $codeInexistant = ($this->service(AppliquerUnCode::class))->executer($reservation, 'CODE-QUI-NEXISTE-PAS');
         self::assertSame(
             $codeInexistant->motifDuRefus(),
             $refus->motifDuRefus(),
@@ -220,11 +220,11 @@ final class BonCadeauTest extends CasDapplication
             enfants: 1,
         );
 
-        $premier = (new AppliquerUnCode())->executer($reservation, $bon);
+        $premier = ($this->service(AppliquerUnCode::class))->executer($reservation, $bon);
         self::assertTrue($premier->estAccepte());
         self::assertSame(Reference::euros(70), $premier->montantRestantDu());
 
-        $second = (new AppliquerUnCode())->executer($reservation, $avoir);
+        $second = ($this->service(AppliquerUnCode::class))->executer($reservation, $avoir);
 
         self::assertTrue($second->estRefuse());
         self::assertSame(
@@ -264,11 +264,11 @@ final class BonCadeauTest extends CasDapplication
 
     private function code(string $code): VueDeCode
     {
-        return (new ConsulterUnCode($this->horloge))->executer($code);
+        return ($this->service(ConsulterUnCode::class))->executer($code);
     }
 
     private function reservation(string $reference): VueDeReservation
     {
-        return (new ConsulterUneReservation($this->horloge))->executer($reference);
+        return ($this->service(ConsulterUneReservation::class))->executer($reference);
     }
 }

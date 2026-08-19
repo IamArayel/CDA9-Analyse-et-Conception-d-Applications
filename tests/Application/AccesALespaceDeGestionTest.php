@@ -30,12 +30,12 @@ final class AccesALespaceDeGestionTest extends CasDapplication
      */
     public function test_CASE_ADMIN_01_compte_unique_du_gerant_accede_a_lespace(): void
     {
-        $connexion = (new SeConnecter($this->horloge))
+        $connexion = ($this->service(SeConnecter::class))
             ->executer(self::EMAIL_DU_GERANT, self::MOT_DE_PASSE);
 
         self::assertTrue($connexion->estAcceptee());
 
-        $sections = (new ConsulterLespaceDeGestion($this->horloge))
+        $sections = ($this->service(ConsulterLespaceDeGestion::class))
             ->sections($connexion->session());
 
         self::assertSame(
@@ -51,7 +51,7 @@ final class AccesALespaceDeGestionTest extends CasDapplication
      */
     public function test_CASE_ADMIN_02_acces_sans_session_ou_identifiants_errones_refuse(): void
     {
-        $connexion = new SeConnecter($this->horloge);
+        $connexion = $this->service(SeConnecter::class);
 
         $emailInconnu = $connexion->executer('inconnu@example.test', self::MOT_DE_PASSE);
         $mauvaisMotDePasse = $connexion->executer(self::EMAIL_DU_GERANT, 'Xyz9?ghi');
@@ -66,7 +66,7 @@ final class AccesALespaceDeGestionTest extends CasDapplication
 
         self::assertSame(
             [],
-            (new ConsulterLespaceDeGestion($this->horloge))->sections(null),
+            ($this->service(ConsulterLespaceDeGestion::class))->sections(null),
             'l\'accès direct par URL ne contourne rien',
         );
     }

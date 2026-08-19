@@ -57,13 +57,13 @@ final class MontantFigeTest extends CasDapplication
             'aucune conversion de devise, quelle que soit la langue choisie',
         );
 
-        (new ModifierUnTarif())->executer(
+        ($this->service(ModifierUnTarif::class))->executer(
             Reference::SORTIE_DAUPHINS,
             prixAdulte: Reference::euros(55),
             prixEnfant: Reference::DAUPHINS_PRIX_ENFANT,
         );
 
-        (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))->executer($reservation);
+        ($this->service(ConfirmerLePaiement::class))->executer($reservation);
 
         self::assertSame(
             Reference::prixDauphins(2),
@@ -74,6 +74,6 @@ final class MontantFigeTest extends CasDapplication
 
     private function reservation(string $reference): VueDeReservation
     {
-        return (new ConsulterUneReservation($this->horloge))->executer($reference);
+        return ($this->service(ConsulterUneReservation::class))->executer($reference);
     }
 }

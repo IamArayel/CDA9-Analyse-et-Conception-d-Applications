@@ -92,7 +92,7 @@ final class FormulaireDeReservationTest extends CasDapplication
         self::assertTrue($mobileMalEcrit->estAcceptee());
         self::assertSame(
             '0612345678',
-            (new ConsulterUneReservation($this->horloge))
+            ($this->service(ConsulterUneReservation::class))
                 ->executer($mobileMalEcrit->referenceDeReservation())
                 ->telephoneMobile(),
             'le numéro est enregistré sans point, tiret ni espace',
@@ -111,6 +111,6 @@ final class FormulaireDeReservationTest extends CasDapplication
 
     private function creerReservation(): CreerReservation
     {
-        return new CreerReservation($this->horloge);
+        return $this->service(CreerReservation::class);
     }
 }

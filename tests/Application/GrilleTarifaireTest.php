@@ -38,7 +38,7 @@ final class GrilleTarifaireTest extends CasDapplication
         );
         $dejaPayee = $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
 
-        (new ModifierUnTarif())->executer(
+        ($this->service(ModifierUnTarif::class))->executer(
             Reference::SORTIE_DAUPHINS,
             prixAdulte: Reference::euros(55),
             prixEnfant: Reference::DAUPHINS_PRIX_ENFANT,
@@ -64,6 +64,6 @@ final class GrilleTarifaireTest extends CasDapplication
 
     private function reservation(string $reference): VueDeReservation
     {
-        return (new ConsulterUneReservation($this->horloge))->executer($reference);
+        return ($this->service(ConsulterUneReservation::class))->executer($reference);
     }
 }

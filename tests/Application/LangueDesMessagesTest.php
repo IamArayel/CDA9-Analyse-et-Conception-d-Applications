@@ -45,7 +45,7 @@ final class LangueDesMessagesTest extends CasDapplication
         ], adultes: 1);
 
         $this->horloge->nousSommesLe('2026-07-19 09:00');
-        (new MettreEnAlerte($this->horloge, $this->messages))
+        ($this->service(MettreEnAlerte::class))
             ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
 
         $this->horloge->nousSommesLe('2026-07-19 10:00');
@@ -55,7 +55,7 @@ final class LangueDesMessagesTest extends CasDapplication
         $this->envoyerLesMessagesProgrammes();
 
         $this->horloge->nousSommesLe('2026-07-19 19:00');
-        (new AnnulerCreneau($this->horloge, $this->messages, $this->paiement))
+        ($this->service(AnnulerCreneau::class))
             ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
 
         $this->horloge->nousSommesLe('2026-07-20 08:00');
@@ -92,6 +92,6 @@ final class LangueDesMessagesTest extends CasDapplication
 
     private function envoyerLesMessagesProgrammes(): void
     {
-        (new EnvoyerLesMessagesProgrammes($this->horloge, $this->messages))->executer();
+        ($this->service(EnvoyerLesMessagesProgrammes::class))->executer();
     }
 }

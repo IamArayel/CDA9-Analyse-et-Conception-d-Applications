@@ -41,7 +41,7 @@ final class AnnulationParLeGerantTest extends CasDapplication
         $this->sortie(self::LENDEMAIN_DU_JOUR_PIVOT, Reference::CRENEAU_MILIEU_DE_MATINEE);
 
         $this->horloge->nousSommesLe('2026-07-19 09:00');
-        (new MettreEnAlerte($this->horloge, $this->messages))
+        ($this->service(MettreEnAlerte::class))
             ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
 
         self::assertTrue(
@@ -75,16 +75,16 @@ final class AnnulationParLeGerantTest extends CasDapplication
         $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 4);
 
         $this->horloge->nousSommesLe('2026-07-19 09:00');
-        (new MettreEnAlerte($this->horloge, $this->messages))
+        ($this->service(MettreEnAlerte::class))
             ->executer(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MATIN);
 
         // Huit inscrits, donc au-dessus du seuil : le contrôle des 24 heures
         // passe et ne trouve aucune raison d'annuler.
         $this->horloge->nousSommesLe('2026-07-19 07:00');
-        (new ControlerSeuilDeMaintien($this->horloge, $this->paiement, $this->messages))->executer();
+        ($this->service(ControlerSeuilDeMaintien::class))->executer();
 
         $this->horloge->nousSommesLe('2026-07-20 07:00');
-        (new EnvoyerLesMessagesProgrammes($this->horloge, $this->messages))->executer();
+        ($this->service(EnvoyerLesMessagesProgrammes::class))->executer();
 
         self::assertNotSame(
             StatutDeSortie::ANNULEE,
@@ -114,7 +114,7 @@ final class AnnulationParLeGerantTest extends CasDapplication
         $this->annuler(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
 
         $this->horloge->nousSommesLe('2026-07-20 08:00');
-        (new EnvoyerLesMessagesProgrammes($this->horloge, $this->messages))->executer();
+        ($this->service(EnvoyerLesMessagesProgrammes::class))->executer();
 
         $envoisApresLaPremiere = $this->messages->nombreDenvois(
             EnvoisEnregistres::TYPE_CONFIRMATION_ANNULATION,
@@ -122,7 +122,7 @@ final class AnnulationParLeGerantTest extends CasDapplication
         $remboursementsApresLaPremiere = $this->paiement->nombreDeRemboursements();
 
         $seconde = $this->annuler(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
-        (new EnvoyerLesMessagesProgrammes($this->horloge, $this->messages))->executer();
+        ($this->service(EnvoyerLesMessagesProgrammes::class))->executer();
 
         self::assertTrue(
             $seconde->estSansEffet(),
@@ -165,12 +165,12 @@ final class AnnulationParLeGerantTest extends CasDapplication
 
     private function annuler(string $jour, string $heure): ResultatDannulation
     {
-        return (new AnnulerCreneau($this->horloge, $this->messages, $this->paiement))
+        return ($this->service(AnnulerCreneau::class))
             ->executer($jour, $heure);
     }
 
     private function creneau(string $jour, string $heure): VueDeCreneau
     {
-        return (new ConsulterUnCreneau($this->horloge))->executer($jour, $heure);
+        return ($this->service(ConsulterUnCreneau::class))->executer($jour, $heure);
     }
 }

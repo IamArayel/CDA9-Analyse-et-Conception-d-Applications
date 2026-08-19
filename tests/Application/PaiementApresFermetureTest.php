@@ -46,7 +46,7 @@ final class PaiementApresFermetureTest extends CasDapplication
         );
 
         $this->horloge->nousSommesLe('2026-07-20 12:05');
-        $resultat = (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))
+        $resultat = ($this->service(ConfirmerLePaiement::class))
             ->executer($reservation);
 
         self::assertTrue(
@@ -55,7 +55,7 @@ final class PaiementApresFermetureTest extends CasDapplication
         );
         self::assertSame(
             StatutDeReservation::CONFIRMEE,
-            (new ConsulterUneReservation($this->horloge))->executer($reservation)->statut(),
+            ($this->service(ConsulterUneReservation::class))->executer($reservation)->statut(),
         );
         self::assertSame(
             Reference::prixDauphins(2),

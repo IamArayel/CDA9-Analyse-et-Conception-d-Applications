@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
+use App\Domaine\FuseauDexploitation;
 use DateTimeImmutable;
 use DateTimeZone;
 
@@ -22,7 +23,7 @@ final class JeuDeDonneesDeReference
      * cas de test sont tous écrits en heure locale ; cette constante est le
      * seul endroit à changer le jour où le client le précisera.
      */
-    public const FUSEAU_DEXPLOITATION = 'UTC';
+    public const FUSEAU_DEXPLOITATION = FuseauDexploitation::IDENTIFIANT;
 
     /** L'année de l'exercice. Les dates pivots du §7 s'y rapportent. */
     public const ANNEE = 2026;

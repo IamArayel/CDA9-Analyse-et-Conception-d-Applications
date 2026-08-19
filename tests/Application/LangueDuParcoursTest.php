@@ -28,7 +28,7 @@ final class LangueDuParcoursTest extends CasDapplication
      */
     public function test_CASE_BOOKING_36_francais_par_defaut_et_bascule_sans_perte(): void
     {
-        $parcours = new ParcoursDeReservation();
+        $parcours = $this->service(ParcoursDeReservation::class);
         $parcours->demarrer(langueDuNavigateur: 'en');
 
         self::assertSame(

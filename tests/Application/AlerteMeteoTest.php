@@ -452,23 +452,23 @@ final class AlerteMeteoTest extends CasDapplication
 
     private function mettreEnAlerte(string $jour, string $heure): void
     {
-        (new MettreEnAlerte($this->horloge, $this->messages))->executer($jour, $heure);
+        ($this->service(MettreEnAlerte::class))->executer($jour, $heure);
     }
 
     private function annulerCreneau(string $jour, string $heure): void
     {
-        (new AnnulerCreneau($this->horloge, $this->messages, $this->paiement))
+        ($this->service(AnnulerCreneau::class))
             ->executer($jour, $heure);
     }
 
     private function envoyerLesMessagesProgrammes(): void
     {
-        (new EnvoyerLesMessagesProgrammes($this->horloge, $this->messages))->executer();
+        ($this->service(EnvoyerLesMessagesProgrammes::class))->executer();
     }
 
     private function creneau(string $heure): VueDeCreneau
     {
-        return (new ConsulterUnCreneau($this->horloge))
+        return ($this->service(ConsulterUnCreneau::class))
             ->executer(Reference::JOUR_EN_SAISON, $heure);
     }
 }

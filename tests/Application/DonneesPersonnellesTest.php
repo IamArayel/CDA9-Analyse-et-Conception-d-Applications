@@ -39,7 +39,7 @@ final class DonneesPersonnellesTest extends CasDapplication
         );
         $reservation = $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
 
-        $champs = (new ConsulterLesDonneesConservees($this->horloge))->pour($reservation);
+        $champs = ($this->service(ConsulterLesDonneesConservees::class))->pour($reservation);
 
         self::assertSame(
             [
@@ -91,12 +91,12 @@ final class DonneesPersonnellesTest extends CasDapplication
 
         self::assertSame(
             [],
-            (new ConsulterLesDonneesConservees($this->horloge))->pour($reservation),
+            ($this->service(ConsulterLesDonneesConservees::class))->pour($reservation),
             'les données personnelles de la réservation sont supprimées ou anonymisées',
         );
         self::assertNotSame(
             [],
-            (new ConsulterLesDonneesConservees($this->horloge))->pourUnCode($bonCadeau),
+            ($this->service(ConsulterLesDonneesConservees::class))->pourUnCode($bonCadeau),
             'le bon cadeau échappe à la purge tant qu\'il est vivant',
         );
 
@@ -106,13 +106,13 @@ final class DonneesPersonnellesTest extends CasDapplication
 
         self::assertSame(
             [],
-            (new ConsulterLesDonneesConservees($this->horloge))->pourUnCode($bonCadeau),
+            ($this->service(ConsulterLesDonneesConservees::class))->pourUnCode($bonCadeau),
         );
     }
 
     private function purger(): void
     {
-        (new PurgerLesDonneesPersonnelles($this->horloge))->executer();
+        ($this->service(PurgerLesDonneesPersonnelles::class))->executer();
     }
 
     /**
