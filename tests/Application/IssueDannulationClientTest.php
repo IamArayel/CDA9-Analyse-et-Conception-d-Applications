@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Application;
 
 use App\Application\ConsulterUnCode;
+use App\Application\EnregistrerUneAbsence;
 use App\Application\EnregistrerUneIssueDannulation;
 use App\Application\MettreEnAlerte;
 use App\Domaine\IssueDannulation;
@@ -36,7 +37,7 @@ final class IssueDannulationClientTest extends CasDapplication
      */
     public function test_CASE_ADMIN_13_enregistrement_dun_avoir_produit_un_code_dun_an(): void
     {
-        $reservation = $this->reservationPayee(Reference::CLIENT_MARIE, adultes: 2, enfants: 1);
+        $reservation = $this->reservationConfirmee(Reference::CLIENT_MARIE, adultes: 2, enfants: 1);
 
         $this->horloge->nousSommesLe('2026-07-20 10:00');
         $issue = $this->enregistrer($reservation, IssueDannulation::AVOIR, Reference::euros(170));
@@ -63,8 +64,8 @@ final class IssueDannulationClientTest extends CasDapplication
      */
     public function test_CASE_ADMIN_14_report_et_remboursement_ne_produisent_aucun_code(): void
     {
-        $premiere = $this->reservationPayee(Reference::CLIENT_MARIE, adultes: 2);
-        $seconde = $this->reservationPayee(Reference::CLIENT_JOHN, adultes: 2);
+        $premiere = $this->reservationConfirmee(Reference::CLIENT_MARIE, adultes: 2);
+        $seconde = $this->reservationConfirmee(Reference::CLIENT_JOHN, adultes: 2);
 
         $this->horloge->nousSommesLe('2026-07-20 10:00');
 
@@ -95,7 +96,7 @@ final class IssueDannulationClientTest extends CasDapplication
      */
     public function test_CASE_ADMIN_15_renoncement_apres_alerte_rembourse_integralement(): void
     {
-        $reservation = $this->reservationPayee(Reference::CLIENT_MARIE, adultes: 4, enfants: 2);
+        $reservation = $this->reservationConfirmee(Reference::CLIENT_MARIE, adultes: 4, enfants: 2);
 
         $this->horloge->nousSommesLe('2026-07-19 09:00');
         ($this->service(MettreEnAlerte::class))
@@ -105,17 +106,78 @@ final class IssueDannulationClientTest extends CasDapplication
         $issue = $this->enregistrer($reservation, IssueDannulation::REMBOURSEMENT, null);
 
         self::assertSame(
-            Reference::prixDauphins(4, 2),
+            Reference::acompteSortie(Reference::prixDauphins(4, 2)),
             $issue->montantPropose(),
-            'l\'alerte l\'emporte sur le barème : le risque vient du gérant, pas du client',
+            'l\'alerte l\'emporte sur le barème, et le versé est le plafond de ce qui peut revenir',
         );
         self::assertTrue($issue->estAcceptee());
     }
 
-    /** @param array{nom: string, prenom: string, email: string, telephone_mobile: string, langue: string} $client */
-    private function reservationPayee(array $client, int $adultes, int $enfants = 0): string
+    /**
+     * AC-6 et AC-7 : la retenue est plafonnée au montant versé, et la
+     * différence est rendue quand la commission lui est inférieure.
+     */
+    public function test_CASE_ADMIN_16_retenue_plafonnee_a_lacompte(): void
     {
-        return $this->monde->reservationPayee($this->sortie(), $client, $adultes, $enfants);
+        $aCinqJours = $this->reservationConfirmee(Reference::CLIENT_MARIE, adultes: 2);
+        $aTrenteSixHeures = $this->reservationConfirmee(Reference::CLIENT_JOHN, adultes: 2);
+
+        $verse = Reference::acompteSortie(Reference::prixDauphins(2));
+
+        // Cinq jours avant : la commission de 25 % vaut 25 €, moins que les 30 € versés.
+        $this->horloge->nousSommesLe('2026-07-15 10:00');
+        $tot = $this->enregistrer(
+            $aCinqJours,
+            IssueDannulation::REMBOURSEMENT,
+            commission: Reference::euros(25),
+        );
+        self::assertSame(
+            $verse - Reference::euros(25),
+            $tot->montantPropose(),
+            'la commission n\'épuise pas l\'acompte : 5 € reviennent au client',
+        );
+
+        // Trente-six heures avant : la commission de 50 % excède l'acompte.
+        $this->horloge->nousSommesLe('2026-07-19 19:00');
+        $tard = $this->enregistrer(
+            $aTrenteSixHeures,
+            IssueDannulation::REMBOURSEMENT,
+            commission: Reference::euros(50),
+        );
+        self::assertSame(
+            0,
+            $tard->montantPropose(),
+            'la retenue est plafonnée au versé : rien n\'est rendu, rien n\'est réclamé',
+        );
+    }
+
+    /**
+     * AC-8 : un client absent au départ est traité comme un client qui annule,
+     * et perd son acompte.
+     */
+    public function test_CASE_ADMIN_17_client_absent_perd_son_acompte(): void
+    {
+        $reservation = $this->reservationConfirmee(Reference::CLIENT_MARIE, adultes: 2);
+
+        $this->horloge->nousSommesLe('2026-07-20 07:05');
+        $issue = $this->service(EnregistrerUneAbsence::class)->executer($reservation);
+
+        self::assertTrue($issue->estAcceptee());
+        self::assertSame(
+            0,
+            $issue->montantPropose(),
+            'l\'acompte est retenu en totalité',
+        );
+        self::assertTrue(
+            $this->paiement->aucunRemboursementDemande(),
+            'et rien n\'est réclamé au client',
+        );
+    }
+
+    /** @param array{nom: string, prenom: string, email: string, telephone_mobile: string, langue: string} $client */
+    private function reservationConfirmee(array $client, int $adultes, int $enfants = 0): string
+    {
+        return $this->monde->reservationConfirmee($this->sortie(), $client, $adultes, $enfants);
     }
 
     /** La sortie du cas, programmée une seule fois quel que soit le nombre de clients. */
@@ -132,9 +194,10 @@ final class IssueDannulationClientTest extends CasDapplication
     private function enregistrer(
         string $reservation,
         IssueDannulation $issue,
-        ?int $montant,
+        ?int $montant = null,
+        ?int $commission = null,
     ): ResultatDissue {
-        return ($this->service(EnregistrerUneIssueDannulation::class))
-            ->executer($reservation, $issue, $montant);
+        return $this->service(EnregistrerUneIssueDannulation::class)
+            ->executer($reservation, $issue, $montant, $commission);
     }
 }
