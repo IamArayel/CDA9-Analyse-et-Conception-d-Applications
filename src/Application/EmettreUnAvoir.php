@@ -43,6 +43,7 @@ final class EmettreUnAvoir
             $montant,
             $emission,
             $this->validite->expirationDe($emission),
+            $beneficiaire['email'] ?? null,
         );
 
         $this->codes->enregistrer($avoir);

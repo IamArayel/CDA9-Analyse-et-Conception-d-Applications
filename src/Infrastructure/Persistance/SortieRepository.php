@@ -80,6 +80,23 @@ final class SortieRepository
     }
 
     /**
+     * Toutes les sorties d'une journée, quel que soit leur créneau.
+     *
+     * @return list<Sortie>
+     */
+    public function sortiesDuJour(string $jour): array
+    {
+        return $this->entites->createQueryBuilder()
+            ->select('s')
+            ->from(Sortie::class, 's')
+            ->join('s.creneau', 'c')
+            ->where('c.date = :jour')
+            ->setParameter('jour', $this->instant($jour))
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Les heures de départ d'une journée dont au moins une sortie est annulée.
      *
      * @return list<string>

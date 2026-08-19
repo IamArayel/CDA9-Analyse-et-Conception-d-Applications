@@ -42,6 +42,7 @@ final class AcheterUnBonCadeau
             $montant,
             $achat,
             $this->validite->expirationDe($achat),
+            $acheteur['email'] ?? null,
         );
 
         $this->codes->enregistrer($bon);
