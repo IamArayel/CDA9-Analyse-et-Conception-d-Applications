@@ -149,6 +149,24 @@ class Reservation
             && $maintenant < $this->expireLe;
     }
 
+    /**
+     * Efface les données personnelles sans supprimer la ligne : le planning
+     * passé et les montants restent lisibles, le client n'est plus
+     * identifiable (SPEC-NFR-04 AC-3).
+     */
+    public function anonymiser(): void
+    {
+        $this->nomClient = '';
+        $this->prenomClient = '';
+        $this->email = '';
+        $this->telephoneMobile = '';
+    }
+
+    public function estAnonymisee(): bool
+    {
+        return $this->email === '';
+    }
+
     public function bonCadeau(): ?BonCadeau
     {
         return $this->bonCadeau;

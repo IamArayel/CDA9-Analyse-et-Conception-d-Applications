@@ -25,6 +25,7 @@ class BonCadeau
         private int $montant,
         private DateTimeImmutable $dateDachat,
         private DateTimeImmutable $dateDexpiration,
+        private ?string $emailBeneficiaire = null,
     ) {
     }
 
@@ -52,6 +53,22 @@ class BonCadeau
     public function dateDexpiration(): DateTimeImmutable
     {
         return $this->dateDexpiration;
+    }
+
+    /**
+     * L'adresse par laquelle joindre le bénéficiaire. Seule donnée personnelle
+     * portée par un code, et la seule que la purge des trois mois doit épargner
+     * tant que le code est vivant (SPEC-NFR-04 AC-4).
+     */
+    public function emailBeneficiaire(): ?string
+    {
+        return $this->emailBeneficiaire;
+    }
+
+    /** La purge n'efface pas le code, elle le rend anonyme. */
+    public function anonymiser(): void
+    {
+        $this->emailBeneficiaire = null;
     }
 
     public function statut(): StatutDeCode

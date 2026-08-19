@@ -19,5 +19,6 @@
         <field name="dateDexpiration" type="datetime_immutable" column="date_expiration" nullable="false"/>
         <field name="statut" type="string" column="statut" length="20" nullable="false"
                enum-type="App\Domaine\StatutDeCode"/>
+        <field name="emailBeneficiaire" type="string" column="email_beneficiaire" length="180" nullable="true"/>
     </entity>
 </doctrine-mapping>
