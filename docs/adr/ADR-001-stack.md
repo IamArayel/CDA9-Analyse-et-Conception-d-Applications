@@ -83,7 +83,7 @@ exigerait ; elles le sont maintenant.
 | Élément | Version | Ce qui la contraint |
 |---|---|---|
 | PHP | 8.4 | extensions `pdo_mysql`, `intl`, `mbstring` requises |
-| Symfony | 7.x | aucune contrainte basse propre au projet, voir `ADR-005` |
+| Symfony | 8.1 | aucune contrainte basse propre au projet, voir `ADR-005` ; c'est la stable courante au moment de l'installation |
 | MySQL | 9.3 | contraintes `CHECK` réellement appliquées à partir de 8.0.16, cf. `ADR-002` |
 | PHPUnit | 11.x | déjà en place depuis J7 |
 
