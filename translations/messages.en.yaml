@@ -1,0 +1,36 @@
+# English catalogue (SPEC-NFR-02).
+#
+# It must carry exactly the same keys as the French one: a test compares them
+# key by key, so that a content added later without its translation fails the
+# build rather than reaching a customer untranslated.
+#
+# The three message templates are provisional, pending the wording the client
+# has not yet supplied.
+
+parcours:
+  titre: "Book a sea trip"
+  creneau: "Departure"
+  adultes: "Adults"
+  enfants: "Children"
+  avertissement_age: "Trips are not open to children under 4."
+  risque_annulation: "This departure is under a weather warning and may be cancelled."
+  places_restantes: "Seats left"
+  code_promotionnel: "Gift voucher or credit note"
+  payer: "Pay"
+
+gestion:
+  tarifs: "Prices"
+  planning: "Schedule"
+  horaires: "Opening hours"
+  flotte: "Fleet"
+
+message:
+  rappel:
+    objet: "Your sea trip is coming up"
+    corps: "Your trip is scheduled for {date} at {heure}. Forecast: {prevision}."
+  alerte_meteo:
+    objet: "Weather warning on your trip"
+    corps: "Your trip on {date} at {heure} is under a weather warning. The decision will be sent to you 2 hours before departure. This message cannot be replied to; please call us instead."
+  confirmation_annulation:
+    objet: "Your trip has been cancelled"
+    corps: "Your trip on {date} at {heure} has been cancelled. You are refunded in full, with nothing to do on your side."
