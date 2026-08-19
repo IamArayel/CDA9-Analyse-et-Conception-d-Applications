@@ -436,3 +436,21 @@ docs/uml/sequences/*.png
 /.phpunit.cache/
 /.phpunit.result.cache
 ###< php / phpunit ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+!/bin/
+!/bin/**
