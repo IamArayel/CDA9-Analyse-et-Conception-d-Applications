@@ -93,17 +93,41 @@ l'expiration d'un bon cadeau à un an imposerait d'attendre un an.
 
 ```text
 src/
-├── Domaine/          entités, politiques, services de domaine, sans framework
-│                     dont l'interface Horloge, que le domaine définit
-├── Application/      un service par cas d'usage, plus les tâches planifiées
-├── Infrastructure/   repositories Doctrine, Stripe, envois e-mail et SMS,
-│                     horloge système
-└── Interface/        contrôleurs, formulaires, gabarits Twig
+├── Domaine/              sans framework, sans Doctrine, sans heure système
+│   ├── Entite/           les treize entités, en PHP nu
+│   ├── Politique/        les règles pures : saison, fermeture, seuil, codes,
+│   │                     composition, coordonnées, immobilisation, envois
+│   ├── Service/          CalculDuMontant
+│   └── *.php             les trois ports, les énumérations, les exceptions,
+│                         les résultats et les vues
+├── Application/          un service par cas d'usage
+│   ├── Envoi/            ce qui est commun aux trois messages automatiques
+│   └── Tache/            les traitements déclenchés sans utilisateur
+├── Infrastructure/
+│   ├── Horloge/          la seule classe qui lit l'heure système
+│   ├── Notification/     l'adaptateur d'envoi
+│   ├── Paiement/         l'adaptateur du prestataire
+│   └── Persistance/      les dépôts Doctrine
+└── Interface/            contrôleurs, formulaires, gabarits Twig
+
+config/doctrine/          la correspondance entre entités et tables, en XML
+translations/             les catalogues français et anglais
 ```
 
 Le rangement suit la couche, pas la fonctionnalité : on trouve une règle en
 sachant de quelle nature elle est, et une revue peut vérifier d'un coup d'œil
 qu'aucun appel ne remonte les couches.
+
+**La correspondance objet-relationnel est en XML, hors de `src/`.** C'est la
+conséquence directe de la ligne « Doctrine » dans la colonne « ce qui n'a rien
+à y faire » du §2 : des attributs sur les entités mettraient l'ORM dans le
+domaine. Le prix à payer est un fichier de mapping par entité ; le gain est
+qu'une entité du domaine reste lisible et testable sans framework.
+
+**`Interface/` n'est pas encore écrite** à J8 : les cas de test entrent par la
+couche Application, et la couche de présentation n'a donc pas de raison
+d'exister avant qu'un écran ne soit demandé. C'est déclaré dans
+`docs/traceability-trous.md`.
 
 ## 5. Modèle de données
 
