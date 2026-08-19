@@ -49,5 +49,22 @@ services:
         class: App\Infrastructure\Paiement\PrestataireNonConfigure
         public: true
 
+# Les services applicatifs ne sont utilisés que par les cas de test tant que la
+# couche Interface n'existe pas : le conteneur les retirerait comme inutilisés.
+# Les rendre publics **en test seulement** les garde joignables, sans relâcher
+# l'encapsulation en production.
+when@test:
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+            public: true
+
+        App\Application\:
+            resource: '../src/Application/'
+
+        App\Infrastructure\Persistance\:
+            resource: '../src/Infrastructure/Persistance/'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -24,9 +24,11 @@
         <field name="statut" type="string" column="statut" length="20" nullable="false"
                enum-type="App\Domaine\StatutDeSortie"/>
         <field name="dateDeMiseEnAlerte" type="datetime_immutable" column="date_alerte" nullable="true"/>
-        <!-- Générée par la base, jamais écrite par le code. -->
+        <!-- Générée par la base, jamais écrite par le code : `generated` ne
+             suffit pas, il faut aussi l'exclure de l'INSERT et de l'UPDATE,
+             sinon MySQL refuse « The value specified for generated column ». -->
         <field name="creneauBaleines" type="integer" column="creneau_baleines" nullable="true"
-               generated="ALWAYS"/>
+               insertable="false" updatable="false" generated="ALWAYS"/>
 
         <many-to-one field="creneau" target-entity="App\Domaine\Entite\Creneau">
             <join-column name="creneau_id" referenced-column-name="id" nullable="false"/>
