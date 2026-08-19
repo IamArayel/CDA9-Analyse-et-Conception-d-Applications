@@ -267,8 +267,14 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 - `REQ-033` : capacités de la flotte existante, 12 et 24 places.
 - `REQ-059` : places immobilisées 15 minutes le temps du paiement.
 
+- `REQ-110` : le versement de l'acompte confirme la réservation.
 **Statut :** revue IA faite
-**Version :** v2
+**Version :** v3
+
+> **v3, 2026-08-19.** Le mot « confirmée » change de fait générateur : c'est
+> désormais le versement de l'**acompte** qui confirme une réservation, et non le
+> paiement de la totalité. Le comportement décrit ici ne change pas, mais son
+> déclencheur oui, et les cas de test qui parlent de « payer » sont à relire.
 
 ### Règle
 
@@ -367,6 +373,8 @@ Assumé au 2026-08-12.
 - [ ] AC-6 : une seconde sortie baleines sur le même créneau est refusée.
 - [ ] AC-7 : le nombre de places affiché à un client diminue après la
       confirmation du paiement d'un autre client, sans rechargement manuel.
+- [ ] AC-10 : une réservation dont l'acompte est versé compte dans le seuil
+      de 6 inscrits et dans les places décomptées, même si son solde reste dû.
 
 ### Revue IA
 
@@ -379,6 +387,7 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 | Rien ne disait si une réservation non payée bloque une place | acceptée | cas limite 9 ajouté, cohérent avec le décompte au paiement confirmé |
 | Réserver temporairement les places dès la validation du formulaire | **acceptée le 2026-08-14**, après un refus le 2026-08-12 | le motif du refus, des places bloquées par des paniers abandonnés, reste réel mais pèse moins lourd que le défaut découvert depuis : sans immobilisation, le client perdant est débité puis remboursé pour une place qu'il n'aura pas. Revirement demandé par le formateur, arbitré dans `ADR-003`, consigné au journal de J5 |
 | Le nombre de places affiché cesse de correspondre au nombre de places vendues | acceptée | écrit dans « Ce qui n'est pas défini » : un client peut voir « 0 place » alors que personne n'a payé |
+| **v3, 2026-08-19** : le seuil de 6 peut désormais être atteint par six clients n'ayant versé que 30 %, soit 18 % du chiffre attendu | acceptée | AC-10 écrit, et l'effet de bord signalé au §8 de `impact-CR-004.md`. Le client ne l'a pas envisagé, la question lui sera posée |
 
 ## SPEC-BOOKING-04 - Fermeture des réservations en ligne selon le créneau
 
@@ -475,8 +484,13 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 - `REQ-006` : privatisation d'un bateau entier sur un créneau.
 - `REQ-014` : forfaits de 600 € pour le Ti Kap et 1 100 € pour Le Grand Bleu.
 
+- `REQ-109` : acompte de 50 % du forfait à la réservation.
 **Statut :** revue IA faite
-**Version :** v1
+**Version :** v2
+
+> **v2, 2026-08-19.** Une privatisation exige désormais un acompte de **50 %**
+> du forfait, et non son règlement intégral. Le solde suit la même fenêtre que
+> celui d'une sortie, cf. `SPEC-BOOKING-12`.
 
 ### Règle
 
@@ -546,6 +560,8 @@ Assumé au 2026-08-12.
 - [ ] AC-4 : une privatisation demandée sur un bateau portant déjà des places
       vendues au même créneau est refusée.
 - [ ] AC-5 : le second bateau reste réservable sur le même créneau.
+- [ ] AC-6 : la réservation d'une privatisation exige un acompte de 50 % du
+      forfait du bateau, le solde restant dû.
 
 ### Revue IA
 
@@ -642,30 +658,49 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 | Aucune règle de devise n'existe alors que le site devient bilingue | acceptée | cas limite 5 et AC-4 ajoutés, cohérents avec l'analyse d'impact qui exclut la multidevise |
 | Prévoir une grille de réductions par palier de participants | refusée | aucune demande client, et le seul levier commercial cité est le bon cadeau |
 
-## SPEC-BOOKING-07 - Paiement en ligne intégral par carte
+## SPEC-BOOKING-07 - Acompte en ligne à la réservation
 
 **Exigences :**
 
-- `REQ-017` : totalité du montant en carte bancaire au moment de la réservation.
+- `REQ-017` : acompte en ligne à la réservation, solde réglé ensuite.
 - `REQ-018` : paiement délégué à un prestataire tiers, aucune donnée sensible stockée.
+- `REQ-108` : acompte de 30 % du montant total pour une sortie.
+- `REQ-109` : acompte de 50 % du forfait pour une privatisation.
+- `REQ-110` : le versement de l'acompte confirme la réservation.
+- `REQ-116` : une réservation portant un code n'est pas soumise à l'acompte.
+- `REQ-117` : acompte et solde sont deux transactions distinctes.
 
-**Statut :** revue IA faite
-**Version :** v1
+**Statut :** revue IA à refaire
+**Version :** v2
+
+> **Renversement.** La v1 de cette spécification exigeait le paiement de la
+> totalité et interdisait explicitement l'acompte. `CR-06` demande l'inverse.
+> Les critères d'acceptation gardent leur numérotation, mais `AC-1` et `AC-3`
+> changent de contenu : les cas de test qui les citent sont à reprendre.
 
 ### Règle
 
-Une réservation n'est confirmée qu'après encaissement en ligne de la totalité
-du montant dû, par carte bancaire, auprès du prestataire de paiement.
+Une réservation est confirmée dès l'encaissement en ligne d'un **acompte**,
+par carte bancaire, auprès du prestataire de paiement. Le solde est dû
+ensuite, et son règlement relève de `SPEC-BOOKING-12`.
 
-> Tant que le prestataire n'a pas confirmé la transaction, la réservation
-> reste en attente de paiement et ne décompte aucune place.
+> Sur une sortie baleines à 170 €, le client verse 51 € pour réserver. Sur une
+> privatisation du Ti Kap à 600 €, il en verse 300. Dans les deux cas la place
+> est acquise, et le reste se paie plus tard.
+
+L'acompte vaut **30 % du montant total** pour une sortie, **50 % du forfait**
+pour une privatisation, arrondi au centime.
 
 ### Portée
 
-Couvre l'encaissement, l'état de la réservation et le décompte des places qui
-en découle. Ne couvre ni le calcul du montant, ni les remboursements.
+Couvre l'encaissement de l'acompte, l'état de la réservation et le décompte
+des places qui en découle. Ne couvre ni le calcul du montant, ni le règlement
+du solde, ni les remboursements.
 
 - Ne couvre pas le calcul du montant dû : `SPEC-BOOKING-06`.
+- Ne couvre pas le règlement du solde, en ligne ou sur place :
+  `SPEC-BOOKING-12`.
+- Ne couvre pas le pointage d'un solde encaissé sur place : `SPEC-ADMIN-07`.
 - Ne couvre pas la déduction préalable d'un bon cadeau ou d'un avoir :
   `SPEC-BOOKING-09`, `SPEC-BOOKING-10`.
 - Ne couvre pas le remboursement après annulation météo : `SPEC-CANCEL-04`.
@@ -678,56 +713,68 @@ en découle. Ne couvre ni le calcul du montant, ni les remboursements.
 
 ```gherkin
 Étant donné une réservation en attente de paiement de 170 €
-Quand le client règle 170 € par carte bancaire
+Quand le client règle l'acompte de 51 € par carte bancaire
 Et que le prestataire confirme la transaction
 Alors la réservation passe à l'état « confirmée »
 Et les places correspondantes sont décomptées de la capacité du créneau
+Et un solde de 119 € reste dû
 ```
 
 ### Cas limites
 
 | # | Situation | Comportement attendu |
 |---|---|---|
-| 1 | paiement refusé par la banque | réservation non confirmée, aucune place décomptée |
+| 1 | acompte refusé par la banque | réservation non confirmée, aucune place décomptée, aucun solde créé |
 | 2 | client abandonnant le tunnel de paiement | réservation non confirmée, aucune place décomptée |
-| 3 | double soumission du paiement | un seul débit, une seule réservation confirmée |
-| 4 | montant dû nul après application d'un bon cadeau couvrant tout le prix | aucun paiement carte n'est demandé, la réservation est confirmée directement |
+| 3 | double soumission de l'acompte | un seul débit, une seule réservation confirmée |
+| 4 | montant dû nul après application d'un bon cadeau couvrant tout le prix | aucun paiement carte n'est demandé, la réservation est confirmée directement, aucun solde ne reste dû |
 | 5 | transaction confirmée côté prestataire mais notification perdue | l'état renvoyé par le prestataire fait foi ; à défaut, rapprochement manuel par le gérant |
-| 6 | tentative de paiement en plusieurs fois ou par un autre moyen | refusée : paiement intégral par carte uniquement |
+| 6 | réservation portant un bon cadeau ou un avoir sans le couvrir entièrement | **pas d'acompte** : la différence est due en totalité au moment de réserver, cf. `REQ-116` |
 | 7 | réservation restée en attente de paiement | ses places sont libérées au bout de 15 minutes, cf. `SPEC-BOOKING-03` |
-| 8 | paiement accepté alors que l'immobilisation a expiré et que la place est encore libre | la place est reprise et la réservation confirmée |
-| 9 | paiement accepté alors que l'immobilisation a expiré et que la place est partie | la réservation est refusée et le client intégralement remboursé, sans intervention de sa part |
+| 8 | acompte accepté alors que l'immobilisation a expiré et que la place est encore libre | la place est reprise et la réservation confirmée |
+| 9 | acompte accepté alors que l'immobilisation a expiré et que la place est partie | la réservation est refusée et le client remboursé de son acompte, sans intervention de sa part |
+| 10 | acompte de 30 % d'un montant non divisible, 25,50 € sur 85 € | arrondi au centime, cf. `REQ-108` |
+| 11 | tentative de régler la totalité dès la réservation | acceptée sans effet particulier : le solde vaut alors zéro. Aucune règle n'interdit de payer plus que l'acompte |
 
 ### Ce qui n'est pas défini
 
-Assumé au 2026-08-12.
+Assumé au 2026-08-12, revu au 2026-08-19.
 
 - Délai d'expiration d'une réservation en attente de paiement : fixé à
-  15 minutes par `ADR-003`, hypothèse d'équipe jamais soumise au client.
+  15 minutes par `ADR-003`, hypothèse d'équipe jamais soumise au client. La
+  durée s'applique désormais à l'acompte et non à la totalité, ce qui la rend
+  plus confortable pour le client.
 - Cas résiduel du paiement abouti après expiration : la règle est écrite en
   cas limites 8 et 9, mais elle suppose de pouvoir rembourser sans
-  intervention. Si l'intégration retenue autorise une capture différée, ce
-  remboursement disparaît au profit d'une simple annulation d'autorisation,
-  évolution notée dans `ADR-003`.
-- Facture remise au client : non tranchée, question 3 du §11 du cahier des
-  charges. Hypothèse retenue : justificatif émis par le prestataire de
-  paiement et transmis par e-mail.
+  intervention.
+- Facture remise au client : `REQ-119` demande une facture unique acquittée à
+  la fin, ce qui entre en tension avec `REQ-018`. Question 18 du §11 du cahier
+  des charges. Hypothèse retenue en attendant : justificatif du prestataire
+  sur la seule transaction en ligne.
+- Cas limite 11, le client qui paie plus que l'acompte : jamais évoqué par le
+  client. Hypothèse d'équipe, rien ne justifie de le refuser.
 
 ### Critères d'acceptation
 
-- [ ] AC-1 : la totalité du montant est exigée en carte bancaire, sans
-      acompte ni autre moyen de paiement.
-- [ ] AC-2 : un paiement refusé ou abandonné laisse la réservation non
+- [ ] AC-1 : un acompte de 30 % du montant total, ou de 50 % du forfait d'une
+      privatisation, est exigé en carte bancaire au moment de réserver.
+      **Contenu inversé en v2.**
+- [ ] AC-2 : un acompte refusé ou abandonné laisse la réservation non
       confirmée et ne décompte aucune place.
-- [ ] AC-3 : un paiement confirmé fait passer la réservation à l'état
-      « confirmée » et décompte les places du créneau.
+- [ ] AC-3 : le versement de l'acompte fait passer la réservation à l'état
+      « confirmée » et décompte les places du créneau. **Contenu modifié en
+      v2 :** c'est l'acompte, et non le paiement intégral, qui confirme.
 - [ ] AC-4 : une double soumission ne produit qu'un seul débit.
 - [ ] AC-5 : aucune donnée de carte bancaire n'est enregistrée par
       l'application.
 - [ ] AC-6 : un montant dû nul confirme la réservation sans passage par le
       paiement carte.
-- [ ] AC-7 : un paiement abouti après expiration de l'immobilisation, sur une
-      place entre-temps vendue, est refusé et remboursé intégralement.
+- [ ] AC-7 : un acompte abouti après expiration de l'immobilisation, sur une
+      place entre-temps vendue, est refusé et l'acompte remboursé.
+- [ ] AC-8 : une réservation portant un bon cadeau ou un avoir n'est pas
+      soumise à l'acompte ; la différence est due en totalité à la
+      réservation.
+- [ ] AC-9 : le montant de l'acompte est arrondi au centime.
 
 ### Revue IA
 
@@ -737,9 +784,8 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 |---|---|---|
 | Un bon cadeau couvrant exactement le prix conduit à un paiement de 0 €, cas non traité par une règle de paiement intégral | acceptée | cas limite 4 et AC-6 ajoutés |
 | La double soumission du paiement n'était pas traitée alors qu'elle est fréquente sur mobile | acceptée | cas limite 3 et AC-4 ajoutés |
-| Rien ne disait ce qu'il advient d'une réservation restée en attente | acceptée | cas limite 7, délai désormais chiffré par `ADR-003` |
-| Aucune règle ne couvrait le paiement abouti alors que la place venait d'être vendue à un autre, alors que le paiement est intégral | acceptée | cas limites 8 et 9, AC-7 ajoutés ; c'est le cas résiduel que l'immobilisation réduit sans le supprimer |
-| Mettre en place une reprise automatique des paiements échoués | refusée | complexité sans demande client, et le gérant conserve le contact téléphonique comme filet |
+| **v2, 2026-08-19** : rien ne disait ce qui se passe si le client règle plus que l'acompte | acceptée | cas limite 11 ajouté, avec l'hypothèse d'équipe qui l'accompagne |
+| **v2, 2026-08-19** : la revue IA de cette version reste à faire sur le fond, la spécification ayant été renversée le jour même | en attente | à conduire à J9, avant la reprise des cas de test |
 
 ## SPEC-BOOKING-08 - Accessibilité multi-support
 
@@ -830,8 +876,14 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 - `REQ-048` : surplus perdu si le bon dépasse le montant total.
 - `REQ-049` : usage unique.
 
+- `REQ-116` : une réservation portant un code n'est pas soumise à l'acompte.
 **Statut :** revue IA faite
-**Version :** v2
+**Version :** v3
+
+> **v3, 2026-08-19.** Un bon cadeau **exclut l'acompte** : soit il solde la
+> réservation, soit la différence est due en totalité au moment de réserver. Le
+> client a demandé qu'aucun changement ne touche les bons cadeaux, et c'est
+> précisément ce que produit cette exception.
 
 ### Règle
 
@@ -931,6 +983,8 @@ cahier des charges §11 questions 8 et 10).
       ni une catégorie de tarif.
 - [ ] AC-8 : un bon cadeau et un code d'avoir ne peuvent pas être appliqués à
       la même réservation.
+- [ ] AC-9 : une réservation portant un bon cadeau n'est pas soumise à
+      l'acompte ; la différence est due en totalité à la réservation.
 
 ### Revue IA
 
@@ -953,8 +1007,12 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 - `REQ-050` : avoir délivré sous forme de code de réduction unique saisi au paiement.
 - `REQ-051` : validité d'un an à compter de la date d'émission.
 
+- `REQ-116` : une réservation portant un code n'est pas soumise à l'acompte.
 **Statut :** revue IA faite
-**Version :** v2
+**Version :** v3
+
+> **v3, 2026-08-19.** Un code d'avoir exclut l'acompte, au même titre qu'un bon
+> cadeau, cf. `SPEC-BOOKING-09`.
 
 ### Règle
 
@@ -1039,6 +1097,8 @@ question 8).
 - [ ] AC-5 : un code d'avoir et un bon cadeau ne peuvent pas être appliqués à
       la même réservation.
 - [ ] AC-6 : un code d'avoir émis il y a plus d'un an est refusé.
+- [ ] AC-7 : une réservation portant un code d'avoir n'est pas soumise à
+      l'acompte ; la différence est due en totalité à la réservation.
 
 ### Revue IA
 
@@ -1136,3 +1196,101 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 | Les messages d'erreur et les e-mails de confirmation n'étaient pas explicitement couverts | acceptée | cas limites 3 et 4 ajoutés, cohérents avec l'effet de bord relevé dans l'analyse d'impact |
 | « Sans contenu resté en français » n'est vérifiable que si le périmètre est borné | acceptée | AC-2 borné au parcours de réservation, le reste du site relevant de l'exigence transverse |
 | Détecter la langue du navigateur pour l'appliquer automatiquement | refusée | le client a demandé un site en deux langues, pas une détection ; le français par défaut est le comportement le plus prévisible pour le gérant qui accompagne ses clients au téléphone |
+
+## SPEC-BOOKING-12 - Règlement du solde après acompte
+
+**Exigences :**
+
+- `REQ-017` : le solde se règle après l'acompte, en ligne ou sur place.
+- `REQ-111` : fenêtre de règlement en ligne, de 24 heures avant le départ à la fermeture du créneau.
+- `REQ-112` : règlement possible par carte sur place le jour de la sortie.
+- `REQ-117` : le solde est une transaction distincte de l'acompte.
+
+**Statut :** revue IA à faire
+**Version :** v1
+
+### Règle
+
+Le solde d'une réservation confirmée se règle **soit en ligne**, entre
+24 heures avant le départ et l'heure de fermeture des réservations du créneau,
+**soit par carte sur place** le jour de la sortie.
+
+> Pour un départ du 20 juillet à 7h, le solde est réglable en ligne du 19 à 7h
+> au 19 à midi, heure à laquelle les réservations de ce créneau ferment. Passé
+> midi, il ne reste que le paiement au quai.
+
+Aucune relance n'est envoyée, et le message de rappel ne mentionne pas le
+solde : le client s'en charge (`CR-06/Q16`, `CR-06/Q17`).
+
+### Portée
+
+Couvre le règlement du solde par le client et l'état de paiement de la
+réservation. Ne couvre ni l'acompte, ni l'encaissement au quai.
+
+- Ne couvre pas l'acompte à la réservation : `SPEC-BOOKING-07`.
+- Ne couvre pas le pointage par le gérant d'un solde encaissé sur place :
+  `SPEC-ADMIN-07`.
+- Ne couvre pas l'heure de fermeture elle-même : `SPEC-BOOKING-04`.
+- Ne couvre pas le remboursement d'une réservation annulée :
+  `SPEC-CANCEL-04`, `SPEC-ADMIN-06`.
+
+### Scénarios nominaux
+
+```gherkin
+Étant donné une réservation confirmée pour le 20 juillet à 7h, acompte de 51 € versé
+Et que nous sommes le 19 juillet à 9h00
+Quand le client règle le solde de 119 € en ligne
+Alors la réservation est soldée
+Et le planning du gérant ne la signale plus comme restant à encaisser
+```
+
+### Cas limites
+
+| # | Situation | Comportement attendu |
+|---|---|---|
+| 1 | solde nul, un code ayant couvert tout le prix | rien à régler, la réservation est soldée dès sa confirmation |
+| 2 | tentative de règlement avant l'ouverture de la fenêtre | refusée, l'écran n'est pas encore ouvert. **Hypothèse d'équipe** : rien n'interdirait de l'accepter, le client n'a pas été interrogé |
+| 3 | réservation prise à l'intérieur de la fenêtre | le solde reste réglable en ligne jusqu'à la fermeture, sans exception. Hypothèse d'équipe, question 20 du §11 |
+| 4 | tentative de règlement en ligne après la fermeture | refusée ; seul le paiement sur place reste possible |
+| 5 | créneau annulé avant le règlement | le solde n'est plus dû, et l'acompte est remboursé, cf. `SPEC-CANCEL-04` |
+| 6 | double soumission du règlement | un seul débit |
+| 7 | solde jamais réglé, client absent au départ | traité comme une annulation, cf. `REQ-118` et `SPEC-ADMIN-06` |
+| 8 | solde jamais réglé, client présent au départ | le gérant encaisse au quai et pointe, cf. `SPEC-ADMIN-07` |
+
+### Ce qui n'est pas défini
+
+Assumé au 2026-08-19.
+
+- **La borne de la fenêtre est une déduction d'équipe.** Le client a dit « en
+  ligne la veille » ; « de 24 heures avant le départ à la fermeture du
+  créneau » est notre lecture, et la seule réponse de `CR-06` qu'il n'ait pas
+  donnée lui-même. Question 16 du §11 du cahier des charges.
+- Le refus d'un règlement anticipé, cas limite 2, ne repose sur rien d'autre
+  que la lettre de `REQ-111`. Il serait sans risque de l'autoriser.
+- Le sort d'un règlement partiel, plusieurs personnes d'un groupe payant
+  chacune leur part, n'a pas été abordé.
+
+### Critères d'acceptation
+
+- [ ] AC-1 : le solde est réglable en ligne entre 24 heures avant le départ et
+      l'heure de fermeture des réservations du créneau.
+- [ ] AC-2 : hors de cette fenêtre, le paiement en ligne du solde n'est pas
+      proposé.
+- [ ] AC-3 : une réservation dont le solde est nul est soldée sans aucun
+      règlement.
+- [ ] AC-4 : le règlement du solde est une transaction distincte de celle de
+      l'acompte.
+- [ ] AC-5 : une double soumission du règlement ne produit qu'un seul débit.
+- [ ] AC-6 : le solde d'une réservation dont le créneau est annulé n'est plus
+      dû, et l'acompte est remboursé.
+- [ ] AC-7 : aucune relance n'est envoyée au client dont le solde reste dû.
+
+### Revue IA
+
+Consigne utilisée : voir l'en-tête de ce fichier.
+
+| Remarque de l'IA | Décision | Motif |
+|---|---|---|
+| La fenêtre refuse un client qui voudrait payer plus tôt, ce que rien ne justifie | acceptée | cas limite 2 écrit avec son hypothèse, plutôt qu'un comportement implicite |
+| Le point 4 de l'entretien laisse croire qu'une réservation tardive perd le paiement en ligne, alors que la fenêtre reste ouverte | acceptée | cas limite 3 et question 20 du §11 : aucune exception n'est codée, et l'écart avec l'intention du client est déclaré |
+| Le client ne saura jamais qu'un solde lui reste dû, aucun message ne le disant | **refusée** | le client l'a explicitement demandé deux fois, `CR-06/Q16` et `Q17`. La conséquence est écrite dans la règle, elle n'est pas corrigée à sa place |
