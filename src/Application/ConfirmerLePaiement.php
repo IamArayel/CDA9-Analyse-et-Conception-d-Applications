@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application;
 
+use App\Application\Envoi\RappelDeSortie;
 use App\Domaine\Entite\Reservation;
 use App\Domaine\Horloge;
 use App\Domaine\PrestataireDePaiement;
@@ -38,6 +39,7 @@ final class ConfirmerLePaiement
         private readonly EntityManagerInterface $entites,
         private readonly PrestataireDePaiement $prestataire,
         private readonly ReservationRepository $reservations,
+        private readonly RappelDeSortie $rappel,
     ) {
     }
 
@@ -120,5 +122,9 @@ final class ConfirmerLePaiement
         $reservation->avoir()?->marquerUtilise();
 
         $this->entites->flush();
+
+        // Une réservation prise après l'heure de rappel déclenche le rappel
+        // immédiatement, et non pas jamais (SPEC-CANCEL-05 AC-5).
+        $this->rappel->envoyerSiDu($reservation, $this->horloge->maintenant());
     }
 }
