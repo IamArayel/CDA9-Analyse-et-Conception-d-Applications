@@ -91,8 +91,8 @@ final class PaiementTest extends CasDapplication
             StatutDeReservation::EN_ATTENTE_DE_PAIEMENT,
             $this->reservation($reservation)->statut(),
         );
-        self::assertTrue(
-            $this->paiement->aucunEncaissementDemande(),
+        self::assertFalse(
+            $this->paiement->aEteDebite($reservation),
             'le client n\'est pas débité',
         );
 
@@ -159,7 +159,7 @@ final class PaiementTest extends CasDapplication
             adultes: 2,
         );
 
-        $application = (new AppliquerUnCode())->executer($reservation, $code);
+        $application = ($this->service(AppliquerUnCode::class))->executer($reservation, $code);
         self::assertSame(
             0,
             $application->montantRestantDu(),
@@ -244,17 +244,17 @@ final class PaiementTest extends CasDapplication
 
     private function confirmerLePaiement(string $reservation): ResultatDePaiement
     {
-        return (new ConfirmerLePaiement($this->horloge, $this->paiement, $this->messages))
+        return ($this->service(ConfirmerLePaiement::class))
             ->executer($reservation);
     }
 
     private function reservation(string $reference): VueDeReservation
     {
-        return (new ConsulterUneReservation($this->horloge))->executer($reference);
+        return ($this->service(ConsulterUneReservation::class))->executer($reference);
     }
 
     private function placesDisponibles(string $sortie): int
     {
-        return (new ConsulterLesPlacesDisponibles($this->horloge))->pour($sortie);
+        return ($this->service(ConsulterLesPlacesDisponibles::class))->pour($sortie);
     }
 }

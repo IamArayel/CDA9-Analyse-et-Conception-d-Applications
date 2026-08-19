@@ -110,6 +110,7 @@ final class CapaciteEtPlacesDisponiblesTest extends CasDapplication
         );
 
         $this->horloge->nousSommesLe('2026-07-18 14:01');
+        $encaissementsAvant = $this->paiement->nombreDencaissements();
         $second = $this->creerReservation()
             ->executer($sortie, Reference::CLIENT_JOHN, adultes: 1);
 
@@ -122,9 +123,10 @@ final class CapaciteEtPlacesDisponiblesTest extends CasDapplication
             $second->referenceDeReservation(),
             'aucune réservation n\'existe pour le second client',
         );
-        self::assertTrue(
-            $this->paiement->aucunEncaissementDemande(),
-            'le refus tombe avant l\'écran de paiement : personne n\'a saisi de carte',
+        self::assertSame(
+            $encaissementsAvant,
+            $this->paiement->nombreDencaissements(),
+            'le refus tombe avant l\'écran de paiement : ce client n\'a pas saisi de carte',
         );
     }
 
@@ -178,7 +180,7 @@ final class CapaciteEtPlacesDisponiblesTest extends CasDapplication
         $karim = $this->monde->reservationPayee($sortie, Reference::CLIENT_KARIM, adultes: 1);
 
         $this->horloge->nousSommesLe('2026-07-19 10:00');
-        (new ControlerSeuilDeMaintien($this->horloge, $this->paiement, $this->messages))
+        ($this->service(ControlerSeuilDeMaintien::class))
             ->executer();
 
         self::assertSame(
@@ -258,17 +260,17 @@ final class CapaciteEtPlacesDisponiblesTest extends CasDapplication
 
     private function creerReservation(): CreerReservation
     {
-        return new CreerReservation($this->horloge);
+        return $this->service(CreerReservation::class);
     }
 
     private function placesDisponibles(string $sortie): int
     {
-        return (new ConsulterLesPlacesDisponibles($this->horloge))->pour($sortie);
+        return ($this->service(ConsulterLesPlacesDisponibles::class))->pour($sortie);
     }
 
     private function creneauDeReference(): VueDeCreneau
     {
-        return (new ConsulterUnCreneau($this->horloge))->executer(
+        return ($this->service(ConsulterUnCreneau::class))->executer(
             Reference::JOUR_EN_SAISON,
             Reference::CRENEAU_MILIEU_DE_MATINEE,
         );
