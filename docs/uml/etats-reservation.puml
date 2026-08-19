@@ -1,0 +1,70 @@
+@startuml etats-reservation
+' États d'une réservation, du formulaire validé jusqu'au départ.
+' Ce diagramme n'existait pas avant le CR-06 : tant que le paiement était
+' intégral, « payée » et « confirmée » étaient le même événement, et deux
+' états suffisaient à tout dire. L'acompte les sépare.
+' Réalise SPEC-BOOKING-07, SPEC-BOOKING-12, SPEC-ADMIN-07, SPEC-BOOKING-03.
+
+title États d'une réservation
+
+skinparam state {
+  BackgroundColor White
+  BorderColor Black
+}
+
+[*] --> EnAttenteDePaiement : formulaire validé,\nplaces immobilisées 15 minutes
+
+state "En attente de paiement" as EnAttenteDePaiement
+state "Confirmée" as Confirmee {
+  state "Solde dû" as SoldeDu
+  state "Soldée" as Soldee
+
+  [*] --> SoldeDu : acompte encaissé
+  [*] --> Soldee : code couvrant tout le prix,\nou règlement du total en une fois
+
+  SoldeDu --> Soldee : solde réglé en ligne
+  SoldeDu --> Soldee : solde encaissé au quai,\npointé par le gérant
+  Soldee --> SoldeDu : pointage annulé\npar le gérant
+}
+state "Annulée" as Annulee
+
+EnAttenteDePaiement --> EnAttenteDePaiement : acompte refusé\npar le prestataire
+EnAttenteDePaiement --> Confirmee : acompte encaissé
+EnAttenteDePaiement --> Annulee : immobilisation échue,\nou créneau annulé entre-temps
+
+Confirmee --> Annulee : annulation demandée par le client,\nannulation météo,\nseuil de 6 non atteint,\nou client absent au départ
+
+Annulee --> [*]
+
+note right of EnAttenteDePaiement
+  Les places sont **immobilisées**, donc comptées
+  comme indisponibles, sans être vendues.
+  Passé 15 minutes, elles redeviennent libres
+  sans qu'aucune tâche n'ait à passer.
+  SPEC-BOOKING-03, ADR-003
+end note
+
+note right of SoldeDu
+  **C'est l'acompte qui confirme**, non le paiement
+  du total : la place est décomptée et le client
+  compte dans le seuil de 6 inscrits.
+  30 % pour une sortie, 50 % pour une privatisation.
+  SPEC-BOOKING-07 AC-1 et AC-3, REQ-110
+end note
+
+note right of Soldee
+  Le solde se règle en ligne entre 24 heures avant
+  le départ et la fermeture du créneau, ou par carte
+  au quai. Le pointage du gérant est **réversible**,
+  et chaque geste laisse une trace.
+  SPEC-BOOKING-12, SPEC-ADMIN-07 AC-2 et AC-3
+end note
+
+note bottom of Annulee
+  Le remboursement porte sur ce que le client a
+  **effectivement versé**, et la commission retenue
+  ne peut jamais l'excéder.
+  SPEC-CANCEL-04, SPEC-ADMIN-06 AC-6 et AC-7
+end note
+
+@enduml

@@ -14,6 +14,11 @@ d'écran d'un outil de dessin ne l'est pas.
 | `domain.puml` | classes du domaine | J4 |
 | `sequences/<cas>.puml` | séquence, un fichier par cas d'usage sensible | J4 |
 | `components.puml` | composants *(facultatif)* | J5 |
+| `etats-reservation.puml` | états d'une réservation | J9, après `CR-06` |
+
+Le diagramme d'états n'existait pas avant `CR-06` : tant que le paiement était
+intégral, « payée » et « confirmée » étaient le même événement. L'acompte les
+sépare, et trois états de règlement apparaissent là où il n'y en avait aucun.
 
 Trois diagrammes de séquence suffisent : les cas d'usage où plusieurs acteurs ou
 services interviennent. Faire une séquence par écran est du remplissage.
