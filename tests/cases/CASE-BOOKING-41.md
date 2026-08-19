@@ -4,7 +4,7 @@
 **Critères couverts :** AC-2
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -43,5 +43,5 @@ Alors il ne l'est plus
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_41_solde_non_reglable_hors_fenetre` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/SoldeDeLaReservationTest.php` |
 | Doublures | horloge |

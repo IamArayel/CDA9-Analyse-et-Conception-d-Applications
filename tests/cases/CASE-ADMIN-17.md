@@ -4,7 +4,7 @@
 **Critères couverts :** AC-8
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -40,5 +40,5 @@ Et rien n'est réclamé au client
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_17_client_absent_perd_son_acompte` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/IssueDannulationClientTest.php` |
 | Doublures | horloge, prestataire de paiement |

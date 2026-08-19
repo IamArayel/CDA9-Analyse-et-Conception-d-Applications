@@ -4,7 +4,7 @@
 **Critères couverts :** AC-9
 **Type :** limite
 **Niveau :** domaine
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -38,5 +38,5 @@ Et non 19 € ni 20 €
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_38_acompte_arrondi_au_centime` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Domaine/AcompteTest.php` |
 | Doublures | aucune |

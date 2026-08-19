@@ -4,7 +4,7 @@
 **Critères couverts :** AC-2, AC-3, AC-5
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -42,5 +42,5 @@ Alors le pointage est refusé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_19_pointage_reversible_et_trace` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/PointageDuSoldeTest.php` |
 | Doublures | horloge |

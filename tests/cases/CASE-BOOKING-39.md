@@ -4,7 +4,7 @@
 **Critères couverts :** AC-10
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -39,5 +39,5 @@ Et aucun remboursement n'est demandé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_39_six_acomptes_maintiennent_la_sortie` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/CapaciteEtPlacesDisponiblesTest.php` |
 | Doublures | horloge, prestataire de paiement |

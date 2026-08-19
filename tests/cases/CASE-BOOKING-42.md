@@ -4,7 +4,7 @@
 **Critères couverts :** AC-3, AC-6, AC-7
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -42,5 +42,5 @@ Et aucune relance n'est envoyée à ce client
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_42_solde_nul_et_creneau_annule` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/SoldeDeLaReservationTest.php` |
 | Doublures | horloge, prestataire de paiement, envoi de messages |

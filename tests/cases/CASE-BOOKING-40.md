@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-4, AC-5
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -41,5 +41,5 @@ Alors aucun second débit n'est demandé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_BOOKING_40_solde_regle_en_ligne_en_une_transaction` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/SoldeDeLaReservationTest.php` |
 | Doublures | horloge, prestataire de paiement |

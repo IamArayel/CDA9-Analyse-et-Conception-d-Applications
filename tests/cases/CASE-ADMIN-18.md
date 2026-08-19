@@ -4,7 +4,7 @@
 **Critères couverts :** AC-1, AC-4, AC-6
 **Type :** nominal
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -43,5 +43,5 @@ Alors rien ne se passe, et aucune erreur ne lui est présentée
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_18_pointage_du_solde_sans_transaction` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/PointageDuSoldeTest.php` |
 | Doublures | horloge, prestataire de paiement |

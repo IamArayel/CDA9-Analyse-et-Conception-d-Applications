@@ -4,7 +4,7 @@
 **Critères couverts :** AC-6, AC-7
 **Type :** limite
 **Niveau :** application
-**Statut :** à automatiser
+**Statut :** automatisé
 
 ## Préconditions
 
@@ -46,5 +46,5 @@ Et rien ne lui est réclamé
 | Attendu | Valeur |
 |---|---|
 | Nom du test | `test_CASE_ADMIN_16_retenue_plafonnee_a_lacompte` |
-| Emplacement | `tests/` |
+| Emplacement | `tests/Application/IssueDannulationClientTest.php` |
 | Doublures | horloge, prestataire de paiement |
