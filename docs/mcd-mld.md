@@ -71,6 +71,7 @@ Elles servent d'entrée au MCD. Chacune cite la spécification qui la porte.
 | JOUR_FERMETURE | date, récurrence annuelle | date | `SPEC-ADMIN-04` |
 | PARAMETRE | heure d'ouverture, heure de fermeture, délai du message de rappel, heure d'envoi de l'alerte, délai de confirmation | identifiant technique | `SPEC-ADMIN-04`, `SPEC-CANCEL-05`, `SPEC-CANCEL-06` |
 | GERANT | e-mail, mot de passe | e-mail | `SPEC-ADMIN-01` |
+| PAIEMENT | type (acompte ou solde), montant, canal (en ligne ou sur place), date, auteur du pointage | identifiant technique | `SPEC-BOOKING-07`, `SPEC-BOOKING-12`, `SPEC-ADMIN-07` |
 
 ## 4. MCD - associations et cardinalités
 
@@ -84,6 +85,7 @@ Elles servent d'entrée au MCD. Chacune cite la spécification qui la porte.
 | notifier | RESERVATION | 0,n | NOTIFICATION | 1,1 |
 | donner lieu à | RESERVATION | 0,1 | CHOIX_ANNULATION | 1,1 |
 | matérialiser | CHOIX_ANNULATION | 0,1 | AVOIR | 0,1 |
+| régler | RESERVATION | 0,n | PAIEMENT | 1,1 |
 
 TARIF, JOUR_FERMETURE, PARAMETRE et GERANT sont des entités de référence,
 sans association : elles sont lues par l'application, jamais rattachées à une
@@ -190,6 +192,9 @@ GERANT (id, email, mot_de_passe)
 
 PREVISION_METEO (id, date_prevision, texte)
     U : date_prevision
+
+PAIEMENT (id, #reservation_id, type, montant, canal, date_paiement,
+          pointe_par, annule)
 ```
 
 ## 7. MPD - types et contraintes MySQL
@@ -269,6 +274,25 @@ qu'aucune tâche n'ait à passer la supprimer. Le nettoyage périodique n'est
 qu'un entretien, jamais une condition de correction : une panne du
 planificateur ne bloque aucune vente.
 
+**`paiement` est une table et non trois colonnes sur `reservation`.** Trois
+colonnes, `montant_acompte`, `montant_verse` et `statut_paiement`, auraient
+suffi à dire où en est une réservation. Elles ne suffisent pas à dire
+**comment on y est arrivé**, et deux exigences le demandent : `REQ-117`, qui
+fait de l'acompte et du solde deux transactions distinctes, et `REQ-113`, qui
+exige qu'un pointage réversible laisse une trace. Un pointage posé puis
+annulé puis reposé se lit dans une table, il s'écrase dans une colonne. Le
+montant versé se déduit alors par somme, ce que la volumétrie attendue rend
+sans conséquence.
+
+**`paiement.annule`** distingue un pointage rétracté d'un pointage supprimé :
+la ligne reste, marquée, et l'historique de `REQ-113` survit. Le solde d'une
+réservation est la somme de ses paiements non annulés.
+
+**`paiement.canal`** vaut `EN_LIGNE` ou `SUR_PLACE`. Un paiement `SUR_PLACE`
+n'a **jamais** de contrepartie chez le prestataire : l'outil enregistre un
+fait que le gérant lui rapporte, il ne provoque aucune transaction
+(`SPEC-ADMIN-07`).
+
 **Les statuts sont des `VARCHAR` contraints**, et non des `ENUM` MySQL :
 Doctrine ne gère pas nativement le type `ENUM`, et une valeur nouvelle
 imposerait une migration de type plutôt qu'une migration de contrainte.
@@ -314,6 +338,16 @@ code, parce que c'est ce document que le formateur lit.
 
 Le premier écart est un choix de conception, les deux autres sont des oublis du
 modèle que seuls les cas de test ont fait apparaître.
+
+## 10bis. Ce que le CR-06 ajoute au modèle
+
+`PAIEMENT` est la seule table nouvelle du changement d'acompte, et elle n'est
+pas encore migrée : le schéma en base décrit toujours le paiement intégral. Cet
+écart est **voulu et ordonné**, la chaîne descendant du cahier des charges vers
+le code, et il est déclaré dans `docs/traceability-trous.md`.
+
+`reservation.montant` ne change pas de sens : il reste le montant **dû**. Ce qui
+a été **versé** ne s'y lit plus, et se calcule désormais sur `PAIEMENT`.
 
 ## 11. Revue IA
 
