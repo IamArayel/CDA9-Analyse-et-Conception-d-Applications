@@ -61,6 +61,13 @@ final class JeuDeDonneesDeReference
     /** Seuil de maintien d'une sortie ouverte à la vente, cf. REQ-002. */
     public const SEUIL_DE_MAINTIEN = 6;
 
+    /**
+     * Taux d'acompte, en pourcentage, figés par CR-06/Q08 : le gérant ne peut
+     * pas les régler depuis l'espace de gestion.
+     */
+    public const TAUX_DACOMPTE_SORTIE = 30;
+    public const TAUX_DACOMPTE_PRIVATISATION = 50;
+
     /** Durée d'immobilisation des places, en minutes, cf. ADR-003. */
     public const DUREE_DIMMOBILISATION_EN_MINUTES = 15;
 
@@ -120,6 +127,30 @@ final class JeuDeDonneesDeReference
     public static function prixBaleines(int $adultes, int $enfants = 0): int
     {
         return $adultes * self::BALEINES_PRIX_ADULTE + $enfants * self::BALEINES_PRIX_ENFANT;
+    }
+
+    /**
+     * L'acompte d'une sortie, en centimes, arrondi au centime.
+     *
+     * Écrit ici pour que les cas se lisent « l'acompte de deux adultes » plutôt
+     * qu'en nombre nu. Le calcul lui-même appartient au domaine
+     * (SPEC-BOOKING-07 AC-9).
+     */
+    public static function acompteSortie(int $montantEnCentimes): int
+    {
+        return (int) round($montantEnCentimes * self::TAUX_DACOMPTE_SORTIE / 100);
+    }
+
+    /** L'acompte d'une privatisation, la moitié du forfait. */
+    public static function acomptePrivatisation(int $forfaitEnCentimes): int
+    {
+        return (int) round($forfaitEnCentimes * self::TAUX_DACOMPTE_PRIVATISATION / 100);
+    }
+
+    /** Ce qui reste dû après l'acompte. */
+    public static function soldeSortie(int $montantEnCentimes): int
+    {
+        return $montantEnCentimes - self::acompteSortie($montantEnCentimes);
     }
 
     /**

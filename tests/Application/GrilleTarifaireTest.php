@@ -36,7 +36,7 @@ final class GrilleTarifaireTest extends CasDapplication
             Reference::TI_KAP,
             Reference::SORTIE_DAUPHINS,
         );
-        $dejaPayee = $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $dejaPayee = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
 
         ($this->service(ModifierUnTarif::class))->executer(
             Reference::SORTIE_DAUPHINS,

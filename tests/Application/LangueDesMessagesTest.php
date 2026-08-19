@@ -38,8 +38,8 @@ final class LangueDesMessagesTest extends CasDapplication
             Reference::SORTIE_DAUPHINS,
         );
         // CLIENT_JOHN a choisi l'anglais ; ce client-ci n'a rien choisi.
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 2);
-        $this->monde->reservationPayee($sortie, [
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 2);
+        $this->monde->reservationConfirmee($sortie, [
             'nom' => 'Sans', 'prenom' => 'Choix', 'email' => 'sans.choix@example.test',
             'telephone_mobile' => '0692000005', 'langue' => null,
         ], adultes: 1);

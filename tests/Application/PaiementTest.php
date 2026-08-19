@@ -53,9 +53,9 @@ final class PaiementTest extends CasDapplication
             $this->reservation($reservation)->statut(),
         );
         self::assertSame(
-            Reference::prixBaleines(2, 1),
+            Reference::acompteSortie(Reference::prixBaleines(2, 1)),
             $this->paiement->montantEncaisse($reservation),
-            'la totalité du montant est demandée au prestataire, sans acompte',
+            '30 % de 170 €, soit 51 €, et non la totalité',
         );
         self::assertSame(
             3,
@@ -127,7 +127,7 @@ final class PaiementTest extends CasDapplication
             'un seul encaissement est demandé au prestataire',
         );
         self::assertSame(
-            Reference::prixBaleines(2),
+            Reference::acompteSortie(Reference::prixBaleines(2)),
             $this->paiement->montantEncaisse($reservation),
         );
         self::assertSame(
@@ -199,7 +199,7 @@ final class PaiementTest extends CasDapplication
 
         // 14h15 passées : la place est reprise par un autre client.
         $this->horloge->nousSommesLe('2026-07-18 14:16');
-        $clientB = $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 1);
+        $clientB = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 1);
 
         $this->horloge->nousSommesLe('2026-07-18 14:17');
         $resultat = $this->confirmerLePaiement($clientA);
@@ -210,9 +210,9 @@ final class PaiementTest extends CasDapplication
             $resultat->motifDuRefus(),
         );
         self::assertSame(
-            Reference::prixDauphins(1),
+            Reference::acompteSortie(Reference::prixDauphins(1)),
             $this->paiement->montantRembourse($clientA),
-            'il est remboursé intégralement sans avoir à le demander',
+            'son acompte lui revient, sans qu\'il ait à le demander',
         );
         self::assertSame(
             StatutDeReservation::CONFIRMEE,

@@ -48,9 +48,9 @@ final class PrivatisationTest extends CasDapplication
             ->executer($privatisation->referenceDeReservation());
 
         self::assertSame(
-            Reference::TI_KAP_FORFAIT_PRIVATISATION,
+            Reference::acomptePrivatisation(Reference::TI_KAP_FORFAIT_PRIVATISATION),
             $this->paiement->montantEncaisse($privatisation->referenceDeReservation()),
-            'le montant est le forfait du bateau, indépendant des 4 participants',
+            '50 % du forfait, soit 300 €, indépendant des 4 participants',
         );
         self::assertSame(
             0,

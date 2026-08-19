@@ -71,8 +71,8 @@ final class AnnulationParLeGerantTest extends CasDapplication
     public function test_CASE_CANCEL_17_aucune_annulation_sans_decision_du_gerant(): void
     {
         $sortie = $this->sortie(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MATIN);
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 4);
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 4);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 4);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 4);
 
         $this->horloge->nousSommesLe('2026-07-19 09:00');
         ($this->service(MettreEnAlerte::class))
@@ -105,10 +105,10 @@ final class AnnulationParLeGerantTest extends CasDapplication
     public function test_CASE_CANCEL_18_double_annulation_et_creneau_passe_sans_effet(): void
     {
         $creneauAVenir = $this->sortie(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
-        $this->monde->reservationPayee($creneauAVenir, Reference::CLIENT_MARIE, adultes: 2);
+        $this->monde->reservationConfirmee($creneauAVenir, Reference::CLIENT_MARIE, adultes: 2);
 
         $creneauPasse = $this->sortie('2026-07-18', Reference::CRENEAU_MILIEU_DE_MATINEE);
-        $this->monde->reservationPayee($creneauPasse, Reference::CLIENT_JOHN, adultes: 2);
+        $this->monde->reservationConfirmee($creneauPasse, Reference::CLIENT_JOHN, adultes: 2);
 
         $this->horloge->nousSommesLe('2026-07-19 09:00');
         $this->annuler(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);

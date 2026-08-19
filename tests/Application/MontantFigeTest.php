@@ -66,9 +66,9 @@ final class MontantFigeTest extends CasDapplication
         ($this->service(ConfirmerLePaiement::class))->executer($reservation);
 
         self::assertSame(
-            Reference::prixDauphins(2),
+            Reference::acompteSortie(Reference::prixDauphins(2)),
             $this->paiement->montantEncaisse($reservation),
-            'le montant est figé à la validation du formulaire, il ne suit pas la grille',
+            'l\'acompte est calculé sur les 100 € figés, non sur les 110 € de la nouvelle grille',
         );
     }
 

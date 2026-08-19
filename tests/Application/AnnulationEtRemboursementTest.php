@@ -38,16 +38,25 @@ final class AnnulationEtRemboursementTest extends CasDapplication
     public function test_CASE_CANCEL_10_annulation_previent_par_ecrit_et_rembourse_en_totalite(): void
     {
         $sortie = $this->sortieDuMilieuDeMatinee();
-        $marie = $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
-        $john = $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 2, enfants: 2);
-        $karim = $this->monde->reservationPayee($sortie, Reference::CLIENT_KARIM, adultes: 4, enfants: 2);
+        $marie = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $john = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 2, enfants: 2);
+        $karim = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_KARIM, adultes: 4, enfants: 2);
 
         $this->annulerEtLaisserPartirLesMessages();
 
         self::assertSame(3, $this->paiement->nombreDeRemboursements());
-        self::assertSame(Reference::prixDauphins(2), $this->paiement->montantRembourse($marie));
-        self::assertSame(Reference::prixDauphins(2, 2), $this->paiement->montantRembourse($john));
-        self::assertSame(Reference::prixDauphins(4, 2), $this->paiement->montantRembourse($karim));
+        self::assertSame(
+            Reference::acompteSortie(Reference::prixDauphins(2)),
+            $this->paiement->montantRembourse($marie),
+        );
+        self::assertSame(
+            Reference::acompteSortie(Reference::prixDauphins(2, 2)),
+            $this->paiement->montantRembourse($john),
+        );
+        self::assertSame(
+            Reference::acompteSortie(Reference::prixDauphins(4, 2)),
+            $this->paiement->montantRembourse($karim),
+        );
 
         self::assertSame(
             6,
@@ -77,7 +86,7 @@ final class AnnulationEtRemboursementTest extends CasDapplication
     public function test_CASE_CANCEL_11_aucun_choix_propose_apres_annulation_gerant(): void
     {
         $sortie = $this->sortieDuMilieuDeMatinee();
-        $reservation = $this->monde->reservationPayee(
+        $reservation = $this->monde->reservationConfirmee(
             $sortie,
             Reference::CLIENT_MARIE,
             adultes: 4,
@@ -92,9 +101,9 @@ final class AnnulationEtRemboursementTest extends CasDapplication
             'ni report, ni avoir, ni choix de remboursement dans le parcours météo',
         );
         self::assertSame(
-            Reference::prixDauphins(4, 2),
+            Reference::acompteSortie(Reference::prixDauphins(4, 2)),
             $this->paiement->montantRembourse($reservation),
-            'le remboursement intégral est la seule issue',
+            'le remboursement de ce qu\'il a versé est la seule issue',
         );
     }
 
@@ -105,8 +114,8 @@ final class AnnulationEtRemboursementTest extends CasDapplication
     public function test_CASE_CANCEL_12_reservation_non_payee_aucun_remboursement(): void
     {
         $sortie = $this->sortieDuMilieuDeMatinee();
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 2, enfants: 2);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 2, enfants: 2);
 
         // Juste avant la fermeture des réservations du créneau de 10h, et donc
         // dans les quinze minutes qui précèdent l'annulation.
@@ -161,8 +170,8 @@ final class AnnulationEtRemboursementTest extends CasDapplication
     public function test_CASE_CANCEL_13_trace_des_envois_type_canal_et_date(): void
     {
         $sortie = $this->sortieDuMilieuDeMatinee();
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 2, enfants: 2);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 2, enfants: 2);
 
         // L'adresse de ce client est invalide : son e-mail partira en échec.
         $this->messages->feraEchouer(

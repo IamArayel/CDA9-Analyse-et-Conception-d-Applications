@@ -12,6 +12,7 @@ use App\Application\EmettreUnAvoir;
 use App\Application\ProgrammerUneSortie;
 use App\Application\ReglerLesParametres;
 use App\Application\SaisirLaPrevisionMeteo;
+use App\Application\SolderUneReservation;
 use App\Domaine\Entite\Bateau;
 use App\Domaine\Entite\Gerant;
 use App\Domaine\Entite\JourDeFermeture;
@@ -103,7 +104,12 @@ final class MondeDeTest
     }
 
     /**
-     * Une réservation payée, donc confirmée et comptée dans les inscrits.
+     * Une réservation confirmée par le versement de son **acompte**, donc
+     * comptée dans les inscrits et dans les places décomptées.
+     *
+     * Elle n'est pas soldée pour autant : depuis `CR-06`, confirmer et payer ne
+     * sont plus le même événement. Pour une réservation entièrement réglée,
+     * voir `reservationSoldee()`.
      *
      * Le montant n'est pas fourni : il est calculé par le domaine à partir des
      * tarifs de référence, comme il le sera en production. Un cas qui attend
@@ -114,7 +120,7 @@ final class MondeDeTest
      *
      * @return string la référence de la réservation
      */
-    public function reservationPayee(
+    public function reservationConfirmee(
         string $sortie,
         array $client,
         int $adultes,
@@ -148,13 +154,35 @@ final class MondeDeTest
     }
 
     /**
+     * Une réservation entièrement réglée : acompte versé, puis solde payé en
+     * ligne dans sa fenêtre.
+     *
+     * @param array{nom: string, prenom: string, email: string,
+     *              telephone_mobile: string, langue: string|null} $client
+     *
+     * @return string la référence de la réservation
+     */
+    public function reservationSoldee(
+        string $sortie,
+        array $client,
+        int $adultes,
+        int $enfants = 0,
+    ): string {
+        $reservation = $this->reservationConfirmee($sortie, $client, $adultes, $enfants);
+
+        $this->service(SolderUneReservation::class)->executer($reservation);
+
+        return $reservation;
+    }
+
+    /**
      * Un nombre de places vendues sur une sortie, quand l'identité des clients
      * n'intervient pas dans le cas.
      */
     public function placesVendues(string $sortie, int $nombre): void
     {
         for ($place = 1; $place <= $nombre; ++$place) {
-            $this->reservationPayee(
+            $this->reservationConfirmee(
                 $sortie,
                 [
                     'nom' => 'Passager',

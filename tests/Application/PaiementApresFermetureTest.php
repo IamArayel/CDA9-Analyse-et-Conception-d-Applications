@@ -58,7 +58,7 @@ final class PaiementApresFermetureTest extends CasDapplication
             ($this->service(ConsulterUneReservation::class))->executer($reservation)->statut(),
         );
         self::assertSame(
-            Reference::prixDauphins(2),
+            Reference::acompteSortie(Reference::prixDauphins(2)),
             $this->paiement->montantEncaisse($reservation),
         );
     }

@@ -108,8 +108,8 @@ final class AlerteMeteoTest extends CasDapplication
     public function test_CASE_CANCEL_03_message_alerte_la_veille_a_18h_sur_deux_canaux(): void
     {
         $sortie = $this->sortieDuMatin();
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 1);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 1);
 
         $this->mettreEnAlerte(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MATIN);
 
@@ -160,7 +160,7 @@ final class AlerteMeteoTest extends CasDapplication
     public function test_CASE_CANCEL_04_sortie_maintenue_aucun_second_message(): void
     {
         $sortie = $this->sortieDuMatin();
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
 
         $this->mettreEnAlerte(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MATIN);
 
@@ -197,8 +197,8 @@ final class AlerteMeteoTest extends CasDapplication
     public function test_CASE_CANCEL_05_annulation_confirmee_deux_heures_avant_le_depart(): void
     {
         $sortie = $this->sortieDuMatin();
-        $marie = $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
-        $john = $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 2, enfants: 2);
+        $marie = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $john = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 2, enfants: 2);
 
         $this->mettreEnAlerte(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MATIN);
         $this->horloge->nousSommesLe('2026-07-19 18:00');
@@ -237,12 +237,12 @@ final class AlerteMeteoTest extends CasDapplication
         );
 
         self::assertSame(
-            Reference::prixDauphins(2),
+            Reference::acompteSortie(Reference::prixDauphins(2)),
             $this->paiement->montantRembourse($marie),
-            'remboursement intégral, sans retenue',
+            'la totalité de ce qu\'il a versé, sans retenue',
         );
         self::assertSame(
-            Reference::prixDauphins(2, 2),
+            Reference::acompteSortie(Reference::prixDauphins(2, 2)),
             $this->paiement->montantRembourse($john),
         );
         self::assertSame(2, $this->paiement->nombreDeRemboursements());
@@ -304,7 +304,7 @@ final class AlerteMeteoTest extends CasDapplication
         $this->envoyerLesMessagesProgrammes();
 
         $this->horloge->nousSommesLe('2026-07-20 11:00');
-        $tardif = $this->monde->reservationPayee(
+        $tardif = $this->monde->reservationConfirmee(
             $sortie,
             Reference::CLIENT_KARIM,
             adultes: 1,
@@ -334,9 +334,9 @@ final class AlerteMeteoTest extends CasDapplication
             'il reçoit tout de même la confirmation d\'annulation',
         );
         self::assertSame(
-            Reference::prixDauphins(1),
+            Reference::acompteSortie(Reference::prixDauphins(1)),
             $this->paiement->montantRembourse($tardif),
-            'et il est remboursé intégralement',
+            'et il est remboursé de ce qu\'il a versé',
         );
     }
 
@@ -347,7 +347,7 @@ final class AlerteMeteoTest extends CasDapplication
     public function test_CASE_CANCEL_08_alerte_posee_apres_lheure_part_immediatement(): void
     {
         $sortie = $this->sortieDuMatin();
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 1);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 1);
 
         $this->horloge->nousSommesLe('2026-07-19 21:00');
         $this->mettreEnAlerte(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MATIN);
@@ -380,7 +380,7 @@ final class AlerteMeteoTest extends CasDapplication
             Reference::CRENEAU_MILIEU_DE_MATINEE,
             Reference::TI_KAP,
         );
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 1);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 1);
 
         $this->horloge->nousSommesLe('2026-07-20 09:00');
         $this->mettreEnAlerte(self::LENDEMAIN_DU_JOUR_PIVOT, Reference::CRENEAU_MILIEU_DE_MATINEE);

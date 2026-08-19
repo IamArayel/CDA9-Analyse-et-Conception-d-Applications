@@ -33,9 +33,9 @@ final class ExportDuPlanningTest extends CasDapplication
         $milieu = $this->sortie(Reference::CRENEAU_MILIEU_DE_MATINEE);
         $apresMidi = $this->sortie(Reference::CRENEAU_APRES_MIDI);
 
-        $this->monde->reservationPayee($matin, Reference::CLIENT_MARIE, adultes: 2);
-        $this->monde->reservationPayee($matin, Reference::CLIENT_JOHN, adultes: 1);
-        $this->monde->reservationPayee($milieu, Reference::CLIENT_KARIM, adultes: 2);
+        $this->monde->reservationConfirmee($matin, Reference::CLIENT_MARIE, adultes: 2);
+        $this->monde->reservationConfirmee($matin, Reference::CLIENT_JOHN, adultes: 1);
+        $this->monde->reservationConfirmee($milieu, Reference::CLIENT_KARIM, adultes: 2);
 
         $this->horloge->nousSommesLe('2026-07-20 11:00');
         $this->monde->reservationImmobilisee($apresMidi, ['nom' => 'Nguyen', 'prenom' => 'Lan',
