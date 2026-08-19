@@ -724,8 +724,11 @@ une exigence `Must`.
   que la migration est écrite en dialecte MySQL, `AUTO_INCREMENT`, `utf8mb4`
   et `DROP FOREIGN KEY` : elle échouerait entièrement sur ce conteneur. Le
   fichier a été produit par la recette Symfony pendant l'installation et
-  commité sans relecture → **à retirer ou à convertir en MySQL avant la revue
-  croisée**.
+  commité sans relecture → **converti en MySQL 9.3 le jour même**, avec
+  `compose.override.yaml` qui exposait le port 5432, et une variante
+  documentée dans `.env` pour ceux qui travailleront sur le conteneur plutôt
+  que sur un MySQL local. Les marqueurs de recette sont conservés, et
+  l'en-tête du fichier dit pourquoi il s'écarte de ce que la recette produit.
 
 **Ce qui a été généré aujourd'hui.**
 - Vingtième plan de délégation, `docs/delegation-SOCLE.md` - `1fd48f1`
