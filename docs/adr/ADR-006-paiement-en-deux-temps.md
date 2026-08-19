@@ -1,7 +1,7 @@
 # ADR-006 - Paiement en deux temps, acompte puis solde
 
 **Statut :** accepté
-**Date :** J9 (2026-08-19)
+**Date :** J8 (2026-08-19)
 **Décidé par :** le client sur le principe (`CR-06/Q09`), l'équipe sur les conséquences
 **Complète :** `ADR-001-stack.md` §5, qui a retenu le prestataire sans instruire
 le paiement fractionné, et `ADR-003-concurrence-derniere-place.md`, dont une
