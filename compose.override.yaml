@@ -1,7 +1,11 @@
+# Surcharge de développement : expose le port de la base sur un port libre de
+# l'hôte, que `docker compose port database 3306` révèle.
+#
+# 3306 et non 5432 : voir l'en-tête de compose.yaml.
 
 services:
 ###> doctrine/doctrine-bundle ###
   database:
     ports:
-      - "5432"
+      - "3306"
 ###< doctrine/doctrine-bundle ###
