@@ -329,7 +329,11 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 - `REQ-058` : le remboursement est exécuté par le prestataire après validation du gérant.
 
 **Statut :** revue IA faite
-**Version :** v2
+**Version :** v3
+
+> **v3, 2026-08-19.** « Remboursé intégralement » désigne désormais la totalité
+> de ce que le client a **effectivement versé**, soit son acompte seul si le
+> solde n'a pas été réglé. Le gérant ne verse jamais plus qu'il n'a encaissé.
 
 ### Règle
 
