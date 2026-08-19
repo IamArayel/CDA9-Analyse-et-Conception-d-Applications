@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Horloge;
 
+use App\Domaine\FuseauDexploitation;
 use App\Domaine\Horloge;
 use DateTimeImmutable;
 use DateTimeZone;
@@ -20,7 +21,7 @@ use DateTimeZone;
 final class HorlogeSysteme implements Horloge
 {
     public function __construct(
-        private readonly string $fuseauDexploitation = 'UTC',
+        private readonly string $fuseauDexploitation = FuseauDexploitation::IDENTIFIANT,
     ) {
     }
 
