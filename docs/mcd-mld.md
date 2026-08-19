@@ -163,10 +163,12 @@ RESERVATION (id, #sortie_id, #bon_cadeau_id, #avoir_id, nom_client,
     U : bon_cadeau_id
     U : avoir_id
 
-BON_CADEAU (id, code, montant, date_achat, date_expiration, statut)
+BON_CADEAU (id, code, montant, date_achat, date_expiration, statut,
+            email_beneficiaire)
     U : code
 
-AVOIR (id, code, montant, date_emission, date_expiration, statut)
+AVOIR (id, code, montant, date_emission, date_expiration, statut,
+       email_beneficiaire)
     U : code
 
 NOTIFICATION (id, #reservation_id, type, canal, date_envoi, statut)
@@ -185,6 +187,9 @@ PARAMETRE (id, heure_ouverture, heure_fermeture, delai_rappel_heures,
 
 GERANT (id, email, mot_de_passe)
     U : email
+
+PREVISION_METEO (id, date_prevision, texte)
+    U : date_prevision
 ```
 
 ## 7. MPD - types et contraintes MySQL
@@ -194,7 +199,7 @@ GERANT (id, email, mot_de_passe)
 | `bateau` | `id` | INT UNSIGNED | PK, auto-incrément |
 | | `nom` | VARCHAR(60) | NOT NULL, UNIQUE |
 | | `capacite` | SMALLINT UNSIGNED | NOT NULL, CHECK > 0 |
-| | `forfait_privatisation` | DECIMAL(8,2) | NULL, CHECK > 0 |
+| | `forfait_privatisation` | INT | NULL, CHECK > 0, en centimes |
 | `creneau` | `date_creneau` | DATE | NOT NULL |
 | | `heure_depart` | TIME | NOT NULL |
 | `sortie` | `creneau_id` | INT UNSIGNED | FK, NOT NULL |
@@ -211,7 +216,7 @@ GERANT (id, email, mot_de_passe)
 | | `email` | VARCHAR(180) | NOT NULL |
 | | `telephone_mobile` | VARCHAR(20) | NOT NULL |
 | | `nombre_adultes`, `nombre_enfants` | TINYINT UNSIGNED | NOT NULL |
-| | `montant` | DECIMAL(8,2) | NOT NULL, CHECK >= 0 |
+| | `montant` | INT | NOT NULL, CHECK >= 0, en centimes |
 | | `langue` | CHAR(2) | NOT NULL, défaut `fr` |
 | | `statut` | VARCHAR(30) | NOT NULL, CHECK IN (EN_ATTENTE_PAIEMENT, CONFIRMEE, ANNULEE) |
 | | `date_creation` | DATETIME | NOT NULL |
@@ -222,12 +227,12 @@ GERANT (id, email, mot_de_passe)
 | | `date_envoi` | DATETIME | NOT NULL |
 | | `statut` | VARCHAR(20) | NOT NULL, CHECK IN (ENVOYE, ECHEC) |
 | `bon_cadeau` | `code` | VARCHAR(16) | NOT NULL, UNIQUE |
-| | `montant` | DECIMAL(8,2) | NOT NULL, CHECK > 0 |
+| | `montant` | INT | NOT NULL, CHECK > 0, en centimes |
 | | `date_achat` | DATETIME | NOT NULL |
 | | `date_expiration` | DATE | NOT NULL |
 | | `statut` | VARCHAR(20) | NOT NULL, CHECK IN (ACTIF, CONSOMME, EXPIRE) |
 | `avoir` | `code` | VARCHAR(16) | NOT NULL, UNIQUE |
-| | `montant` | DECIMAL(8,2) | NOT NULL, CHECK > 0 |
+| | `montant` | INT | NOT NULL, CHECK > 0, en centimes |
 | | `date_emission` | DATETIME | NOT NULL |
 | | `date_expiration` | DATE | NOT NULL |
 | | `statut` | VARCHAR(20) | NOT NULL, CHECK IN (ACTIF, CONSOMME, EXPIRE) |
@@ -235,7 +240,7 @@ GERANT (id, email, mot_de_passe)
 | | `avoir_id` | INT UNSIGNED | FK, NULL |
 | | `type` | VARCHAR(20) | NOT NULL, CHECK IN (REPORT, AVOIR, REMBOURSEMENT) |
 | `tarif` | `type_sortie` | VARCHAR(20) | NOT NULL, UNIQUE |
-| | `prix_adulte`, `prix_enfant` | DECIMAL(6,2) | NOT NULL, CHECK > 0 |
+| | `prix_adulte`, `prix_enfant` | INT | NOT NULL, CHECK > 0, en centimes |
 | `jour_fermeture` | `date_fermeture` | DATE | NOT NULL, UNIQUE |
 | | `recurrent_annuel` | BOOLEAN | NOT NULL, défaut faux |
 | `parametre` | `heure_ouverture`, `heure_fermeture` | TIME | NOT NULL |
@@ -295,7 +300,22 @@ charges v4.
 | `choix_annulation` | Se rattache aux annulations demandées par le client (`SPEC-ADMIN-06`) et non plus à l'annulation météo |
 | `parametre` | Deux colonnes supplémentaires, l'heure d'envoi de l'alerte et le délai de confirmation, réglables par hypothèse d'équipe |
 
-## 10. Revue IA
+## 10. Ce que l'écriture du code a corrigé - J8
+
+Trois écarts entre ce document et le schéma réellement migré, découverts en
+implémentant les spécifications. Ils sont ici et non dans un commentaire de
+code, parce que c'est ce document que le formateur lit.
+
+| Objet | Ce que disait le MLD | Ce que dit le schéma | Pourquoi |
+|---|---|---|---|
+| Tous les montants | `DECIMAL(8,2)` et `DECIMAL(6,2)` | `INT`, en centimes | Doctrine rend un `DECIMAL` sous forme de chaîne PHP, ce qui imposerait une conversion à chaque lecture et à chaque comparaison. Les 76 cas de test raisonnent en centimes, et un entier ne dépend d'aucun arrondi |
+| `PREVISION_METEO` | absente | table nouvelle, une prévision par journée | `SPEC-CANCEL-05` AC-2 exige que le message de rappel porte les conditions prévues et les affaires à prévoir, saisies par le gérant. Rien ne les stockait |
+| `BON_CADEAU.email_beneficiaire`, `AVOIR.email_beneficiaire` | absentes | `VARCHAR(180)`, nullable | Aucun code ne portait de donnée personnelle, ce qui rendait sans objet l'exception de `SPEC-NFR-04` : la purge des trois mois n'avait rien à épargner sur un bon cadeau vivant |
+
+Le premier écart est un choix de conception, les deux autres sont des oublis du
+modèle que seuls les cas de test ont fait apparaître.
+
+## 11. Revue IA
 
 Consigne utilisée :
 
