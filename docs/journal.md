@@ -630,3 +630,131 @@ le rendu de vendredi : nous passons à l'étape suivante.
 - **Le fuseau horaire du lieu d'exploitation** n'a jamais été explicité. Les cas sont tous écrits en heure locale et le code de test porte une constante unique, aujourd'hui neutre, à changer quand le client répondra. Toutes nos règles étant horaires, c'est le point le plus silencieusement risqué du projet.
 - Le nom exact de la plateforme d'envoi, suspendu aux trois vérifications d'ouverture de compte.
 - Les neuf autres questions du §11, inchangées.
+
+---
+
+## J8 - 2026-08-19
+
+**Présents.** Équipe complète de développeurs. Journée de production de code,
+interrompue en fin d'après-midi par un sixième entretien client qui renverse
+une exigence `Must`.
+
+**Décisions.**
+- **Un vingtième plan de délégation a été écrit pour le socle**, alors que le
+  README ne l'exigeait pas : il n'impose un plan qu'avant la première tâche
+  « sur la spécification désignée », et le socle n'est pas une spécification.
+  Nous l'avons écrit quand même, parce que c'est lui qui fige l'API que les
+  76 tests appellent, et parce qu'un socle produit sans plan au milieu de
+  vingt-cinq se lirait comme un oubli plutôt que comme une décision.
+- **Persistance réelle, Doctrine et MySQL**, plutôt que des dépôts en mémoire.
+  Les dépôts en mémoire auraient fait passer les 66 tests applicatifs plus
+  vite, mais auraient contredit `ADR-002`, `architecture.md` §5 et la
+  stratégie de test, et vidé de leur objet les deux cas qui vérifient des
+  règles portées par la base.
+- **Mapping XML plutôt qu'attributs Doctrine.** `architecture.md` §2 range
+  Doctrine dans « ce qui n'a rien à y faire » dans le domaine. Le prix est un
+  fichier de correspondance par entité ; le gain est que les treize entités
+  restent du PHP nu, lisible et testable sans framework.
+- **Les trois ports portent l'identifiant du service, et non un alias.** Un
+  alias est résolu à la compilation : les cas de test n'auraient plus pu y
+  substituer leurs doublures.
+- **Deux adaptateurs échouent bruyamment.** `Notificateur` et
+  `PrestataireDePaiement` devaient être liés pour que le conteneur compile,
+  mais ni Brevo ni Stripe ne sont intégrés. Ils lèvent une exception nommant
+  l'ADR ou la spécification qui doit livrer le vrai adaptateur : un envoi ou
+  un encaissement silencieusement perdu coûterait bien plus cher.
+- **Les 76 tests sont au vert**, 317 assertions. Les trois cas d'usage `Must`
+  fonctionnent de bout en bout.
+- **Le code ne sera pas modifié après `CR-06`**, décision prise à réception de
+  l'analyse d'impact. Trois questions bloquantes sont sans réponse, douze
+  tests verts deviendraient faux, et la chaîne documentaire pèse 30 % de la
+  note contre 12 % pour le code. C'est un arbitrage, et il est écrit au §9 de
+  `impact-CR-004.md` pour pouvoir être défendu ou contesté.
+
+**Critiques de l'IA acceptées.**
+- Le plan du socle annonçait 19 types de contrat ; l'agent en a dénombré 24 en
+  écrivant, quatre n'étant atteignables que comme valeurs de retour → tableau
+  « Après » du plan renseigné `repris` avec le motif, plutôt qu'un `conforme`
+  qui n'aurait rien observé - `41ba442`
+- `doctrine:migrations:diff` ne produit ni la colonne générée du naturaliste
+  ni aucune contrainte `CHECK` → les trois éléments ont été écrits à la main
+  et **vérifiés en SQL** : six sondes, six refus attendus - `734226b`
+- `ExporterLePlanning` ne produit pas de PDF et `CASE-ADMIN-06` ne peut pas le
+  voir, puisqu'il interroge une valeur constante → déclaré dans
+  `traceability-trous.md` plutôt que masqué - `a690eab`
+- Écrire une branche « si le créneau était en alerte » dans
+  `EnregistrerUneIssueDannulation` laisserait croire que le barème dégressif
+  vit quelque part dans le code → aucune branche, le barème reste appliqué à
+  la main par le gérant - `0653f25`
+
+**Critiques de l'IA refusées, et pourquoi.**
+- Aucune, pour le troisième jour consécutif. L'en-tête de ce journal prévient
+  qu'un journal parfaitement propre peut vouloir dire qu'on a tout pris : nous
+  le notons plutôt que de l'ignorer. L'explication tient à la nature des trois
+  journées, J7 et J8 ayant consisté à exécuter des arbitrages rendus à J5 et
+  J6. **Trois choix ont bien été tranchés par l'équipe contre les options que
+  l'agent avait posées** : la persistance réelle, le vingtième plan de
+  délégation, et la profondeur plutôt que la largeur sur le périmètre. Ce sont
+  des arbitrages, pas des refus, et la distinction est honnête.
+
+**Erreurs produites par l'IA et détectées.**
+- L'agent a affirmé qu'une réservation à moins de 24 heures du départ était
+  impossible sur les créneaux de 7h et 10h, et que la demande du client ne
+  concernait donc que celui de 14h. **C'est faux** : pour un départ à 7h, la
+  fermeture à midi la veille tombe 19 heures avant, et la fenêtre existe donc
+  bien, large de cinq heures → repéré en rédigeant `CR-06`, avant que
+  l'analyse d'impact ne s'appuie dessus. Corrigé, et l'ambiguïté réelle
+  qu'elle masquait est consignée au §6 de `CR-06`.
+- Du **code de production dépendait d'une constante de test** :
+  `SortieRepository` importait `App\Tests\JeuDeDonneesDeReference` pour lire
+  le fuseau horaire → repéré par un contrôle mécanique,
+  `grep -rn 'App\\Tests' src/`, corrigé en créant `FuseauDexploitation` dans
+  le domaine - `fe0ed80`
+- Les 76 tests instanciaient les services applicatifs avec
+  `new Service($horloge)`, convention fixée à J7 avant que le socle n'existe.
+  Un service qui parle à la base reçoit ses dépôts, et cette liste ne regarde
+  pas le cas de test → 94 instanciations converties en lecture du conteneur,
+  **sans qu'aucune assertion ne bouge** - `bbe0e2f`
+- Trois assertions écrites à J7 étaient plus larges que le cas qu'elles
+  servaient : deux vérifiaient qu'aucun encaissement n'avait eu lieu alors que
+  le cas parle d'un client précis, une comptait tous les messages alors que le
+  cas exclut explicitement le rappel → recentrées sur ce que le fichier de cas
+  décrit - `6b59786`, `eba6759`
+- **`compose.yaml` déclare PostgreSQL 16** alors qu'`ADR-002` retient MySQL et
+  que la migration est écrite en dialecte MySQL, `AUTO_INCREMENT`, `utf8mb4`
+  et `DROP FOREIGN KEY` : elle échouerait entièrement sur ce conteneur. Le
+  fichier a été produit par la recette Symfony pendant l'installation et
+  commité sans relecture → **à retirer ou à convertir en MySQL avant la revue
+  croisée**.
+
+**Ce qui a été généré aujourd'hui.**
+- Vingtième plan de délégation, `docs/delegation-SOCLE.md` - `1fd48f1`
+- Socle : Symfony 8, Doctrine, treize entités en PHP nu, mapping XML, deux
+  migrations dont les trois éléments manuels - `dcef16f`, `c787115`,
+  `734226b`, `5fc6233`, `29a36e2`, `916d05e`, `ffa947b`
+- 24 types de contrat, 12 politiques et services de domaine, 30 services
+  applicatifs, 8 dépôts - `41ba442`, `18255d4`, `fe0ed80`, `ca42af8`,
+  `6f1c01d`, `0a99c87`, `4057885`, `87cbf39`, `a4a9ed9`, `91ed181`,
+  `3d8b113`, `e828447`, `0653f25`, `807f20b`
+- Catalogues de traduction français et anglais, gabarits des trois messages
+  **provisoires** faute de rédaction fournie - `807f20b`
+- `docs/compte-rendu-entretien-06.md` et `docs/impact-CR-004.md` - `58d08f8`,
+  `49acdc0`
+- Mises à jour documentaires : `mcd-mld.md` §10, `architecture.md` §4,
+  `traceability-trous.md`, les 26 tableaux « Après » - `b4105cf`, `66ad2f8`,
+  `a690eab`, `b142809`
+
+**Questions ouvertes pour le client.**
+- **Trois questions bloquantes** empêchent d'écrire la règle de plafonnement :
+  le taux de retenue en deçà de 24 heures, tranche que le barème n'a jamais
+  couverte ; le sort de la part d'acompte qui excède la commission dans les
+  deux tranches hautes ; et l'interdiction ou non du paiement en ligne pour
+  une réservation tardive.
+- Cinq autres questions au §8 de `CR-06`, dont la facture unique, qui
+  contredit `REQ-018` en déléguant la facturation à un prestataire qui ne
+  verra jamais un solde encaissé au quai.
+- La fenêtre de paiement du solde est une **déduction d'équipe**, la seule
+  réponse de `CR-06` que le client n'ait pas donnée lui-même.
+- Le texte des trois messages automatiques, toujours pas fourni. Des gabarits
+  provisoires sont écrits, ne disant que ce que les spécifications
+  établissent.
