@@ -7,7 +7,22 @@ Une ligne par exigence qu'aucune spécification ne reprend encore, au format
 la troisième colonne du tableau « Exigences non couvertes » ; la priorité,
 elle, est lue dans le cahier des charges.
 
-Aucune exigence non couverte à ce jour.
+Les douze exigences ci-dessous viennent de `CR-06`, reçu à J8 après l'écriture du code. La
+descente vers les spécifications est planifiée au §10 de `impact-CR-004.md` ; tant
+qu'elle n'est pas faite, l'écart est déclaré ici plutôt que découvert à la revue.
+
+REQ-108 | acompte de 30 % : `SPEC-BOOKING-07` doit être refondue, elle spécifie aujourd'hui le paiement intégral que CR-06 renverse
+REQ-109 | acompte de 50 % : dépend de la même refonte, plus une reprise de `SPEC-BOOKING-05`
+REQ-110 | l'acompte confirme la réservation : change le fait générateur de l'état « confirmée » dans `SPEC-BOOKING-03`, dont neuf critères sont à relire
+REQ-111 | fenêtre de paiement du solde : demande une spécification neuve, `SPEC-BOOKING-12`. La borne elle-même est une déduction d'équipe non validée, question 16 du §11
+REQ-112 | solde réglé sur place : même spécification neuve, plus le pointage côté gestion
+REQ-113 | pointage réversible et tracé : demande une spécification neuve, `SPEC-ADMIN-07`
+REQ-114 | planning distinguant les soldés : reprise de `SPEC-ADMIN-03`, dont l'export ne rend d'ailleurs pas encore de PDF
+REQ-115 | commission plafonnée : reprise de `SPEC-ADMIN-06`. La restitution de la différence est une hypothèse d'équipe, question 19 du §11
+REQ-116 | codes hors acompte : reprise de `SPEC-BOOKING-09` et `SPEC-BOOKING-10`, quatorze critères à relire
+REQ-117 | deux transactions distinctes : demande `ADR-006`, le choix du prestataire n'ayant pas instruit le paiement en deux temps
+REQ-118 | absent traité comme annulation : le barème n'a aucune tranche en deçà de 24 heures, le taux est une hypothèse d'équipe, question 17 du §11
+REQ-119 | facture unique acquittée : entre en tension avec `REQ-018`, qui délègue la facturation à un prestataire qui ne verra jamais un solde encaissé sur place. Question 18 du §11
 
 ## trous
 
@@ -28,3 +43,4 @@ Aucune exigence non couverte à ce jour.
 | L'export du planning ne produit pas de PDF | J8 | `ExporterLePlanning` produit le contenu du document, groupé par créneau et ordonné ; sa mise en page appartient à la couche Interface, qui n'existe pas encore. **`CASE-ADMIN-06` ne fait pas la différence** : il vérifie `estUnPdf()`, qui rend une valeur constante | à rendre avec la couche de présentation ; d'ici là, le cas de test surestime ce qu'il prouve, et c'est écrit ici plutôt que découvert à J10 |
 | La couche `Interface` n'est pas écrite | J8 | les 76 cas de test entrent par la couche Application ; aucun écran n'est donc nécessaire pour les faire passer, et en écrire un sans spécification d'écran serait du code non couvert | à ouvrir quand un parcours devra être montré à l'écran, au plus tard pour la démonstration de J10 |
 | Deux ports n'ont pas d'adaptateur réel | J8 | `Notificateur` et `PrestataireDePaiement` sont liés à des adaptateurs qui **échouent bruyamment**, l'intégration de Brevo relevant d'`ADR-004` et celle de Stripe de `SPEC-BOOKING-07`. En test, les doublures les remplacent | assumé : un envoi ou un encaissement silencieusement perdu coûterait bien plus cher qu'une erreur visible. À intégrer avant toute mise en production |
+| Le code et les cas de test restent en v5 | J8 | `CR-06` renverse `REQ-017` le soir de la journée d'implémentation. Le cahier des charges passe en v6 le jour même, les spécifications suivent à J9 ; **les 82 cas de test, les 76 tests et le code décrivent encore le paiement intégral** | écart voulu et ordonné : la chaîne descend du cahier des charges vers le code, jamais l'inverse. Le lot code est conditionné à un point d'arrêt le 21/08 à 09h00, cf. §9 de `impact-CR-004.md` |
