@@ -47,17 +47,28 @@ C'est une prévision, pas un compte rendu.
 
 ## Après - ce qui s'est passé
 
+**Rempli au rituel de 16h15 du J8.**
+
+Le découpage prévoyait **une tâche par cas de test, confiée séparément**. Dans
+les faits, le code a été produit **spécification par spécification** : un même
+service applicatif satisfait plusieurs cas, et le scinder en autant de tâches
+aurait produit du code jetable entre deux passages. Les tests attendus sont
+passés au vert dans l'ordre prévu par les dépendances, mais **les tâches n'ont
+pas été des unités de délégation distinctes**. C'est l'écart principal de la
+journée, il vaut pour les vingt-six plans, et il tient au découpage que nous
+avons écrit, pas à l'agent.
+
 | # | Résultat | Ce qui a fait reprendre la main |
 |---|---|---|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
-| 6 | | |
-| 7 | | |
-| 8 | | |
-| 9 | | |
+| 1 | `conforme` |  |
+| 2 | `conforme` |  |
+| 3 | `conforme` |  |
+| 4 | `repris` | l'assertion comptait **tous** les messages, alors que le fichier de cas exclut explicitement le rappel, « qui part indépendamment » |
+| 5 | `conforme` |  |
+| 6 | `conforme` |  |
+| 7 | `conforme` |  |
+| 8 | `conforme` |  |
+| 9 | `conforme` |  |
 
 | Résultat | Sens |
 |---|---|

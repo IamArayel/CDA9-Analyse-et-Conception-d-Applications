@@ -48,16 +48,27 @@ livré pour `SPEC-BOOKING-01`, `SPEC-BOOKING-02` et `SPEC-BOOKING-06`.
 
 ## Après - ce qui s'est passé
 
+**Rempli au rituel de 16h15 du J8.**
+
+Le découpage prévoyait **une tâche par cas de test, confiée séparément**. Dans
+les faits, le code a été produit **spécification par spécification** : un même
+service applicatif satisfait plusieurs cas, et le scinder en autant de tâches
+aurait produit du code jetable entre deux passages. Les tests attendus sont
+passés au vert dans l'ordre prévu par les dépendances, mais **les tâches n'ont
+pas été des unités de délégation distinctes**. C'est l'écart principal de la
+journée, il vaut pour les vingt-six plans, et il tient au découpage que nous
+avons écrit, pas à l'agent.
+
 | # | Résultat | Ce qui a fait reprendre la main |
 |---|---|---|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
-| 6 | | |
-| 7 | | |
-| 8 | | |
+| 1 | `conforme` |  |
+| 2 | `conforme` |  |
+| 3 | `repris` | l'assertion du cas vérifiait qu'**aucun** encaissement n'avait eu lieu, alors que le montage du monde paie désormais réellement ses réservations. Recentrée sur le second client, seul concerné |
+| 4 | `conforme` |  |
+| 5 | `conforme` |  |
+| 6 | `conforme` |  |
+| 7 | `repris` | l'index unique fait **fermer le gestionnaire d'entités** de Doctrine, ce qui rend la suite de la requête inutilisable. Un contrôle applicatif le double maintenant pour rendre un refus propre ; l'index reste la garantie sous concurrence |
+| 8 | `conforme` |  |
 
 | Résultat | Sens |
 |---|---|

@@ -89,13 +89,22 @@ sans qu'aucun test de niveau domaine ne s'en aperçoive.
 
 ## Après - ce qui s'est passé
 
-Complété au rituel de 16h15, le même jour.
+**Rempli au rituel de 16h15 du J8.**
+
+Le découpage prévoyait **une tâche par cas de test, confiée séparément**. Dans
+les faits, le code a été produit **spécification par spécification** : un même
+service applicatif satisfait plusieurs cas, et le scinder en autant de tâches
+aurait produit du code jetable entre deux passages. Les tests attendus sont
+passés au vert dans l'ordre prévu par les dépendances, mais **les tâches n'ont
+pas été des unités de délégation distinctes**. C'est l'écart principal de la
+journée, il vaut pour les vingt-six plans, et il tient au découpage que nous
+avons écrit, pas à l'agent.
 
 | # | Résultat | Ce qui a fait reprendre la main |
 |---|---|---|
-| 1 | | |
-| 2 | | |
-| 3 | | |
+| 1 | `repris` | 19 types annoncés, 24 écrits : quatre ne sont atteignables que comme valeurs de retour et n'apparaissent donc dans aucun `use`, et `TypeDeSortie` est apparu en écrivant la politique de saison |
+| 2 | `repris` | `generated="ALWAYS"` ne suffit pas : sans `insertable="false"`, MySQL refuse l'INSERT sur une colonne générée. Les trois éléments manuels de la migration ont bien dû être écrits à la main, comme le plan l'annonçait |
+| 3 | `redécoupé` | les 76 tests instanciaient les services avec `new Service($horloge)`, convention fixée à J7 avant que le socle n'existe. 94 instanciations converties en lecture du conteneur, sans toucher une seule assertion |
 
 | Résultat | Sens |
 |---|---|

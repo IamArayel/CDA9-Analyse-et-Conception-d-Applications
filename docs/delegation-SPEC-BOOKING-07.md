@@ -46,13 +46,24 @@ suppose les quatre autres, et c'est la seule qui déclenche un remboursement.
 
 ## Après - ce qui s'est passé
 
+**Rempli au rituel de 16h15 du J8.**
+
+Le découpage prévoyait **une tâche par cas de test, confiée séparément**. Dans
+les faits, le code a été produit **spécification par spécification** : un même
+service applicatif satisfait plusieurs cas, et le scinder en autant de tâches
+aurait produit du code jetable entre deux passages. Les tests attendus sont
+passés au vert dans l'ordre prévu par les dépendances, mais **les tâches n'ont
+pas été des unités de délégation distinctes**. C'est l'écart principal de la
+journée, il vaut pour les vingt-six plans, et il tient au découpage que nous
+avons écrit, pas à l'agent.
+
 | # | Résultat | Ce qui a fait reprendre la main |
 |---|---|---|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
+| 1 | `conforme` |  |
+| 2 | `repris` | même correction que sur `SPEC-BOOKING-03` : l'absence de débit se vérifie sur le client concerné, pas sur l'ensemble du créneau |
+| 3 | `conforme` |  |
+| 4 | `conforme` |  |
+| 5 | `conforme` |  |
 
 | Résultat | Sens |
 |---|---|
