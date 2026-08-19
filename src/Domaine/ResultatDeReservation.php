@@ -18,6 +18,8 @@ final class ResultatDeReservation
     public const MOTIF_COORDONNEES_INVALIDES = 'COORDONNEES_INVALIDES';
     public const MOTIF_BATEAU_DEJA_ENGAGE = 'BATEAU_DEJA_ENGAGE';
     public const MOTIF_CRENEAU_ANNULE = 'CRENEAU_ANNULE';
+    public const MOTIF_CRENEAU_FERME = 'CRENEAU_FERME';
+    public const MOTIF_COMPOSITION_INVALIDE = 'COMPOSITION_INVALIDE';
 
     private function __construct(
         private readonly ?string $referenceDeReservation,
