@@ -13,6 +13,10 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            # Les catalogues de traduction sont une donnée d'environnement, pas
+            # une constante du code : leur emplacement est injecté.
+            string $dossierDesTraductions: '%kernel.project_dir%/translations'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -59,6 +63,8 @@ when@test:
             autowire: true
             autoconfigure: true
             public: true
+            bind:
+                string $dossierDesTraductions: '%kernel.project_dir%/translations'
 
         App\Application\:
             resource: '../src/Application/'
