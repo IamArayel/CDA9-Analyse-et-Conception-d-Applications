@@ -12,8 +12,17 @@
          failOnWarning="true">
     <php>
         <!-- Sans cela, tests/bootstrap.php ne charge pas .env.test et le noyau
-             de test reste introuvable. -->
+             de test reste introuvable.
+
+             Les deux balises sont nécessaires, et ce n'est pas une redondance.
+             `<env>` n'écrit que putenv() et $_ENV, jamais $_SERVER, alors que
+             Dotenv::bootEnv() lit `$_SERVER['APP_ENV'] ?? $_ENV['APP_ENV']`.
+             Un APP_ENV exporté dans le shell atterrit dans $_SERVER : sans la
+             balise `<server>`, il gagne malgré force="true", .env.dev est
+             chargé à la place de .env.test, KERNEL_CLASS n'existe pas et tous
+             les tests de niveau application tombent en erreur. -->
         <env name="APP_ENV" value="test" force="true"/>
+        <server name="APP_ENV" value="test" force="true"/>
         <ini name="display_errors" value="1"/>
         <ini name="error_reporting" value="-1"/>
     </php>

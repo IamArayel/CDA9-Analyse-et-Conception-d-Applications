@@ -97,6 +97,11 @@ Ce qu'elle affiche, dans l'ordre :
 
 ### 2.2 Les tests, pour prouver ce que la commande montre
 
+**Prérequis : la base doit tourner**, donc `make presentation` avant, ou au
+minimum `make demarrer bases`. Les tests de niveau application parlent à la
+vraie base ; sans elle, les trois commandes sortent en `Errors` avec
+`0 assertion`, ce qui n'est pas un test rouge mais une base absente.
+
 ```bash
 vendor/bin/phpunit --filter SoldeDeLaReservation   # SPEC-BOOKING-12
 vendor/bin/phpunit --filter PointageDuSolde        # SPEC-ADMIN-07
