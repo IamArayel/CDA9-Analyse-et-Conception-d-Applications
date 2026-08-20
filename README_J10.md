@@ -9,63 +9,47 @@ quel ordre, ce qu'on montre, et ce qu'on assume.
 
 ---
 
-## 1. Avant tout, dans l'ordre
+## 1. Avant tout, une seule commande
 
-### 1.0 Démarrer la base
+```bash
+make presentation
+```
+
+Elle fait tout, dans l'ordre, et elle est **idempotente** : la rejouer sur une
+machine déjà prête ne fait que revérifier.
+
+| Elle enchaîne | Attendu |
+|---|---|
+| démarre le conteneur et attend qu'il réponde | `attente ok` |
+| **vérifie que la base est bien sur 3306** | `base publiée sur 0.0.0.0:3306` |
+| crée `ti_baleine` et `ti_baleine_test` si elles manquent, puis migre | `[OK] Already at the latest version` |
+| affiche à quelle base on parle réellement | `ti_baleine_test`, `3306` |
+| passe les tests | `OK (87 tests, 360 assertions)` |
+| régénère la traçabilité | `5 rupture(s)`, pas une de plus |
+| valide le mapping contre le MLD | deux `[OK]` |
+
+Vérifié le 2026-08-20 **volume Docker détruit**, donc depuis une machine
+réellement vierge : 37 secondes, 87 tests verts.
+
+Les autres cibles, avec `make` seul pour la liste :
+
+```bash
+make demo          # rejoue le parcours complet, cf. §2
+make verifier      # les trois contrôles, sans toucher à la base
+make arreter       # arrête la base
+```
+
+### Pourquoi une vérification du port
 
 **La base du projet est le conteneur de `compose.yaml`, publié sur le port 3306
 de l'hôte.** C'est vrai depuis le 2026-08-20 seulement : avant, Docker tirait un
 port au hasard à chaque démarrage et le projet visait en réalité un MySQL
 installé sur le poste. Deux bases coexistaient sans que rien ne le dise, et cela
-a coûté une fausse alerte la veille du rendu.
+a coûté une fausse alerte la veille du rendu. `make presentation` s'arrête net si
+le port n'est pas le bon, plutôt que de laisser croire que la base est démarrée.
 
-```bash
-docker compose up -d
-docker compose ps        # attendu : Up (healthy), 0.0.0.0:3306->3306/tcp
-```
-
-Puis, en une commande, la preuve qu'on parle bien à la bonne base :
-
-```bash
-php bin/console --env=test dbal:run-sql "SELECT DATABASE() AS base, @@port AS port"
-# attendu : ti_baleine_test, 3306
-```
-
-### 1.1 Les trois contrôles
-
-Cinq minutes, **avant** que la salle se remplisse. Si l'un échoue, on le règle
-avant de passer au suivant.
-
-```bash
-# 1. Le schéma est à jour des deux côtés
-php bin/console doctrine:migrations:up-to-date
-php bin/console doctrine:migrations:up-to-date --env=test
-# attendu : [OK] Up-to-date! des deux côtés
-
-# 2. Les tests, tous
-vendor/bin/phpunit                    # attendu : OK (87 tests, 360 assertions)
-
-# 3. La chaîne de traçabilité
-./tools/traceability.sh               # attendu : 5 rupture(s), pas une de plus
-```
-
-Un quatrième contrôle, si le temps le permet :
-
-```bash
-php bin/console doctrine:schema:validate   # attendu : deux [OK]
-```
-
-**Sur une machine vierge**, les deux bases n'existent pas encore :
-
-```bash
-php bin/console doctrine:database:create --if-not-exists
-php bin/console doctrine:database:create --env=test --if-not-exists
-php bin/console doctrine:migrations:migrate --no-interaction
-php bin/console doctrine:migrations:migrate --env=test --no-interaction
-```
-
-> **Si `phpunit` n'est pas vert, on le dit.** Un rouge annoncé et expliqué coûte
-> moins qu'un rouge découvert par le formateur.
+> **Si `make presentation` n'est pas vert, on le dit.** Un rouge annoncé et
+> expliqué coûte moins qu'un rouge découvert par le formateur.
 
 ---
 
@@ -78,7 +62,7 @@ règle 1 est notée. Le parcours se montre donc de deux façons.
 ### 2.1 La commande, à lancer en direct
 
 ```bash
-php bin/console --env=demo ti-baleine:demontrer-le-parcours
+make demo
 ```
 
 Elle rejoue **« réserver, verser l'acompte, solder »** en huit étapes et annonce
@@ -282,11 +266,11 @@ que l'ordre a été tenu, et `main` n'a jamais reçu de rouge.
 
 | Symptôme | Cause probable | Geste |
 |---|---|---|
-| **`Tests: 87, Assertions: 39, Errors: 76`** | les 11 tests de domaine passent, les 76 applicatifs meurent tous sur la connexion : **la base n'est pas joignable** | `docker compose up -d`, attendre `healthy`, puis la commande de preuve du §1.0 |
-| `docker compose up` : *port is already allocated* | un autre MySQL a pris 3306 avant Docker | `lsof -nP -iTCP:3306 -sTCP:LISTEN` pour voir qui, puis l'arrêter |
-| `phpunit` : table inconnue | la base de test n'est pas migrée | `php bin/console doctrine:migrations:migrate --env=test -n` |
-| la commande `demo` : environnement non autorisé | cache d'une ancienne version | `php bin/console cache:clear --env=demo` |
-| la commande `demo` : nom de bateau déjà pris | la base de développement porte un « Ti Kap » | rien : la commande le détecte et le réutilise |
+| **`Tests: 87, Assertions: 39, Errors: 76`** | les 11 tests de domaine passent, les 76 applicatifs meurent tous sur la connexion : **la base n'est pas joignable** | `make presentation`, qui démarre la base, la vérifie et rejoue les contrôles |
+| `make presentation` : *port is already allocated*, ou « publiée sur ... et non sur 3306 » | un autre MySQL a pris 3306 avant Docker | `lsof -nP -iTCP:3306 -sTCP:LISTEN` pour voir qui, puis l'arrêter |
+| `phpunit` : table inconnue | la base de test n'est pas migrée | `make bases` |
+| `make demo` : environnement non autorisé | cache d'une ancienne version | `php bin/console cache:clear --env=demo` |
+| `make demo` : nom de bateau déjà pris | la base de développement porte un « Ti Kap » | rien : la commande le détecte et le réutilise |
 
 **Si la démonstration ne part pas du tout**, on se replie sur §2.2 : les trois
 `--filter` prouvent exactement les mêmes règles, et un test vert est une preuve
