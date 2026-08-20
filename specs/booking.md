@@ -266,8 +266,8 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 - `REQ-007` : un seul bateau engagé à la fois sur une sortie baleines.
 - `REQ-033` : capacités de la flotte existante, 12 et 24 places.
 - `REQ-059` : places immobilisées 15 minutes le temps du paiement.
-
 - `REQ-110` : le versement de l'acompte confirme la réservation.
+
 **Statut :** revue IA faite
 **Version :** v3
 
@@ -483,8 +483,8 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 
 - `REQ-006` : privatisation d'un bateau entier sur un créneau.
 - `REQ-014` : forfaits de 600 € pour le Ti Kap et 1 100 € pour Le Grand Bleu.
-
 - `REQ-109` : acompte de 50 % du forfait à la réservation.
+
 **Statut :** revue IA faite
 **Version :** v2
 
@@ -875,8 +875,8 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 - `REQ-047` : différence payée en carte si le montant total dépasse le bon.
 - `REQ-048` : surplus perdu si le bon dépasse le montant total.
 - `REQ-049` : usage unique.
-
 - `REQ-116` : une réservation portant un code n'est pas soumise à l'acompte.
+
 **Statut :** revue IA faite
 **Version :** v3
 
@@ -1006,8 +1006,8 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 
 - `REQ-050` : avoir délivré sous forme de code de réduction unique saisi au paiement.
 - `REQ-051` : validité d'un an à compter de la date d'émission.
-
 - `REQ-116` : une réservation portant un code n'est pas soumise à l'acompte.
+
 **Statut :** revue IA faite
 **Version :** v3
 
@@ -1207,20 +1207,25 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 - `REQ-117` : le solde est une transaction distincte de l'acompte.
 
 **Statut :** revue IA à faire
-**Version :** v1
+**Version :** v2
 
 ### Règle
 
-Le solde d'une réservation confirmée se règle **soit en ligne**, entre
-24 heures avant le départ et l'heure de fermeture des réservations du créneau,
-**soit par carte sur place** le jour de la sortie.
+Le solde d'une réservation confirmée se règle **soit en ligne**, entre l'envoi
+du lien de paiement et l'heure de fermeture des réservations du créneau, **soit
+par carte sur place** le jour de la sortie.
 
-> Pour un départ du 20 juillet à 7h, le solde est réglable en ligne du 19 à 7h
-> au 19 à midi, heure à laquelle les réservations de ce créneau ferment. Passé
-> midi, il ne reste que le paiement au quai.
+Le lien part **à 7h du matin la veille de la sortie**, quel que soit le
+créneau, et **la fenêtre s'ouvre avec lui** (`CR-07/Q09`, `CR-07/Q12`). Pour
+une réservation prise à moins de 24 heures du départ, il part dès le règlement
+de l'acompte (`CR-07/Q02`).
 
-Aucune relance n'est envoyée, et le message de rappel ne mentionne pas le
-solde : le client s'en charge (`CR-06/Q16`, `CR-06/Q17`).
+> Pour un départ du 20 juillet à 14h, le lien part le 19 à 7h et le solde est
+> réglable jusqu'au 20 à midi, heure de fermeture de ce créneau. Sept heures
+> de plus que si la fenêtre s'ouvrait 24 heures avant le départ.
+
+Aucune **relance** n'est envoyée après ce lien, et le message de rappel ne
+mentionne pas le solde : le client s'en charge (`CR-06/Q16`, `CR-06/Q17`).
 
 ### Portée
 
@@ -1272,10 +1277,15 @@ Assumé au 2026-08-19.
 
 ### Critères d'acceptation
 
-- [ ] AC-1 : le solde est réglable en ligne entre 24 heures avant le départ et
-      l'heure de fermeture des réservations du créneau.
+- [ ] AC-1 : le solde est réglable en ligne entre l'envoi du lien, à 7h du
+      matin la veille, et l'heure de fermeture des réservations du créneau.
+      **Repère modifié par `CR-07/Q12`**, la v1 partait de 24 heures avant le
+      départ.
 - [ ] AC-2 : hors de cette fenêtre, le paiement en ligne du solde n'est pas
       proposé.
+- [ ] AC-8 : un lien de paiement est envoyé à 7h du matin la veille de la
+      sortie, ou dès le règlement de l'acompte si la réservation est prise à
+      moins de 24 heures du départ.
 - [ ] AC-3 : une réservation dont le solde est nul est soldée sans aucun
       règlement.
 - [ ] AC-4 : le règlement du solde est une transaction distincte de celle de

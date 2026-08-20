@@ -647,3 +647,76 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 | Quatre points étaient écrits comme hypothèses d'équipe alors que le client les a confirmés le jour même | acceptée | remontés en cas limites 11 et 12, AC-9 et AC-10 ; la rubrique « Ce qui n'est pas défini » ne garde que ce qui l'est réellement |
 | Envoyer un message de levée d'alerte quand la sortie est maintenue | refusée | le client a explicitement dit qu'aucun message ne part si la sortie est maintenue ; ajouter un message rassurant contredirait la règle qu'il a posée deux fois |
 | Rendre l'alerte obligatoire avant toute annulation | refusée | la météo peut se dégrader en quelques heures ; imposer une alerte préalable empêcherait d'annuler un créneau du matin décidé la veille au soir |
+
+## SPEC-CANCEL-07 - Lien de règlement du solde
+
+**Exigences :**
+
+- `REQ-120` : lien de règlement envoyé par courriel à 7h la veille de la sortie.
+- `REQ-121` : cet envoi est tracé comme les trois autres messages automatiques.
+
+**Statut :** brouillon
+**Version :** v1
+
+### Règle
+
+Chaque client dont la réservation est confirmée et dont le solde reste dû reçoit
+automatiquement, **à 7h le matin de la veille du départ**, un courriel portant le
+lien qui lui permet de régler ce solde en ligne. Pour une réservation prise après
+cette heure, le courriel part **dès l'encaissement de l'acompte**.
+
+> Le client a fixé 7h « quel que soit le créneau du lendemain » : l'heure ne suit
+> pas l'heure de départ, contrairement au rappel de `SPEC-CANCEL-05`.
+
+**Cet envoi ouvre la fenêtre de règlement en ligne de `SPEC-BOOKING-12`.** Les
+deux dates sont la même, et c'est le sens de l'arbitrage de `CR-07/Q12` : un
+client ne peut pas régler avant d'avoir reçu son lien, et un lien reçu est
+utilisable tout de suite.
+
+### Portée
+
+Couvre le déclenchement, l'heure d'envoi, le canal et la trace de ce quatrième
+message automatique.
+
+- Ne couvre pas ce que le lien permet de faire, ni les bornes de la fenêtre :
+  `SPEC-BOOKING-12`.
+- Ne couvre pas le règlement au quai ni son pointage : `SPEC-ADMIN-07`.
+- Ne couvre pas le contenu rédactionnel du message, jamais fourni par le client,
+  pas plus que celui des trois autres : question 2 du §8 de `CR-07`.
+- Ne couvre pas les factures d'acompte et de solde, qui sont un document et non
+  un message : `REQ-119`, non spécifiée à ce jour.
+
+### Scénarios nominaux
+
+```gherkin
+Étant donné une réservation confirmée pour une sortie le 20 juillet à 14h00
+Et un acompte versé, laissant un solde dû
+Quand le 19 juillet à 7h00 est atteint
+Alors le lien de règlement est envoyé au client par courriel
+Et l'envoi est tracé, avec sa date, son destinataire et son canal
+Et le solde devient réglable en ligne
+```
+
+### Cas limites
+
+| # | Situation | Comportement attendu |
+|---|---|---|
+| 1 | réservation confirmée après 7h la veille | le lien part dès l'encaissement de l'acompte |
+| 2 | réservation dont un code a couvert le prix, solde nul | aucun lien n'est envoyé : il n'y a rien à régler |
+| 3 | créneau annulé avant l'heure d'envoi | aucun lien n'est envoyé |
+| 4 | la tâche programmée repasse après un envoi réussi | le lien n'est pas rejoué |
+| 5 | client ayant réglé son solde en ligne avant le passage de la tâche | aucun second lien |
+| 6 | envoi impossible, adresse erronée | l'échec est enregistré comme pour les autres messages |
+| 7 | client ayant choisi l'anglais à la réservation | courriel envoyé en anglais |
+
+### Ce qui n'est pas défini
+
+Assumé au 2026-08-20.
+
+- **Le canal est le courriel seul**, là où les trois autres messages partent
+  aussi par SMS. Le client a dit « un lien lui est envoyé par mail » : un lien de
+  paiement dans un SMS n'a pas été demandé, et l'y mettre exposerait au
+  hameçonnage par SMS. Hypothèse retenue, à confirmer.
+- Durée de validité du lien : question 3 du §8 de `CR-07`.
+- Caractère réglable de l'heure d'envoi, comme l'est celle de l'alerte
+  (`REQ-060`) : question 1 du §8 de `CR-07`. En attendant, 7h est figée.

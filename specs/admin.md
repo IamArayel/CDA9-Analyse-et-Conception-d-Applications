@@ -229,8 +229,8 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 **Exigences :**
 
 - `REQ-029` : planning des réservations dans un format imprimable.
-
 - `REQ-114` : le planning distingue les réservations soldées de celles restant dues.
+
 **Statut :** revue IA faite
 **Version :** v2
 
@@ -508,17 +508,26 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 - `REQ-019` : annulation à l'initiative du client, issue et barème dégressif.
 - `REQ-050` : l'avoir est délivré sous forme d'un code de réduction unique.
 - `REQ-056` : remboursement intégral si le créneau avait été mis en alerte.
-
 - `REQ-115` : la commission retenue est plafonnée au montant encaissé.
 - `REQ-118` : un client absent au départ est traité comme un client qui annule.
-**Statut :** revue IA faite
-**Version :** v2
 
-> **v2, 2026-08-19.** La retenue est désormais **plafonnée au montant
-> effectivement encaissé**, et le barème dégressif devient un plafond. Sur une
-> sortie à 100 € annulée entre 48h et 24h, le gérant garde 30 € au lieu de 50 €,
-> et ne réclame pas la différence. Au-delà de 48h, le plafond joue en sens
-> inverse et une part de l'acompte revient au client.
+**Statut :** revue IA à refaire
+**Version :** v3
+
+> **v3, 2026-08-20.** `CR-07` rend le barème **calculable**, alors que la v1
+> le disait appliqué à la main par le gérant. Deux formules coexistent, et
+> c'est délibéré : au-delà de 48 heures la commission s'applique à **ce que le
+> client a versé**, en deçà elle s'applique au **prix total** puis se plafonne
+> au versé. Le client a confirmé les deux séparément, après que l'écart chiffré
+> lui a été montré.
+>
+> | Quand il annule | Versé | Récupère |
+> |---|---|---|
+> | plus de 7 jours avant | 30 € | 30 €, la totalité du versé |
+> | entre 7 jours et 48h | 30 € | 22,50 €, soit 75 % du versé |
+> | 48h et moins, non soldé | 30 € | 0 €, la commission de 50 € excède le versé |
+> | 48h et moins, soldé | 100 € | 50 €, soit 50 % du prix total |
+> | absent au départ | 30 ou 100 € | 0 €, quoi qu'il ait versé |
 
 ### Règle
 
@@ -602,12 +611,13 @@ Assumé au 2026-08-14.
       proposé est le montant intégral, sans retenue.
 - [ ] AC-5 : une réservation déjà annulée ne peut pas recevoir une seconde
       issue.
-- [ ] AC-6 : la commission retenue n'excède jamais le montant effectivement
-      versé par le client, et aucun solde ne lui est réclamé.
-- [ ] AC-7 : lorsque la commission est inférieure au montant versé, la
-      différence est remboursée au client.
-- [ ] AC-8 : un client absent au départ est traité comme un client qui
-      annule.
+- [ ] AC-6 : au-delà de 48 heures, le client récupère la totalité de ce qu'il
+      a versé s'il annule à plus de 7 jours, et 75 % s'il annule entre 7 jours
+      et 48 heures.
+- [ ] AC-7 : à 48 heures et moins, la commission vaut 50 % du prix total,
+      plafonnée au montant versé ; aucun solde n'est réclamé au client.
+- [ ] AC-8 : un client absent au départ ne récupère rien, qu'il ait soldé ou
+      non.
 
 ### Revue IA
 
