@@ -72,9 +72,16 @@ attendre:
 	echo "  Voir ce qu'elle dit : $(COMPOSE) logs database"; \
 	exit 1
 
-# Le port n'est vérifié qu'ici, et c'est volontaire : jusqu'au 2026-08-20 il
-# était tiré au hasard à chaque démarrage, et le projet visait en réalité un
-# autre MySQL sans que rien ne le dise.
+# Le port est vérifié en deux temps, et c'est le fruit de deux pannes réelles.
+#
+# 1. Docker publie-t-il bien 3306 ? Jusqu'au 2026-08-20 le port était tiré au
+#    hasard à chaque démarrage.
+# 2. **Qui répond réellement sur 3306 ?** Un MySQL installé sur le poste et lié
+#    à 127.0.0.1 laisse le conteneur se lier à 0.0.0.0 sans conflit visible,
+#    puis capte toutes les connexions : Docker dit « démarré », et l'application
+#    parle à l'autre base. Le symptôme est un « Access denied for user
+#    'root'@'localhost' » alors que le conteneur, lui, rapporterait l'adresse de
+#    la passerelle Docker.
 port:
 	@port=$$($(COMPOSE) port database 3306 2>/dev/null); \
 	if [ -z "$$port" ]; then \
@@ -87,6 +94,21 @@ port:
 		   echo "  compose.override.yaml doit porter \"3306:3306\"."; \
 		   exit 1 ;; \
 	esac
+	@intrus=$$(lsof -nP -iTCP:3306 -sTCP:LISTEN 2>/dev/null | tail -n +2 | grep -v -i "docker\|com.docke" || true); \
+	if [ -n "$$intrus" ]; then \
+		echo ""; \
+		echo "  ERREUR : un autre serveur écoute sur 3306 et masque le conteneur."; \
+		echo "$$intrus" | sed 's/^/    /'; \
+		echo ""; \
+		echo "  L'application parlerait à CE serveur et non à la base du projet."; \
+		echo "  Arrêtez-le, puis relancez. Selon l'installation :"; \
+		echo "    brew services stop mysql"; \
+		echo "    launchctl disable gui/\$$(id -u)/homebrew.mxcl.mysql"; \
+		echo "    sudo /usr/local/mysql/support-files/mysql.server stop   # paquet .dmg"; \
+		echo "  Puis : docker compose up -d --force-recreate"; \
+		exit 1; \
+	fi; \
+	echo "  seul Docker écoute sur 3306"
 
 # Idempotent des deux côtés : --if-not-exists ne recrée rien, et une migration
 # déjà passée ne se rejoue pas.

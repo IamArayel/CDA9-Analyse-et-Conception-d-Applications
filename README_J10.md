@@ -22,6 +22,7 @@ machine déjà prête ne fait que revérifier.
 |---|---|
 | démarre le conteneur et attend qu'il réponde | `attente ok` |
 | **vérifie que la base est bien sur 3306** | `base publiée sur 0.0.0.0:3306` |
+| **vérifie que c'est bien le conteneur qui répond** | `seul Docker écoute sur 3306` |
 | crée `ti_baleine` et `ti_baleine_test` si elles manquent, puis migre | `[OK] Already at the latest version` |
 | affiche à quelle base on parle réellement | `ti_baleine_test`, `3306` |
 | passe les tests | `OK (87 tests, 360 assertions)` |
@@ -45,8 +46,16 @@ make arreter       # arrête la base
 de l'hôte.** C'est vrai depuis le 2026-08-20 seulement : avant, Docker tirait un
 port au hasard à chaque démarrage et le projet visait en réalité un MySQL
 installé sur le poste. Deux bases coexistaient sans que rien ne le dise, et cela
-a coûté une fausse alerte la veille du rendu. `make presentation` s'arrête net si
-le port n'est pas le bon, plutôt que de laisser croire que la base est démarrée.
+a coûté deux fausses alertes la veille du rendu. `make presentation` s'arrête net
+si le port n'est pas le bon, plutôt que de laisser croire que la base est
+démarrée.
+
+**Et il vérifie aussi qui répond.** Sur macOS, un MySQL du poste lié à
+`127.0.0.1:3306` cohabite sans conflit avec un conteneur lié à `0.0.0.0:3306` :
+Docker démarre, annonce fièrement son port, et c'est l'autre serveur qui capte
+les connexions. Le symptôme est un `Access denied for user 'root'@'localhost'`,
+alors que le conteneur, lui, rapporterait l'adresse de la passerelle Docker
+(`'root'@'192.168.65.1'`). C'est ce qui est arrivé à un poste de l'équipe.
 
 > **Si `make presentation` n'est pas vert, on le dit.** Un rouge annoncé et
 > expliqué coûte moins qu'un rouge découvert par le formateur.
@@ -268,6 +277,9 @@ que l'ordre a été tenu, et `main` n'a jamais reçu de rouge.
 |---|---|---|
 | **`Tests: 87, Assertions: 39, Errors: 76`** | les 11 tests de domaine passent, les 76 applicatifs meurent tous sur la connexion : **la base n'est pas joignable** | `make presentation`, qui démarre la base, la vérifie et rejoue les contrôles |
 | `make presentation` : *port is already allocated*, ou « publiée sur ... et non sur 3306 » | un autre MySQL a pris 3306 avant Docker | `lsof -nP -iTCP:3306 -sTCP:LISTEN` pour voir qui, puis l'arrêter |
+| `make presentation` : « un autre serveur écoute sur 3306 et masque le conteneur » | un MySQL du poste capte les connexions à la place du conteneur | la cible affiche le processus et les commandes pour l'arrêter, puis `docker compose up -d --force-recreate` |
+| `Access denied for user 'root'@'localhost'` | même cause, si le contrôle a été contourné. **`localhost` est la signature** : le conteneur dirait `'root'@'192.168.65.1'` | idem |
+| `non-existent parameter "doctrine.dbal.connection_factory.types"` | `config/packages/` absent, sur un clone antérieur au 2026-08-20 | `git pull` : ces cinq fichiers étaient ignorés par git |
 | `phpunit` : table inconnue | la base de test n'est pas migrée | `make bases` |
 | `make demo` : environnement non autorisé | cache d'une ancienne version | `php bin/console cache:clear --env=demo` |
 | `make demo` : nom de bateau déjà pris | la base de développement porte un « Ti Kap » | rien : la commande le détecte et le réutilise |

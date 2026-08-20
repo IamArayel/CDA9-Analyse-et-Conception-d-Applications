@@ -938,6 +938,15 @@ descendre revenait à écrire les constantes qui manquaient.
   dépôt, dont `doctrine.yaml`, et `composer install` ne les régénère pas. Le
   même modèle avait déjà avalé `.env` le matin. Reproduit sur un clone neuf,
   corrigé, et revérifié : clone, `composer install`, 87 tests verts.
+- **Le contrôle du port ne contrôlait pas le bon fait.** Une fois le dépôt
+  clonable, le même poste a buté sur un `Access denied for user
+  'root'@'localhost'`. Sur macOS, un MySQL du poste lié à `127.0.0.1:3306`
+  **cohabite sans conflit** avec un conteneur lié à `0.0.0.0:3306` : Docker
+  démarre, annonce son port, et l'autre serveur capte les connexions. Vérifié en
+  provoquant l'erreur : le conteneur rapporte `'root'@'192.168.65.1'`, la
+  passerelle Docker, jamais `localhost`. Le `Makefile` vérifiait que Docker
+  *déclarait* 3306, pas **qui répondait** ; il vérifie désormais les deux, et le
+  cas négatif a été éprouvé avec un intrus lié à la main.
 - Le cas neuf a été écrit **par-dessus `CASE-CANCEL-20`**, qui existait déjà et
   couvrait tout autre chose. Repéré parce que `git status` le montrait
   *modifié* et non *nouveau* ; restauré depuis `HEAD`, et le cas neuf renuméroté
