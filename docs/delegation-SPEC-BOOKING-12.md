@@ -50,13 +50,24 @@ c'est elle qui risque le plus d'être réécrite au lieu d'être réutilisée.
 
 ## Après - ce qui s'est passé
 
-Complété au rituel de 16h15, le même jour.
+**Rempli au rituel de 16h15 du J9.**
+
+Comme pour les vingt-six plans de J8, le code a été produit **spécification par
+spécification** et non tâche par tâche : `SolderUneReservation` satisfait les
+trois cas d'un seul tenant. L'écart de découpage est le même, il est constant, et
+il tient à notre façon d'écrire les plans.
+
+L'écart propre à ce plan est ailleurs, et il est plus intéressant : **la tâche 1
+décrivait une règle fausse**. Elle demandait une fenêtre ouverte 24 heures avant
+le départ. `CR-07/Q12`, reçu le lendemain de l'écriture du plan, a fait ouvrir la
+fenêtre avec le lien de règlement, à 7h la veille. Le plan a été suivi, puis la
+règle qu'il portait a été remplacée.
 
 | # | Résultat | Ce qui a fait reprendre la main |
 |---|---|---|
-| 1 | | |
-| 2 | | |
-| 3 | | |
+| 1 | `redécoupé` | la borne d'ouverture a changé entre l'écriture du plan et celle du code (`CR-07/Q12`). `Politique\FenetreDeReglement` a bien été écrite comme règle pure et réutilise `FermetureDesReservations` pour la borne haute, comme prévu, mais son ouverture n'est plus celle du plan. `CASE-BOOKING-41` a dû basculer du créneau de 7h à celui de **14h** : c'est le seul où les deux formulations divergent, et sur le créneau du matin le test aurait été vert avec la mauvaise règle |
+| 2 | `conforme` | l'idempotence tient sans branche dédiée : une réservation soldée a un solde nul, et le service refuse alors pour `RIEN_A_REGLER`. La seconde soumission ne débite rien |
+| 3 | `repris` | la doublure `PaiementSimule` a dû être corrigée avant que ce cas ne soit lisible : `montantEncaisse()` rendait le **premier** encaissement, ce qui était sans ambiguïté tant qu'une réservation n'en portait qu'un. Avec l'acompte puis le solde, elle répondait 30 € à une question qui portait sur 70 €. `dernierMontantEncaisse()` a été ajoutée, et l'ancienne méthode documentée comme rendant l'acompte |
 
 | Résultat | Sens |
 |---|---|

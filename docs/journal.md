@@ -858,3 +858,103 @@ ci-dessus, et non à J9.
   d'une facture qu'il émettrait.
 - La « boutique » évoquée au point 4 de l'entretien reste un lieu inconnu de
   la mission.
+
+---
+
+## J9 - 2026-08-20
+
+**Présents.** Équipe complète. Journée à deux temps : un septième entretien
+client le matin, puis la descente de ses réponses jusqu'au code.
+
+**Le choix de la journée.** Deux lots s'excluaient sur le papier : descendre
+`CR-07` dans les documents, ou faire passer au vert les 21 tests rouges laissés
+la veille. Nous avons tenté les deux, contre l'avis initial du poste de travail
+qui recommandait de choisir. Les deux ont abouti, et la raison est que les deux
+lots se recouvraient plus que prévu : quatre des réponses de `CR-07` portaient
+précisément sur des règles que le code de la veille laissait en suspens. Les
+descendre revenait à écrire les constantes qui manquaient.
+
+**Décisions.**
+- **Le barème de remboursement entre dans le code**, alors qu'il en était
+  explicitement tenu à l'écart depuis J6. Il n'y était pas parce que nous ne
+  connaissions pas ses paliers, et non par principe : `EnregistrerUneIssue`
+  laissait le gérant saisir un montant. `CR-07/Q11` a donné les trois tranches,
+  `Politique\RetenueDannulation` les porte, et la saisie du gérant reste
+  possible, en geste commercial plutôt qu'en règle.
+- **Le barème n'est pas uniforme, et il ne sera pas « harmonisé ».** Deux
+  tranches portent sur l'acompte, la troisième sur le prix total. C'est ce que
+  le client a dit, cela paraît bancal, et le docblock de la classe le dit en
+  toutes lettres pour que personne ne le lisse plus tard.
+- **La fenêtre de règlement s'ouvre avec le lien, pas 24 heures avant le
+  départ.** Nous avions écrit les deux règles la veille sans voir qu'elles se
+  contredisaient : elles coïncident sur les créneaux de 7h et 10h, et divergent
+  de sept heures sur celui de 14h. Le client a tranché en une phrase.
+- **`SPEC-CANCEL-07` a été écrite en fin de journée**, pour le lien de
+  règlement. C'est la vingt-neuvième spécification, et la seule sans plan de
+  délégation : elle n'a pas été confiée à un agent, il n'y avait rien à cadrer.
+  Écrire son plan après coup aurait fabriqué une prévision à partir du
+  résultat, ce que la colonne « écart » de J10 cherche justement à mesurer.
+- **La colonne `paiement.pointe_par` reste nulle.** Elle existe pour
+  `SPEC-ADMIN-07` AC-3, mais `SessionDeGestion` ne porte qu'un jeton : aucun
+  service ne sait quel compte est connecté. Laissée vide plutôt que remplie
+  d'une valeur inventée.
+
+**Ce qui a été refusé à l'agent.**
+- **Aligner les trois tranches du barème sur une même assiette.** Refusé deux
+  fois. La formule du client n'est pas homogène ; la rendre homogène change les
+  montants rendus, et c'est de l'argent réel.
+- **Supprimer la ligne de pointage rétractée au lieu de la marquer.** Refusé :
+  `REQ-113` demande une trace, et un `DELETE` rend le pointage invisible autant
+  que réversible.
+- **Écrire un « montant zéro » en dur dans `EnregistrerUneAbsence`.** Plus court
+  et faux : le service pose l'issue et laisse le barème décider, pour que le
+  jour où le gérant assouplira ses tranches, l'absence suive sans qu'on y
+  touche.
+- **Remplir `pointe_par` avec l'e-mail du gérant de référence.** Refusé : ce
+  compte est une donnée de test, pas une identité de session.
+
+**Erreurs produites par l'IA et détectées.**
+- Les citations de `CR-07` ont été écrites sur une numérotation inventée,
+  `Q00` à `Q06`, alors que le compte rendu numérote de `Q01` à `Q12`. Onze
+  renvois faux dans le cahier des charges, l'analyse d'impact et trois
+  docblocks. **Détectées par `tools/traceability.sh`**, qui vérifie que chaque
+  question citée existe dans le compte rendu : c'est le premier jour où ce
+  contrôle attrape quelque chose que personne n'avait vu.
+- `CASE-ADMIN-19` créait une réservation le matin du départ, à une heure où le
+  créneau est fermé depuis la veille à midi. Le test échouait sur un `null`
+  sans rapport avec ce qu'il vérifiait. La réservation a été remontée dans les
+  préconditions, où le fichier de cas la plaçait déjà.
+- La doublure `PaiementSimule` rendait le **premier** encaissement d'une
+  réservation. Sans ambiguïté tant qu'il n'y en avait qu'un ; depuis l'acompte,
+  elle répondait 30 € à une question qui portait sur les 70 € du solde.
+  `dernierMontantEncaisse()` ajoutée, l'ancienne méthode documentée.
+- `PointerLeSolde` a d'abord renseigné `pointe_par` avec le lieu d'embarquement
+  du créneau, en appelant une méthode qui n'existe pas. La colonne dit **qui**,
+  pas **où**.
+- Le cas neuf a été écrit **par-dessus `CASE-CANCEL-20`**, qui existait déjà et
+  couvrait tout autre chose. Repéré parce que `git status` le montrait
+  *modifié* et non *nouveau* ; restauré depuis `HEAD`, et le cas neuf renuméroté
+  `CASE-CANCEL-25`. Le contrôle de traçabilité n'aurait pas attrapé l'écrasement :
+  le numéro existait toujours, et un test portait toujours son nom.
+
+**Ce qui a été généré aujourd'hui.**
+- `docs/compte-rendu-entretien-07.md`, `docs/impact-CR-005.md`
+- Cahier des charges **v7** : `REQ-119` renversée (deux factures), `REQ-111`
+  précisée, `REQ-120` et `REQ-121` ajoutées, `R-31` à `R-33`, quatre questions
+  du §11 fermées
+- `SPEC-BOOKING-12` v2, `SPEC-ADMIN-06` v3 avec son barème en tableau,
+  `SPEC-CANCEL-07` neuve
+- `CASE-BOOKING-41` et `CASE-ADMIN-16` réécrits, `CASE-CANCEL-25` créé
+- Trois politiques de domaine, `Service\EtatDuReglement`, l'entité `Paiement`,
+  son mapping et sa migration
+- Cinq services applicatifs neufs, six repris
+- Les deux plans de délégation manquants, et leurs tableaux « Après »
+
+**État du dépôt en fin de journée.** 87 tests, tous verts. 5 ruptures de
+traçabilité, les mêmes qu'au 18 août : trois cas de bout en bout sans scénario
+Behat et deux `SPEC-NFR` sans cas. `doctrine:schema:validate` rend deux `[OK]`.
+
+**Questions ouvertes pour le client.** Les cinq du §8 de `CR-07`, dont trois
+touchent le lien de règlement : son heure d'envoi est-elle réglable comme celle
+de l'alerte, que contient le message, et le lien expire-t-il. Les deux autres
+portent sur la facture, seule exigence de `CR-07` qui reste sans code.

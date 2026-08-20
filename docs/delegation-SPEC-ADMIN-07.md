@@ -49,13 +49,29 @@ détruisant l'historique.
 
 ## Après - ce qui s'est passé
 
-Complété au rituel de 16h15, le même jour.
+**Rempli au rituel de 16h15 du J9.**
+
+Même écart de découpage que partout ailleurs : `PointerLeSolde` couvre les tâches
+1 et 3, `ExporterLePlanning` la tâche 2. Le plan a en revanche **tenu sur son
+point de vigilance principal**, qui était le seul vrai risque de ce lot.
 
 | # | Résultat | Ce qui a fait reprendre la main |
 |---|---|---|
-| 1 | | |
-| 2 | | |
-| 3 | | |
+| 1 | `conforme` | aucun appel au prestataire, et le test le vérifie en comparant le compteur d'encaissements avant et après. Pointer une réservation déjà soldée est sans effet, sans qu'aucune branche « déjà pointé » n'ait été nécessaire : le solde est nul, il n'y a rien à écrire |
+| 2 | `conforme` | la colonne `solde_regle` se calcule à la lecture, à partir du versé, plutôt que d'être stockée. Un pointage rétracté la fait donc rebasculer sans qu'aucune écriture n'ait à être reprise |
+| 3 | `repris` | la forme du stockage a bien résisté, comme le plan l'espérait : une table `PAIEMENT` et non un booléen. Mais le plan ne disait pas **combien** d'écritures un pointage rétracté puis refait devait laisser, et le cas de test en exigeait trois. Deux mécanismes cohabitaient dans la première version, le drapeau `annule` et une ligne de contre-passation ; les deux ont été gardés mais leur rôle a dû être tranché à la main : la ligne rétractée et le geste qui la rétracte sont **tous deux** marqués comme ne comptant pas dans le versé |
+
+Deux points ont été décidés à la main, et méritent d'être signalés à la revue
+croisée :
+
+- **`paiement.pointe_par` reste vide.** La colonne existe pour l'AC-3, qui veut
+  savoir qui a pointé. `SessionDeGestion` ne porte qu'un jeton : aucun service ne
+  sait quel compte est connecté, et le projet n'a de toute façon qu'un seul
+  compte gérant. Remplir la colonne d'une valeur inventée aurait été pire que de
+  la laisser nulle. Déclaré dans `traceability-trous.md`.
+- **`Reservation::estAnnulee()` a été ajoutée à l'entité.** Quatre services
+  posaient la question en comparant le statut à l'énumération. Ce n'était pas au
+  plan, et c'est le seul élargissement que nous ayons laissé passer.
 
 | Résultat | Sens |
 |---|---|
