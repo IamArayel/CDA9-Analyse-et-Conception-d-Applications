@@ -74,3 +74,31 @@ when@test:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+# L'environnement `demo` sert la commande `ti-baleine:demontrer-le-parcours`, et
+# rien d'autre. Les trois ports y sont liés à des adaptateurs de démonstration :
+# une horloge qu'on avance, un notificateur qui n'écrit à personne, un
+# prestataire qui accepte tout. **Aucun des trois ne doit être câblé ailleurs** :
+# un prestataire qui répond toujours oui est exactement ce qu'un système de
+# paiement ne doit pas faire.
+when@demo:
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+            public: true
+            bind:
+                string $dossierDesTraductions: '%kernel.project_dir%/translations'
+
+        App\Application\:
+            resource: '../src/Application/'
+
+        App\Infrastructure\Persistance\:
+            resource: '../src/Infrastructure/Persistance/'
+
+        App\Infrastructure\Demonstration\:
+            resource: '../src/Infrastructure/Demonstration/'
+
+        App\Domaine\Horloge: '@App\Infrastructure\Demonstration\HorlogeReglable'
+        App\Domaine\Notificateur: '@App\Infrastructure\Demonstration\NotificateurEnConsole'
+        App\Domaine\PrestataireDePaiement: '@App\Infrastructure\Demonstration\PrestataireDeDemonstration'

@@ -14,6 +14,9 @@ class Kernel extends BaseKernel
      */
     private function getAllowedEnvs(): array
     {
-        return ['prod', 'dev', 'test'];
+        // `demo` sert la seule commande ti-baleine:demontrer-le-parcours. Elle y
+        // trouve une horloge réglable et deux ports simulés, ce que ni `dev` ni
+        // `prod` ne doivent offrir : cf. le bloc when@demo de services.yaml.
+        return ['prod', 'dev', 'test', 'demo'];
     }
 }
