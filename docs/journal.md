@@ -895,6 +895,31 @@ descendre revenait à écrire les constantes qui manquaient.
   confiée à un agent, il n'y avait rien à cadrer.
   Écrire son plan après coup aurait fabriqué une prévision à partir du
   résultat, ce que la colonne « écart » de J10 cherche justement à mesurer.
+- **La revue croisée a d'abord servi à exécuter `CASE-NFR-06`**, le seul cas de
+  test dont l'échéance était datée d'aujourd'hui. Verdict **passé**, mais pas
+  sans discussion : son critère AC-2 exige qu'aucun service payant n'existe
+  hors de la liste des coûts documentés, et le prestataire de paiement n'y
+  figurait pas. Le montant n'était pas le sujet, le client ayant répondu
+  « budget illimité » ; la traçabilité l'était. Ce qui a été posé est une
+  **borne** : `SPEC-NFR-03` porte sur un montant **mensuel**, et un frais
+  prélevé à l'acte n'en est pas un. Vérifié dans les deux sens, en partant des
+  ADR puis des services réellement utilisés : le seul conteneur est
+  `mysql:9.3`, `composer.json` ne tire aucun service payant, `src/` ne fait
+  aucun appel sortant, et le port `PrestataireDePaiement` n'a que deux
+  adaptateurs, la démonstration et « non configuré ». Le prestataire est
+  **décidé mais pas branché**, donc aucun de ses frais n'est engagé. Reste une
+  question pour le client, ajoutée à celles du §8 de `CR-07` : `ADR-006` double
+  les frais de transaction depuis l'acompte et ne les chiffre pas.
+- **`CASE-BOOKING-37` ne sera pas exécuté, et son échéance est corrigée plutôt
+  que reconduite.** Il promettait « avant J10 » trois captures d'un parcours
+  mené sur trois appareils, dont un en 4G. Il n'y a pas de parcours en ligne à
+  photographier. La question s'est posée d'en produire les écrans pour
+  fabriquer les captures : refusé, une image d'écran ne mène aucun parcours et
+  joindre cela comme preuve d'exécution mettrait une fausse pièce dans le seul
+  dossier dont la valeur tient à sa traçabilité. L'échéance devient « à la
+  première mise en ligne du parcours » : rattachée à un fait, pas à une date. Le
+  statut `manuel assumé` est maintenu, la cause étant déjà comptée avec les
+  trois cas de bout en bout.
 - **Les trois scénarios de bout en bout sont écrits, et laissés non
   exécutables.** La table des trous les promettait « au plus tard à J9 » : une
   échéance intenable, puisqu'ils pilotent des écrans et qu'il n'y en a pas.
@@ -1038,4 +1063,8 @@ Behat et deux `SPEC-NFR` sans cas. `doctrine:schema:validate` rend deux `[OK]`.
 **Questions ouvertes pour le client.** Les cinq du §8 de `CR-07`, dont trois
 touchent le lien de règlement : son heure d'envoi est-elle réglable comme celle
 de l'alerte, que contient le message, et le lien expire-t-il. Les deux autres
-portent sur la facture, seule exigence de `CR-07` qui reste sans code.
+portent sur la facture, seule exigence de `CR-07` qui reste sans code. **Une
+sixième s'y ajoute ce soir**, sortie de la revue croisée : le passage à
+l'acompte fait payer deux frais de transaction au lieu d'un, et personne n'a
+chiffré ce que cela coûte au client. Sa réponse « budget illimité » lève la
+contrainte de montant, pas le devoir de l'écrire.
