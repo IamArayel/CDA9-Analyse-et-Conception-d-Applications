@@ -41,6 +41,27 @@ Ce cas n'est **pas automatisé**, et c'est une décision, pas un oubli :
 | Quoi | Comment |
 |---|---|
 | Qui | un membre de l'équipe, seul |
-| Quand | une fois avant la présentation de J10, et après toute reprise du parcours de réservation |
+| Quand | **à la première mise en ligne du parcours**, puis après toute reprise de celui-ci |
 | Preuve | trois captures, une par appareil, sur l'écran de confirmation, jointes au journal du jour |
 | Pourquoi pas automatisé | automatiser un rendu visuel sur trois familles d'appareils coûterait plus que le risque couvert, pour un site à un seul parcours |
+
+### Non exécutable au 2026-08-20, et l'échéance est corrigée
+
+Ce cas portait « une fois avant la présentation de J10 ». **Cette échéance était
+intenable et elle n'est pas reconduite.** Le scénario demande trois parcours
+menés jusqu'à la confirmation, sur trois appareils, dont un en 4G : il suppose
+un parcours en ligne. `SPEC-BOOKING-08` a bien son plan de délégation et son
+code est attendu, mais aucun écran n'existe, par la décision consignée au
+journal de J9 : en écrire sans spécification d'écran produirait du code non
+couvert.
+
+Les trois captures exigées comme preuve **ne peuvent donc pas être produites**,
+et aucune maquette ne les remplace : une image d'écran ne mène aucun parcours.
+Les fabriquer serait joindre une fausse preuve à un dossier dont toute la valeur
+tient à sa traçabilité.
+
+Le statut `manuel assumé` est maintenu : la décision de ne pas automatiser ce
+rendu tient toujours, et rien ici ne change le compte des ruptures. Ce qui
+change est la date, désormais rattachée à un fait, la mise en ligne du parcours,
+et non à un jour du calendrier. La cause est la même que celle des trois cas de
+bout en bout, déjà déclarée dans `docs/traceability-trous.md`.
