@@ -127,8 +127,8 @@ final class DemontrerLeParcoursCommand extends Command
     private function preparerLexploitation(SymfonyStyle $ecran, string $jour): void
     {
         $this->etape($ecran, 'Le gérant déclare sa flotte et ses tarifs', [
-            'SPEC-ADMIN-04' => 'CASE-ADMIN-12',
-            'SPEC-ADMIN-05' => 'CASE-ADMIN-05',
+            'SPEC-ADMIN-05' => 'CASE-ADMIN-12',
+            'SPEC-ADMIN-02' => 'CASE-ADMIN-05',
         ]);
 
         // Le bateau n'est créé que s'il n'existe pas : la base de
@@ -144,10 +144,18 @@ final class DemontrerLeParcoursCommand extends Command
         $ecran->writeln(sprintf('  %s, 12 places. Dauphins : 50 € adulte, 30 € enfant.', self::BATEAU));
     }
 
+    /**
+     * Programmer une sortie n'a **aucune spécification propre** : le client n'a
+     * jamais décrit ce geste, et `ProgrammerUneSortie` n'existe que pour porter
+     * les règles de `SPEC-BOOKING-02`, la saison des baleines et l'unicité du
+     * naturaliste. C'est donc annoncé comme une mise en place, pas comme une
+     * fonctionnalité démontrée. Le trou est déclaré dans
+     * docs/traceability-trous.md.
+     */
     private function programmerLaSortie(SymfonyStyle $ecran, string $jour): string
     {
         $this->etape($ecran, 'Il programme une sortie dauphins à 14h', [
-            'SPEC-ADMIN-01' => 'CASE-ADMIN-01',
+            'SPEC-BOOKING-02' => 'CASE-BOOKING-25',
         ]);
 
         $sortie = $this->programmerUneSortie->executer($jour, '14:00', self::BATEAU, TypeDeSortie::DAUPHINS);
@@ -158,6 +166,7 @@ final class DemontrerLeParcoursCommand extends Command
             $sortie,
             count($creneaux->creneauxProposes()),
         ));
+        $ecran->writeln('  Le geste du gérant n\'a pas de spécification propre : mise en place.');
 
         return $sortie;
     }
@@ -165,8 +174,8 @@ final class DemontrerLeParcoursCommand extends Command
     private function reserver(SymfonyStyle $ecran, string $sortie): string
     {
         $this->etape($ecran, 'Marie réserve 2 places adultes', [
-            'SPEC-BOOKING-01' => 'CASE-BOOKING-01',
-            'SPEC-BOOKING-03' => 'CASE-BOOKING-03',
+            'SPEC-BOOKING-01' => 'CASE-BOOKING-20',
+            'SPEC-BOOKING-03' => 'CASE-BOOKING-01',
         ]);
 
         $resultat = $this->creerReservation->executer($sortie, self::CLIENT, adultes: 2);
@@ -187,7 +196,7 @@ final class DemontrerLeParcoursCommand extends Command
     private function verserLacompte(SymfonyStyle $ecran, string $reservation): void
     {
         $this->etape($ecran, 'Elle verse son acompte de 30 %', [
-            'SPEC-BOOKING-07' => 'CASE-BOOKING-14',
+            'SPEC-BOOKING-07' => 'CASE-BOOKING-38',
         ]);
 
         $this->confirmerLePaiement->executer($reservation);
@@ -208,7 +217,8 @@ final class DemontrerLeParcoursCommand extends Command
     private function montrerLePlanning(SymfonyStyle $ecran, string $jour, string $moment): void
     {
         $this->etape($ecran, sprintf('Le planning d\'embarquement, %s', $moment), [
-            'SPEC-ADMIN-03' => 'CASE-ADMIN-18',
+            'SPEC-ADMIN-03' => 'CASE-ADMIN-06',
+            'SPEC-ADMIN-07' => 'CASE-ADMIN-18',
         ]);
 
         foreach ($this->exporterLePlanning->executer($jour)->lignes() as $ligne) {

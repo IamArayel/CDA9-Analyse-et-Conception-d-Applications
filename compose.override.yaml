@@ -1,5 +1,11 @@
-# Surcharge de développement : expose le port de la base sur un port libre de
-# l'hôte, que `docker compose port database 3306` révèle.
+# Surcharge de développement : publie la base sur le **port 3306 de l'hôte**,
+# fixe et non aléatoire.
+#
+# La recette Symfony écrivait `- "3306"`, qui laisse Docker choisir un port libre
+# différent à chaque démarrage. Le 2026-08-20, cela a coûté une fausse alerte :
+# `docker compose up -d` semblait démarrer la base du projet alors que rien dans
+# `.env` ne pointait dessus, et les 76 tests applicatifs ont échoué en bloc.
+# Un port fixe supprime la question.
 #
 # 3306 et non 5432 : voir l'en-tête de compose.yaml.
 
@@ -7,5 +13,5 @@ services:
 ###> doctrine/doctrine-bundle ###
   database:
     ports:
-      - "3306"
+      - "3306:3306"
 ###< doctrine/doctrine-bundle ###

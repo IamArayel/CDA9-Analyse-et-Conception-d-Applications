@@ -10,6 +10,14 @@
 *.userosscache
 *.sln.docstates
 *.env
+# ...mais pas le `.env` de Symfony, qui porte les valeurs par défaut du projet et
+# doit être versionné : c'est ce que suppose le bloc symfony/framework-bundle
+# plus bas, qui n'ignore que `.env.local` et ses variantes. La règle `*.env`
+# ci-dessus vient d'un modèle Visual Studio et l'avalait par accident, ce qui
+# rendait le dépôt inexécutable après un clone. Aucun secret n'y figure :
+# APP_SECRET y est vide, et le mot de passe de développement est déjà en clair
+# dans compose.yaml.
+!.env
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
