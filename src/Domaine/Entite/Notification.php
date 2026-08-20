@@ -19,6 +19,7 @@ class Notification
     public const TYPE_RAPPEL = 'RAPPEL';
     public const TYPE_ALERTE_METEO = 'ALERTE_METEO';
     public const TYPE_CONFIRMATION_ANNULATION = 'CONFIRMATION_ANNULATION';
+    public const TYPE_LIEN_DE_REGLEMENT = 'LIEN_DE_REGLEMENT';
 
     public const CANAL_SMS = 'SMS';
     public const CANAL_EMAIL = 'EMAIL';

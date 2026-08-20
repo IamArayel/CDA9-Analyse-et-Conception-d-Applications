@@ -8,10 +8,13 @@ use App\Domaine\Entite\ChoixAnnulation;
 use App\Domaine\Entite\Reservation;
 use App\Domaine\Horloge;
 use App\Domaine\IssueDannulation;
+use App\Domaine\Politique\RetenueDannulation;
 use App\Domaine\PrestataireDePaiement;
 use App\Domaine\ResultatDissue;
+use App\Domaine\Service\EtatDuReglement;
 use App\Infrastructure\Persistance\ChoixAnnulationRepository;
 use App\Infrastructure\Persistance\CodeRepository;
+use App\Infrastructure\Persistance\PaiementRepository;
 use App\Infrastructure\Persistance\ReservationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
@@ -26,11 +29,16 @@ use InvalidArgumentException;
  *
  * **Seul l'avoir produit un code**, et c'est sa seule origine.
  *
- * Le montant est celui que le gérant saisit : **le barème dégressif n'est nulle
- * part dans le code**, il reste à son appréciation. Sans saisie, la totalité est
- * proposée, ce qui satisfait la règle de l'AC-4 sans qu'aucune branche ne soit
- * nécessaire : après une alerte météo, le gérant ne saisit rien et le client est
- * remboursé intégralement, le risque venant du gérant et non de lui.
+ * **Le barème est calculé, et non plus laissé à l'appréciation du gérant.** Il
+ * l'était jusqu'à CR-07, faute de connaître les paliers ; le client les a donnés
+ * en Q05, et `RetenueDannulation` les porte. Le gérant peut toujours saisir un
+ * montant, qui l'emporte alors sur le calcul : c'est sa marge de geste
+ * commercial, pas la règle.
+ *
+ * **L'alerte météo l'emporte sur le barème** (AC-4). Le risque vient du gérant,
+ * pas du client, et il n'y a pas lieu de retenir quoi que ce soit : le versé
+ * repart en entier. Cette branche est nécessaire depuis que le barème existe,
+ * là où auparavant « le gérant ne saisit rien » suffisait à l'obtenir.
  */
 final class EnregistrerUneIssueDannulation
 {
@@ -40,8 +48,11 @@ final class EnregistrerUneIssueDannulation
         private readonly ReservationRepository $reservations,
         private readonly ChoixAnnulationRepository $choix,
         private readonly CodeRepository $codes,
+        private readonly PaiementRepository $paiements,
         private readonly PrestataireDePaiement $prestataire,
         private readonly EmettreUnAvoir $emettreUnAvoir,
+        private readonly EtatDuReglement $reglement,
+        private readonly RetenueDannulation $retenue,
     ) {
     }
 
@@ -79,18 +90,26 @@ final class EnregistrerUneIssueDannulation
     }
 
     /**
-     * Sans montant saisi, la totalité.
+     * Sans montant saisi, le barème.
      *
-     * Aucune branche n'est nécessaire pour l'alerte météo, et c'est volontaire :
-     * le barème dégressif n'est **pas** dans le code, le gérant l'applique en
-     * saisissant un montant. La règle « l'alerte interdit toute retenue » se
-     * traduit donc par « le gérant ne saisit rien », et la totalité est
-     * proposée. Y coder une branche laisserait croire que le barème existe
-     * quelque part.
+     * Le versé est le plafond de ce qui peut revenir au client dans tous les
+     * cas : on ne rend pas de l'argent qui n'a jamais été encaissé, et une
+     * retenue supérieure au versé ne se réclame pas, elle se plafonne à zéro.
      */
     private function montantParDefaut(Reservation $reservation): int
     {
-        return $reservation->montant();
+        $verse = $this->paiements->verse($reservation);
+
+        if ($reservation->sortie()->dateDeMiseEnAlerte() !== null) {
+            return $verse;
+        }
+
+        return $this->retenue->rembourse(
+            $verse,
+            $this->reglement->montantACouvrir($reservation),
+            $reservation->sortie()->creneau()->departPrevu(),
+            $this->horloge->maintenant(),
+        );
     }
 
     /** @return string|null le code produit, pour la seule issue « avoir » */
@@ -108,9 +127,13 @@ final class EnregistrerUneIssueDannulation
         };
     }
 
+    /**
+     * Un remboursement nul n'appelle personne : le client garde son acompte
+     * retenu, et rien ne lui est réclamé (SPEC-ADMIN-06 AC-7).
+     */
     private function rembourser(Reservation $reservation, int $montant): ?string
     {
-        if ($reservation->estConfirmee()) {
+        if ($montant > 0 && $reservation->estConfirmee()) {
             $this->prestataire->rembourser($reservation->reference(), $montant);
         }
 

@@ -8,6 +8,7 @@ use App\Domaine\Entite\Sortie;
 use App\Domaine\Horloge;
 use App\Domaine\Politique\SeuilDeMaintien;
 use App\Domaine\PrestataireDePaiement;
+use App\Infrastructure\Persistance\PaiementRepository;
 use App\Infrastructure\Persistance\ReservationRepository;
 use App\Infrastructure\Persistance\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,6 +36,7 @@ final class ControlerSeuilDeMaintien
         private readonly EntityManagerInterface $entites,
         private readonly SortieRepository $sorties,
         private readonly ReservationRepository $reservations,
+        private readonly PaiementRepository $paiements,
         private readonly PrestataireDePaiement $prestataire,
         private readonly SeuilDeMaintien $seuil,
     ) {
@@ -82,7 +84,14 @@ final class ControlerSeuilDeMaintien
         $sortie->annuler();
 
         foreach ($inscrits as $reservation) {
-            $this->prestataire->rembourser($reservation->reference(), $reservation->montant());
+            // Le versé : l'acompte seul, ou l'acompte plus le solde si le client
+            // a réglé en ligne la veille avant que le seuil ne soit constaté.
+            $verse = $this->paiements->verse($reservation);
+
+            if ($verse > 0) {
+                $this->prestataire->rembourser($reservation->reference(), $verse);
+            }
+
             $reservation->annuler();
         }
     }

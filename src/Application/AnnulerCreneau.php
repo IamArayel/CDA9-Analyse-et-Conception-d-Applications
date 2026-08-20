@@ -12,6 +12,7 @@ use App\Domaine\Politique\CalendrierDesEnvois;
 use App\Domaine\PrestataireDePaiement;
 use App\Domaine\ResultatDannulation;
 use App\Domaine\StatutDeReservation;
+use App\Infrastructure\Persistance\PaiementRepository;
 use App\Infrastructure\Persistance\ParametreRepository;
 use App\Infrastructure\Persistance\ReservationRepository;
 use App\Infrastructure\Persistance\SortieRepository;
@@ -40,6 +41,7 @@ final class AnnulerCreneau
         private readonly EntityManagerInterface $entites,
         private readonly SortieRepository $sorties,
         private readonly ReservationRepository $reservations,
+        private readonly PaiementRepository $paiements,
         private readonly PrestataireDePaiement $prestataire,
         private readonly EnvoyerUnMessage $envoi,
         private readonly CalendrierDesEnvois $calendrier,
@@ -84,7 +86,8 @@ final class AnnulerCreneau
     /**
      * Une réservation non payée ne donne lieu à aucun remboursement, et son
      * immobilisation est libérée : aucun montant nul n'est envoyé au
-     * prestataire (SPEC-CANCEL-04 AC-5).
+     * prestataire (SPEC-CANCEL-04 AC-5). Le test du versé suffit à le garantir,
+     * une réservation jamais payée n'ayant aucune écriture.
      */
     private function annulerEtRembourser(Sortie $sortie): void
     {
@@ -95,11 +98,13 @@ final class AnnulerCreneau
                 continue;
             }
 
-            if ($reservation->estConfirmee()) {
-                $this->prestataire->rembourser(
-                    $reservation->reference(),
-                    $reservation->montant(),
-                );
+            // Le versé, et non le prix : depuis REQ-108 le client n'a réglé
+            // qu'un acompte, sauf s'il a soldé en ligne entre-temps. Rendre le
+            // prix rembourserait de l'argent jamais encaissé.
+            $verse = $this->paiements->verse($reservation);
+
+            if ($verse > 0) {
+                $this->prestataire->rembourser($reservation->reference(), $verse);
             }
 
             $reservation->annuler();

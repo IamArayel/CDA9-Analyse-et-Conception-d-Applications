@@ -15,8 +15,9 @@ use DateTimeImmutable;
  *
  * Trois règles tiennent ici, et elles valent pour les trois types de message :
  *
- * - **les deux canaux systématiquement** (REQ-057), depuis que le gérant ne
- *   téléphone plus ;
+ * - **les deux canaux par défaut** (REQ-057), depuis que le gérant ne téléphone
+ *   plus. Un appelant peut restreindre la liste, et un seul le fait : le lien de
+ *   règlement de `SPEC-CANCEL-07`, qui ne part que par courriel ;
  * - **l'échec d'un canal n'emporte pas l'autre**, et il est enregistré comme
  *   tel (SPEC-CANCEL-05 AC-6) ;
  * - **un message déjà parti n'est pas rejoué**, la tâche programmée passant
@@ -35,12 +36,16 @@ final class EnvoyerUnMessage
     ) {
     }
 
-    /** @param array<string, string> $donnees */
+    /**
+     * @param array<string, string> $donnees
+     * @param list<string>|null     $canaux  null pour les deux canaux de REQ-057
+     */
     public function pour(
         Reservation $reservation,
         string $type,
         DateTimeImmutable $quand,
         array $donnees = [],
+        ?array $canaux = null,
     ): void {
         if ($this->traces->dejaEnvoye($reservation, $type)) {
             return;
@@ -48,7 +53,7 @@ final class EnvoyerUnMessage
 
         $donnees['langue'] = $reservation->langue();
 
-        foreach (self::CANAUX as $canal) {
+        foreach ($canaux ?? self::CANAUX as $canal) {
             $reussi = $this->notificateur->envoyer(
                 $reservation->reference(),
                 $type,
