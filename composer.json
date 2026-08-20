@@ -16,6 +16,7 @@
         "symfony/yaml": "^8.1"
     },
     "require-dev": {
+        "behat/behat": "^4.0@alpha",
         "phpunit/phpunit": "^11.0"
     },
     "autoload": {
