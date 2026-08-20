@@ -81,6 +81,9 @@ final class PointageDuSoldeTest extends CasDapplication
             Reference::CLIENT_MARIE,
             adultes: 2,
         );
+        // Prise ici, et non plus bas : au matin du départ le créneau est fermé
+        // depuis la veille à midi, et plus rien ne s'y réserve.
+        $annulee = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 1);
 
         $ecrituresAvant = count($this->service(ConsulterLesPaiements::class)->pour($reservation));
 
@@ -104,7 +107,6 @@ final class PointageDuSoldeTest extends CasDapplication
             'trois écritures conservées, et non un drapeau écrasé deux fois',
         );
 
-        $annulee = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 1);
         $this->horloge->nousSommesLe('2026-07-19 09:00');
         $this->service(AnnulerCreneau::class)->executer(
             Reference::JOUR_EN_SAISON,

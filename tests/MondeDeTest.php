@@ -18,9 +18,12 @@ use App\Domaine\Entite\Gerant;
 use App\Domaine\Entite\JourDeFermeture;
 use App\Domaine\Entite\Parametre;
 use App\Domaine\Entite\Tarif;
+use App\Domaine\Politique\FenetreDeReglement;
 use App\Domaine\TypeDeSortie;
+use App\Infrastructure\Persistance\ReservationRepository;
 use App\Tests\Doublures\HorlogeFigee;
 use App\Tests\JeuDeDonneesDeReference as Reference;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
 
@@ -170,9 +173,30 @@ final class MondeDeTest
     ): string {
         $reservation = $this->reservationConfirmee($sortie, $client, $adultes, $enfants);
 
+        // Solder suppose d'être dans la fenêtre de règlement, qui s'ouvre la
+        // veille à 7h. Le monde s'y transporte le temps du versement, puis
+        // rend au cas l'instant qu'il avait choisi : la précondition « une
+        // réservation soldée » ne doit pas obliger chaque test à connaître
+        // l'heure d'envoi du lien.
+        $instantDuCas = $this->horloge->maintenant();
+        $depart = $this->departDe($reservation);
+
+        $this->horloge->nousSommesLe(
+            (new FenetreDeReglement())->ouverture($depart)->format('Y-m-d H:i'),
+        );
         $this->service(SolderUneReservation::class)->executer($reservation);
+        $this->horloge->nousSommesLe($instantDuCas->format('Y-m-d H:i'));
 
         return $reservation;
+    }
+
+    private function departDe(string $reservation): DateTimeImmutable
+    {
+        return $this->conteneur->get(ReservationRepository::class)
+            ->parReference($reservation)
+            ->sortie()
+            ->creneau()
+            ->departPrevu();
     }
 
     /**

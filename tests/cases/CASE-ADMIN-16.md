@@ -1,4 +1,4 @@
-# CASE-ADMIN-16 - la retenue est plafonnée à l'acompte, et rend la différence
+# CASE-ADMIN-16 - le barème rend tout, puis les trois quarts, puis rien
 
 **Spécification :** `SPEC-ADMIN-06`
 **Critères couverts :** AC-6, AC-7
@@ -6,39 +6,43 @@
 **Niveau :** application
 **Statut :** automatisé
 
+> **Repris en v6, 2026-08-20.** `CR-07/Q11` rend le barème calculable et
+> **non uniforme** : au-delà de 48 heures la commission s'applique à ce que le
+> client a versé, en deçà elle s'applique au prix total puis se plafonne. Le
+> client a confirmé les deux formules séparément, après avoir vu l'écart
+> chiffré.
+
 ## Préconditions
 
-- Deux réservations dauphins de 100 € chacune, acompte de 30 € versé.
-- La première est annulée par son client 5 jours avant le départ, la seconde
-  36 heures avant.
+- Trois réservations dauphins de 100 € chacune sur la sortie du 20 juillet à 7h.
+- Chacune a versé son acompte de 30 €, aucune n'a réglé son solde.
 
 ## Scénario
 
 ```gherkin
-Étant donné une réservation de 100 € dont 30 € ont été versés
-Quand le client annule 5 jours avant le départ
-Alors la commission de 25 % vaut 25 €
-Et 5 € lui sont remboursés
-Étant donné une seconde réservation identique
-Quand ce client annule 36 heures avant le départ
-Alors la commission de 50 % vaut 50 €, plafonnée à 30 €
-Et rien ne lui est remboursé
+Étant donné trois réservations de 100 € dont 30 € ont été versés
+Quand la première est annulée le 10 juillet, à plus de 7 jours du départ
+Alors son client récupère 30 €
+Quand la deuxième est annulée le 16 juillet, entre 7 jours et 48 heures
+Alors son client récupère 22,50 €
+Quand la troisième est annulée le 19 juillet à 19h, à moins de 48 heures
+Alors son client ne récupère rien
 Et rien ne lui est réclamé
 ```
 
 ## Résultat attendu
 
-- Le plafond joue **dans les deux sens** : il rend 5 € dans un cas, il retient
-  tout dans l'autre.
-- Le gérant perd 20 € sur la seconde annulation, et l'accepte : c'est
+- 30 €, puis 22,50 €, puis 0 €. **Les deux premiers montants sont des
+  pourcentages du versé, le troisième un plafonnement d'une commission
+  calculée sur le prix total.**
+- Le gérant perd 20 € sur la troisième annulation, et l'accepte : c'est
   l'arbitrage commercial de `CR-06`.
 
 ## Ce que ce cas ne vérifie pas
 
-- **La restitution des 5 € est une hypothèse d'équipe.** Le client n'a raisonné
-  que sur la tranche 48h-24h, celle où le plafond joue en sa faveur. Question 19
-  du §11 du cahier des charges.
-- Le barème dégressif lui-même, appliqué à la main par le gérant.
+- **Le client soldé**, qui récupère 50 % du prix total : il ne peut avoir
+  soldé que dans la fenêtre du lien, donc à moins de 48 heures du départ.
+- Le client absent au départ → `CASE-ADMIN-17`.
 - Le renoncement après une alerte météo, qui rend tout → `CASE-ADMIN-15`.
 
 ## Test automatisé

@@ -28,7 +28,7 @@ final class IssueDannulationClientTest extends CasDapplication
 
     protected function instantInitial(): string
     {
-        return '2026-07-15 09:00';
+        return '2026-07-05 09:00';
     }
 
     /**
@@ -114,40 +114,43 @@ final class IssueDannulationClientTest extends CasDapplication
     }
 
     /**
-     * AC-6 et AC-7 : la retenue est plafonnée au montant versé, et la
-     * différence est rendue quand la commission lui est inférieure.
+     * AC-6 et AC-7 : au-delà de 48 heures la commission s'applique au versé,
+     * en deçà elle s'applique au prix total puis se plafonne.
      */
     public function test_CASE_ADMIN_16_retenue_plafonnee_a_lacompte(): void
     {
-        $aCinqJours = $this->reservationConfirmee(Reference::CLIENT_MARIE, adultes: 2);
-        $aTrenteSixHeures = $this->reservationConfirmee(Reference::CLIENT_JOHN, adultes: 2);
+        $tot = $this->reservationConfirmee(Reference::CLIENT_MARIE, adultes: 2);
+        $moyen = $this->reservationConfirmee(Reference::CLIENT_JOHN, adultes: 2);
+        $tard = $this->reservationConfirmee(Reference::CLIENT_KARIM, adultes: 2);
 
         $verse = Reference::acompteSortie(Reference::prixDauphins(2));
 
-        // Cinq jours avant : la commission de 25 % vaut 25 €, moins que les 30 € versés.
-        $this->horloge->nousSommesLe('2026-07-15 10:00');
-        $tot = $this->enregistrer(
-            $aCinqJours,
-            IssueDannulation::REMBOURSEMENT,
-            commission: Reference::euros(25),
-        );
+        // Plus de 7 jours avant le départ du 20 juillet à 7h.
+        $this->horloge->nousSommesLe('2026-07-10 10:00');
         self::assertSame(
-            $verse - Reference::euros(25),
-            $tot->montantPropose(),
-            'la commission n\'épuise pas l\'acompte : 5 € reviennent au client',
+            $verse,
+            $this->enregistrer($tot, IssueDannulation::REMBOURSEMENT)->montantPropose(),
+            'au-delà de 7 jours, il récupère la totalité de ce qu\'il a versé',
         );
 
-        // Trente-six heures avant : la commission de 50 % excède l'acompte.
-        $this->horloge->nousSommesLe('2026-07-19 19:00');
-        $tard = $this->enregistrer(
-            $aTrenteSixHeures,
-            IssueDannulation::REMBOURSEMENT,
-            commission: Reference::euros(50),
+        // Entre 7 jours et 48 heures.
+        $this->horloge->nousSommesLe('2026-07-16 10:00');
+        self::assertSame(
+            Reference::euros(22.50),
+            $this->enregistrer($moyen, IssueDannulation::REMBOURSEMENT)->montantPropose(),
+            '75 % du versé, et non l\'acompte moins une commission calculée sur le total',
         );
+
+        // Moins de 48 heures, solde jamais réglé.
+        $this->horloge->nousSommesLe('2026-07-19 19:00');
         self::assertSame(
             0,
-            $tard->montantPropose(),
-            'la retenue est plafonnée au versé : rien n\'est rendu, rien n\'est réclamé',
+            $this->enregistrer($tard, IssueDannulation::REMBOURSEMENT)->montantPropose(),
+            'la commission de 50 % du prix total excède le versé : il perd son acompte',
+        );
+        self::assertNull(
+            $this->paiement->montantRembourse($tard),
+            'aucun remboursement ne part pour ce client, et rien ne lui est réclamé',
         );
     }
 
@@ -191,13 +194,16 @@ final class IssueDannulationClientTest extends CasDapplication
         );
     }
 
+    /**
+     * Le barème n'est plus saisi par le gérant : `CR-07/Q11` le rend
+     * calculable à partir du délai et de ce qui a été versé.
+     */
     private function enregistrer(
         string $reservation,
         IssueDannulation $issue,
         ?int $montant = null,
-        ?int $commission = null,
     ): ResultatDissue {
         return $this->service(EnregistrerUneIssueDannulation::class)
-            ->executer($reservation, $issue, $montant, $commission);
+            ->executer($reservation, $issue, $montant);
     }
 }

@@ -92,10 +92,28 @@ final class PaiementSimule implements PrestataireDePaiement
         return count($this->encaissements);
     }
 
-    /** Le montant encaissé pour une réservation, en centimes, ou null si aucun. */
+    /**
+     * Le **premier** montant encaissé pour une réservation, en centimes.
+     *
+     * Depuis `REQ-108` une réservation porte deux transactions : cette méthode
+     * rend celle de l'acompte. Le solde se lit avec `dernierMontantEncaisse()`.
+     * Tant qu'il n'y en avait qu'une, la distinction ne se posait pas.
+     */
     public function montantEncaisse(string $referenceDeReservation): ?int
     {
         foreach ($this->encaissements as $encaissement) {
+            if ($encaissement['reservation'] === $referenceDeReservation) {
+                return $encaissement['montant'];
+            }
+        }
+
+        return null;
+    }
+
+    /** Le **dernier** montant encaissé, en centimes : le solde, s'il a été réglé. */
+    public function dernierMontantEncaisse(string $referenceDeReservation): ?int
+    {
+        foreach (array_reverse($this->encaissements) as $encaissement) {
             if ($encaissement['reservation'] === $referenceDeReservation) {
                 return $encaissement['montant'];
             }

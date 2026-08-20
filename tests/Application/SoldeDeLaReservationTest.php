@@ -58,7 +58,7 @@ final class SoldeDeLaReservationTest extends CasDapplication
         );
         self::assertSame(
             Reference::soldeSortie(Reference::prixDauphins(2)),
-            $this->paiement->montantEncaisse($reservation),
+            $this->paiement->dernierMontantEncaisse($reservation),
             '70 € demandés, et non les 100 € de la réservation',
         );
         self::assertTrue($this->reservation($reservation)->estSoldee());
@@ -76,15 +76,16 @@ final class SoldeDeLaReservationTest extends CasDapplication
      */
     public function test_CASE_BOOKING_41_solde_non_reglable_hors_fenetre(): void
     {
-        $sortie = $this->sortieDuMatin();
+        // Le créneau de 14h est le seul où les deux règles divergent : le lien
+        // part à 7h la veille, là où 24 heures avant le départ donnerait 14h.
+        $sortie = $this->sortieDeLapresMidi();
         $reservation = $this->monde->reservationConfirmee(
             $sortie,
             Reference::CLIENT_MARIE,
             adultes: 2,
         );
 
-        // Avant l'ouverture : la fenêtre s'ouvre 24 heures avant le départ.
-        $this->horloge->nousSommesLe('2026-07-18 09:00');
+        $this->horloge->nousSommesLe('2026-07-19 06:59');
         $tropTot = $this->service(SolderUneReservation::class)->executer($reservation);
         self::assertTrue($tropTot->estRefuse());
         self::assertSame(ResultatDePaiement::MOTIF_HORS_FENETRE, $tropTot->motifDuRefus());
@@ -92,7 +93,24 @@ final class SoldeDeLaReservationTest extends CasDapplication
         $this->horloge->nousSommesLe('2026-07-19 07:00');
         self::assertTrue(
             $this->service(SolderUneReservation::class)->executer($reservation)->estConfirme(),
-            'la fenêtre s\'ouvre exactement 24 heures avant le départ',
+            'la fenêtre s\'ouvre avec le lien, à 7h la veille, et non 24 heures avant le départ',
+        );
+
+        $this->horloge->nousSommesLe('2026-07-20 12:00');
+        $tropTard = $this->service(SolderUneReservation::class)->executer($reservation);
+        self::assertTrue(
+            $tropTard->estRefuse(),
+            'à la fermeture du créneau, seul le paiement au quai reste possible',
+        );
+    }
+
+    private function sortieDeLapresMidi(): string
+    {
+        return $this->monde->sortieProgrammee(
+            Reference::JOUR_EN_SAISON,
+            Reference::CRENEAU_APRES_MIDI,
+            Reference::TI_KAP,
+            Reference::SORTIE_DAUPHINS,
         );
     }
 
