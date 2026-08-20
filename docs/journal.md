@@ -945,8 +945,13 @@ descendre revenait à écrire les constantes qui manquaient.
   démarre, annonce son port, et l'autre serveur capte les connexions. Vérifié en
   provoquant l'erreur : le conteneur rapporte `'root'@'192.168.65.1'`, la
   passerelle Docker, jamais `localhost`. Le `Makefile` vérifiait que Docker
-  *déclarait* 3306, pas **qui répondait** ; il vérifie désormais les deux, et le
-  cas négatif a été éprouvé avec un intrus lié à la main.
+  *déclarait* 3306, pas **qui répondait**. Première correction : filtrer `lsof`
+  sur le mot « docker ». **Fausse bonne idée**, et Chloé l'a montré en une
+  ligne : elle utilise OrbStack, que ce filtre prenait pour un intrus. Une liste
+  de noms de moteurs est toujours en retard d'un outil. La version retenue prouve
+  le fait au lieu de le deviner : `@@hostname` rendu par MySQL est l'identifiant
+  du conteneur qui l'héberge, et on le compare à celui que rend le moteur. Éprouvé
+  dans les deux sens, avec un second serveur MySQL lancé pour usurper la place.
 - Le cas neuf a été écrit **par-dessus `CASE-CANCEL-20`**, qui existait déjà et
   couvrait tout autre chose. Repéré parce que `git status` le montrait
   *modifié* et non *nouveau* ; restauré depuis `HEAD`, et le cas neuf renuméroté

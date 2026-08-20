@@ -22,7 +22,7 @@ RUPTURES_ATTENDUES := 5
 
 .DEFAULT_GOAL := aide
 
-.PHONY: aide presentation demarrer attendre port bases verifier test tracabilite schema demo arreter
+.PHONY: aide presentation demarrer attendre port identite qui-ecoute bases verifier test tracabilite schema demo arreter
 
 aide:
 	@echo ""
@@ -72,16 +72,13 @@ attendre:
 	echo "  Voir ce qu'elle dit : $(COMPOSE) logs database"; \
 	exit 1
 
-# Le port est vérifié en deux temps, et c'est le fruit de deux pannes réelles.
+# Docker publie-t-il bien 3306 ? Jusqu'au 2026-08-20 le port était tiré au hasard
+# à chaque démarrage, et le projet visait en réalité un autre MySQL.
 #
-# 1. Docker publie-t-il bien 3306 ? Jusqu'au 2026-08-20 le port était tiré au
-#    hasard à chaque démarrage.
-# 2. **Qui répond réellement sur 3306 ?** Un MySQL installé sur le poste et lié
-#    à 127.0.0.1 laisse le conteneur se lier à 0.0.0.0 sans conflit visible,
-#    puis capte toutes les connexions : Docker dit « démarré », et l'application
-#    parle à l'autre base. Le symptôme est un « Access denied for user
-#    'root'@'localhost' » alors que le conteneur, lui, rapporterait l'adresse de
-#    la passerelle Docker.
+# Ce contrôle ne dit pas **qui répond** : c'est la cible `identite` qui le
+# prouve, plus bas, et elle le prouve par un fait plutôt que par le nom du
+# processus qui écoute. Filtrer sur « docker » excluait OrbStack, Colima et
+# tous les autres moteurs : une liste de noms est toujours en retard d'un outil.
 port:
 	@port=$$($(COMPOSE) port database 3306 2>/dev/null); \
 	if [ -z "$$port" ]; then \
@@ -94,29 +91,57 @@ port:
 		   echo "  compose.override.yaml doit porter \"3306:3306\"."; \
 		   exit 1 ;; \
 	esac
-	@intrus=$$(lsof -nP -iTCP:3306 -sTCP:LISTEN 2>/dev/null | tail -n +2 | grep -v -i "docker\|com.docke" || true); \
-	if [ -n "$$intrus" ]; then \
+
+# **Le serveur qui répond sur 3306 est-il bien notre conteneur ?**
+#
+# MySQL rend dans @@hostname l'identifiant du conteneur qui l'héberge. Le
+# comparer à celui que rend le moteur est une preuve, valable quel que soit le
+# moteur : Docker Desktop, OrbStack, Colima ou autre.
+#
+# Ce contrôle existe parce qu'un MySQL du poste lié à 127.0.0.1:3306 cohabite
+# sans conflit avec un conteneur lié à 0.0.0.0:3306 : le moteur démarre,
+# annonce son port, et l'autre serveur capte les connexions.
+identite:
+	@attendu=$$($(COMPOSE) ps -q database 2>/dev/null | cut -c1-12); \
+	reel=$$($(CONSOLE) --env=test dbal:run-sql "SELECT @@hostname" 2>/dev/null \
+	        | sed -n '4p' | tr -d ' |'); \
+	if [ -z "$$reel" ]; then \
+		echo "  (identité non vérifiable : la base n'a pas répondu)"; \
+	elif [ "$$reel" = "$$attendu" ]; then \
+		echo "  le serveur qui répond est bien le conteneur ($$reel)"; \
+	else \
 		echo ""; \
-		echo "  ERREUR : un autre serveur écoute sur 3306 et masque le conteneur."; \
-		echo "$$intrus" | sed 's/^/    /'; \
-		echo ""; \
-		echo "  L'application parlerait à CE serveur et non à la base du projet."; \
-		echo "  Arrêtez-le, puis relancez. Selon l'installation :"; \
-		echo "    brew services stop mysql"; \
-		echo "    launchctl disable gui/\$$(id -u)/homebrew.mxcl.mysql"; \
-		echo "    sudo /usr/local/mysql/support-files/mysql.server stop   # paquet .dmg"; \
-		echo "  Puis : docker compose up -d --force-recreate"; \
+		echo "  ERREUR : ce n'est pas notre conteneur qui répond sur 3306."; \
+		echo "    attendu : $$attendu   obtenu : $$reel"; \
+		$(MAKE) --no-print-directory qui-ecoute; \
 		exit 1; \
-	fi; \
-	echo "  seul Docker écoute sur 3306"
+	fi
+
+# Affiché en cas d'échec seulement : la liste brute, sans interprétation.
+qui-ecoute:
+	@echo ""
+	@echo "  Ce qui écoute sur 3306 :"
+	@lsof -nP -iTCP:3306 -sTCP:LISTEN 2>/dev/null | sed 's/^/    /' || echo "    (lsof indisponible)"
+	@echo ""
+	@echo "  Un MySQL installé sur le poste capte probablement les connexions."
+	@echo "  Selon l'installation :"
+	@echo "    brew services stop mysql"
+	@echo "    launchctl disable gui/\$$(id -u)/homebrew.mxcl.mysql"
+	@echo "    sudo /usr/local/mysql/support-files/mysql.server stop   # paquet .dmg"
+	@echo "  Puis : $(COMPOSE) up -d --force-recreate && make presentation"
+	@echo ""
 
 # Idempotent des deux côtés : --if-not-exists ne recrée rien, et une migration
 # déjà passée ne se rejoue pas.
 bases:
 	@echo ""
 	@echo "→ Schémas de développement et de test"
-	@$(CONSOLE) doctrine:database:create --if-not-exists
+	@if ! $(CONSOLE) doctrine:database:create --if-not-exists; then \
+		$(MAKE) --no-print-directory qui-ecoute; \
+		exit 1; \
+	fi
 	@$(CONSOLE) doctrine:database:create --env=test --if-not-exists
+	@$(MAKE) --no-print-directory identite
 	@$(CONSOLE) doctrine:migrations:migrate --no-interaction
 	@$(CONSOLE) doctrine:migrations:migrate --env=test --no-interaction
 	@echo ""
