@@ -890,8 +890,9 @@ descendre revenait à écrire les constantes qui manquaient.
   contredisaient : elles coïncident sur les créneaux de 7h et 10h, et divergent
   de sept heures sur celui de 14h. Le client a tranché en une phrase.
 - **`SPEC-CANCEL-07` a été écrite en fin de journée**, pour le lien de
-  règlement. C'est la vingt-neuvième spécification, et la seule sans plan de
-  délégation : elle n'a pas été confiée à un agent, il n'y avait rien à cadrer.
+  règlement. C'est la trente-deuxième et dernière spécification, et la seule
+  qui demande du code sans avoir de plan de délégation : elle n'a pas été
+  confiée à un agent, il n'y avait rien à cadrer.
   Écrire son plan après coup aurait fabriqué une prévision à partir du
   résultat, ce que la colonne « écart » de J10 cherche justement à mesurer.
 - **La colonne `paiement.pointe_par` reste nulle.** Elle existe pour
@@ -952,6 +953,17 @@ descendre revenait à écrire les constantes qui manquaient.
   le fait au lieu de le deviner : `@@hostname` rendu par MySQL est l'identifiant
   du conteneur qui l'héberge, et on le compare à celui que rend le moteur. Éprouvé
   dans les deux sens, avec un second serveur MySQL lancé pour usurper la place.
+- **Un `APP_ENV` exporté dans le terminal mettait les 76 tests d'application au
+  rouge**, avec un message qui ne parlait ni d'environnement ni de base :
+  « You must set the KERNEL_CLASS environment variable ». `phpunit.xml.dist`
+  forçait pourtant `APP_ENV=test`. La balise `<env force>` de PHPUnit n'écrit
+  que `putenv()` et `$_ENV`, jamais `$_SERVER`, alors que `Dotenv::bootEnv()`
+  lit `$_SERVER` **en premier** : la valeur du shell gagnait, `.env.dev` était
+  chargé au lieu de `.env.test`, et `KERNEL_CLASS` n'existait pas. Une balise
+  `<server>` a été ajoutée à côté de la `<env>`. Éprouvé avec `APP_ENV` valant
+  successivement rien, `dev`, `demo` et `prod` : 87 verts dans les quatre cas.
+  Sans cela, un terminal ouvert la veille suffisait à faire échouer la
+  démonstration de J10 pour une raison étrangère au code.
 - Le cas neuf a été écrit **par-dessus `CASE-CANCEL-20`**, qui existait déjà et
   couvrait tout autre chose. Repéré parce que `git status` le montrait
   *modifié* et non *nouveau* ; restauré depuis `HEAD`, et le cas neuf renuméroté
@@ -972,6 +984,13 @@ descendre revenait à écrire les constantes qui manquaient.
 - Les deux plans de délégation manquants, et leurs tableaux « Après »
 - `Interface\Console\DemontrerLeParcoursCommand` et les trois adaptateurs de
   l'environnement `demo`
+- Un `Makefile`, dont `make presentation` : démarrage de la base, contrôle du
+  port et de qui répond dessus, création et migration des deux schémas, puis
+  les trois contrôles. Idempotent, vérifié depuis un volume Docker détruit
+- `README_J10.md`, la procédure de présentation : quoi lancer, dans quel ordre,
+  ce qu'on montre et ce qu'on assume, avec les cinq ruptures à annoncer avant
+  qu'on les trouve
+- `phpunit.xml.dist` : la balise `<server>` qui neutralise un `APP_ENV` de shell
 
 **La démonstration de J10.** Il n'y a aucun écran, et il n'y en aura pas : en
 écrire sans spécification d'écran produirait du code non couvert le jour même
