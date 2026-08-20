@@ -34,8 +34,8 @@ final class MessageDeRappelTest extends CasDapplication
     public function test_CASE_CANCEL_21_rappel_24h_avant_sur_les_deux_canaux(): void
     {
         $sortie = $this->sortie(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 1);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 1);
         $this->monde->previsionMeteo(Reference::JOUR_EN_SAISON, self::PREVISION);
 
         $this->horloge->nousSommesLe('2026-07-19 09:59');
@@ -78,10 +78,10 @@ final class MessageDeRappelTest extends CasDapplication
     public function test_CASE_CANCEL_22_horaire_de_rappel_modifie_applique_aux_envois_a_venir(): void
     {
         $sortieProche = $this->sortie('2026-07-19', Reference::CRENEAU_MILIEU_DE_MATINEE);
-        $this->monde->reservationPayee($sortieProche, Reference::CLIENT_MARIE, adultes: 1);
+        $this->monde->reservationConfirmee($sortieProche, Reference::CLIENT_MARIE, adultes: 1);
 
         $sortieLointaine = $this->sortie(self::LENDEMAIN_DU_JOUR_PIVOT, Reference::CRENEAU_MILIEU_DE_MATINEE);
-        $this->monde->reservationPayee($sortieLointaine, Reference::CLIENT_JOHN, adultes: 1);
+        $this->monde->reservationConfirmee($sortieLointaine, Reference::CLIENT_JOHN, adultes: 1);
 
         // Le rappel de la sortie proche part sous le délai par défaut.
         $this->horloge->nousSommesLe('2026-07-18 10:00');
@@ -122,7 +122,7 @@ final class MessageDeRappelTest extends CasDapplication
         // L'horaire de rappel de ce départ, le 19 à 07h00, est déjà passé ; les
         // réservations, elles, restent ouvertes jusqu'à midi la veille.
         $this->horloge->nousSommesLe('2026-07-19 11:00');
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_KARIM, adultes: 2);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_KARIM, adultes: 2);
 
         self::assertSame(
             2,
@@ -146,10 +146,10 @@ final class MessageDeRappelTest extends CasDapplication
     public function test_CASE_CANCEL_24_aucun_rappel_si_annule_et_echec_dun_canal_isole(): void
     {
         $annule = $this->sortie(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
-        $this->monde->reservationPayee($annule, Reference::CLIENT_MARIE, adultes: 2);
+        $this->monde->reservationConfirmee($annule, Reference::CLIENT_MARIE, adultes: 2);
 
         $maintenu = $this->sortie(self::LENDEMAIN_DU_JOUR_PIVOT, Reference::CRENEAU_MILIEU_DE_MATINEE);
-        $this->monde->reservationPayee($maintenu, Reference::CLIENT_JOHN, adultes: 2);
+        $this->monde->reservationConfirmee($maintenu, Reference::CLIENT_JOHN, adultes: 2);
         $this->messages->feraEchouer(
             EnvoisEnregistres::CANAL_EMAIL,
             Reference::CLIENT_JOHN['email'],

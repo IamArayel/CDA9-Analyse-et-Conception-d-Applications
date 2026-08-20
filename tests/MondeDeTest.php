@@ -12,14 +12,18 @@ use App\Application\EmettreUnAvoir;
 use App\Application\ProgrammerUneSortie;
 use App\Application\ReglerLesParametres;
 use App\Application\SaisirLaPrevisionMeteo;
+use App\Application\SolderUneReservation;
 use App\Domaine\Entite\Bateau;
 use App\Domaine\Entite\Gerant;
 use App\Domaine\Entite\JourDeFermeture;
 use App\Domaine\Entite\Parametre;
 use App\Domaine\Entite\Tarif;
+use App\Domaine\Politique\FenetreDeReglement;
 use App\Domaine\TypeDeSortie;
+use App\Infrastructure\Persistance\ReservationRepository;
 use App\Tests\Doublures\HorlogeFigee;
 use App\Tests\JeuDeDonneesDeReference as Reference;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
 
@@ -103,7 +107,12 @@ final class MondeDeTest
     }
 
     /**
-     * Une réservation payée, donc confirmée et comptée dans les inscrits.
+     * Une réservation confirmée par le versement de son **acompte**, donc
+     * comptée dans les inscrits et dans les places décomptées.
+     *
+     * Elle n'est pas soldée pour autant : depuis `CR-06`, confirmer et payer ne
+     * sont plus le même événement. Pour une réservation entièrement réglée,
+     * voir `reservationSoldee()`.
      *
      * Le montant n'est pas fourni : il est calculé par le domaine à partir des
      * tarifs de référence, comme il le sera en production. Un cas qui attend
@@ -114,7 +123,7 @@ final class MondeDeTest
      *
      * @return string la référence de la réservation
      */
-    public function reservationPayee(
+    public function reservationConfirmee(
         string $sortie,
         array $client,
         int $adultes,
@@ -148,13 +157,56 @@ final class MondeDeTest
     }
 
     /**
+     * Une réservation entièrement réglée : acompte versé, puis solde payé en
+     * ligne dans sa fenêtre.
+     *
+     * @param array{nom: string, prenom: string, email: string,
+     *              telephone_mobile: string, langue: string|null} $client
+     *
+     * @return string la référence de la réservation
+     */
+    public function reservationSoldee(
+        string $sortie,
+        array $client,
+        int $adultes,
+        int $enfants = 0,
+    ): string {
+        $reservation = $this->reservationConfirmee($sortie, $client, $adultes, $enfants);
+
+        // Solder suppose d'être dans la fenêtre de règlement, qui s'ouvre la
+        // veille à 7h. Le monde s'y transporte le temps du versement, puis
+        // rend au cas l'instant qu'il avait choisi : la précondition « une
+        // réservation soldée » ne doit pas obliger chaque test à connaître
+        // l'heure d'envoi du lien.
+        $instantDuCas = $this->horloge->maintenant();
+        $depart = $this->departDe($reservation);
+
+        $this->horloge->nousSommesLe(
+            (new FenetreDeReglement())->ouverture($depart)->format('Y-m-d H:i'),
+        );
+        $this->service(SolderUneReservation::class)->executer($reservation);
+        $this->horloge->nousSommesLe($instantDuCas->format('Y-m-d H:i'));
+
+        return $reservation;
+    }
+
+    private function departDe(string $reservation): DateTimeImmutable
+    {
+        return $this->conteneur->get(ReservationRepository::class)
+            ->parReference($reservation)
+            ->sortie()
+            ->creneau()
+            ->departPrevu();
+    }
+
+    /**
      * Un nombre de places vendues sur une sortie, quand l'identité des clients
      * n'intervient pas dans le cas.
      */
     public function placesVendues(string $sortie, int $nombre): void
     {
         for ($place = 1; $place <= $nombre; ++$place) {
-            $this->reservationPayee(
+            $this->reservationConfirmee(
                 $sortie,
                 [
                     'nom' => 'Passager',

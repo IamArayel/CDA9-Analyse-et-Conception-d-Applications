@@ -6,6 +6,8 @@ namespace App\Application;
 
 use App\Domaine\DocumentImprimable;
 use App\Domaine\Entite\Reservation;
+use App\Domaine\Service\EtatDuReglement;
+use App\Infrastructure\Persistance\PaiementRepository;
 use App\Infrastructure\Persistance\ReservationRepository;
 use App\Infrastructure\Persistance\SortieRepository;
 
@@ -19,6 +21,10 @@ use App\Infrastructure\Persistance\SortieRepository;
  * saison c'est un résultat métier normal, et le gérant doit pouvoir l'imprimer
  * sans se demander si l'outil a échoué.
  *
+ * **La colonne `solde_regle` est ce que le gérant lit sur le quai** : elle lui
+ * dit qui doit encore sortir sa carte, et c'est elle qui déclenche le pointage
+ * de `SPEC-ADMIN-07`.
+ *
  * Ce service produit le **contenu** du document, groupé et ordonné. Sa mise en
  * page PDF appartient à la couche Interface et n'est pas encore écrite : c'est
  * déclaré dans docs/traceability-trous.md.
@@ -28,6 +34,8 @@ final class ExporterLePlanning
     public function __construct(
         private readonly SortieRepository $sorties,
         private readonly ReservationRepository $reservations,
+        private readonly PaiementRepository $paiements,
+        private readonly EtatDuReglement $reglement,
     ) {
     }
 
@@ -72,6 +80,10 @@ final class ExporterLePlanning
             'email' => $reservation->email(),
             'telephone_mobile' => $reservation->telephoneMobile(),
             'participants' => $reservation->nombreDeParticipants(),
+            'solde_regle' => $this->reglement->soldeDu(
+                $reservation,
+                $this->paiements->verse($reservation),
+            ) === 0,
         ];
     }
 }

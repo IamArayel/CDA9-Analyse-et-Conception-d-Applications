@@ -134,6 +134,11 @@ class Reservation
         $this->statut = StatutDeReservation::ANNULEE;
     }
 
+    public function estAnnulee(): bool
+    {
+        return $this->statut === StatutDeReservation::ANNULEE;
+    }
+
     public function estConfirmee(): bool
     {
         return $this->statut === StatutDeReservation::CONFIRMEE;

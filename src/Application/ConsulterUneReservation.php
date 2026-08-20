@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Application;
 
+use App\Domaine\Service\EtatDuReglement;
 use App\Domaine\VueDeReservation;
+use App\Infrastructure\Persistance\PaiementRepository;
 use App\Infrastructure\Persistance\ReservationRepository;
 use InvalidArgumentException;
 
@@ -20,8 +22,11 @@ final class ConsulterUneReservation
 {
     private const DEVISE = 'EUR';
 
-    public function __construct(private readonly ReservationRepository $reservations)
-    {
+    public function __construct(
+        private readonly ReservationRepository $reservations,
+        private readonly PaiementRepository $paiements,
+        private readonly EtatDuReglement $reglement,
+    ) {
     }
 
     public function executer(string $reference): VueDeReservation
@@ -32,6 +37,8 @@ final class ConsulterUneReservation
             throw new InvalidArgumentException(sprintf('Aucune réservation « %s ».', $reference));
         }
 
+        $verse = $this->paiements->verse($reservation);
+
         return new VueDeReservation(
             $reservation->statut(),
             $reservation->montant(),
@@ -39,6 +46,8 @@ final class ConsulterUneReservation
             $reservation->telephoneMobile(),
             issuesProposees: [],
             avoirProduit: null,
+            montantVerse: $verse,
+            soldeDu: $this->reglement->soldeDu($reservation, $verse),
         );
     }
 }

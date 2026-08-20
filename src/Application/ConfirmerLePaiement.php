@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Application;
 
+use App\Application\Envoi\LienDeReglement;
 use App\Application\Envoi\RappelDeSortie;
+use App\Domaine\Entite\Paiement;
 use App\Domaine\Entite\Reservation;
 use App\Domaine\Horloge;
 use App\Domaine\PrestataireDePaiement;
 use App\Domaine\ResultatDePaiement;
+use App\Domaine\Service\EtatDuReglement;
+use App\Infrastructure\Persistance\PaiementRepository;
 use App\Infrastructure\Persistance\ReservationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
@@ -29,8 +33,12 @@ use InvalidArgumentException;
  * demander** (AC-7). Le cas est rare, l'immobilisation le réduit sans le
  * supprimer.
  *
- * **Le montant restant dû.** Un bon cadeau ou un avoir peut le ramener à zéro,
- * auquel cas le prestataire n'est jamais sollicité (AC-6).
+ * **Ce qui est encaissé n'est plus le prix, c'est l'acompte** (`REQ-108`) : 30 %
+ * pour une sortie, 50 % pour une privatisation, et le reste devient un solde que
+ * `SolderUneReservation` ou `PointerLeSolde` iront chercher. Un bon cadeau ou un
+ * avoir change la donne : `REQ-116` demande alors la différence en une seule
+ * fois, et cette différence peut être nulle, auquel cas le prestataire n'est
+ * jamais sollicité (AC-6). Le calcul lui-même vit dans `EtatDuReglement`.
  */
 final class ConfirmerLePaiement
 {
@@ -39,7 +47,10 @@ final class ConfirmerLePaiement
         private readonly EntityManagerInterface $entites,
         private readonly PrestataireDePaiement $prestataire,
         private readonly ReservationRepository $reservations,
+        private readonly PaiementRepository $paiements,
+        private readonly EtatDuReglement $reglement,
         private readonly RappelDeSortie $rappel,
+        private readonly LienDeReglement $lien,
     ) {
     }
 
@@ -62,16 +73,16 @@ final class ConfirmerLePaiement
             return ResultatDePaiement::refuse(ResultatDePaiement::MOTIF_CRENEAU_ANNULE);
         }
 
-        $restantDu = $this->montantRestantDu($reservation);
+        $aVerser = $this->reglement->versementDentree($reservation);
 
-        if ($restantDu > 0
-            && !$this->prestataire->encaisser($reservation->reference(), $restantDu)) {
+        if ($aVerser > 0
+            && !$this->prestataire->encaisser($reservation->reference(), $aVerser)) {
             return ResultatDePaiement::refuse(ResultatDePaiement::MOTIF_TRANSACTION_REFUSEE);
         }
 
         if ($this->laPlaceEstPartie($reservation)) {
-            if ($restantDu > 0) {
-                $this->prestataire->rembourser($reservation->reference(), $restantDu);
+            if ($aVerser > 0) {
+                $this->prestataire->rembourser($reservation->reference(), $aVerser);
             }
 
             $reservation->annuler();
@@ -80,21 +91,9 @@ final class ConfirmerLePaiement
             return ResultatDePaiement::refuse(ResultatDePaiement::MOTIF_PLACES_INSUFFISANTES);
         }
 
-        $this->confirmer($reservation);
+        $this->confirmer($reservation, $aVerser);
 
         return ResultatDePaiement::confirme();
-    }
-
-    /** Le montant du séjour, diminué du code éventuellement appliqué. */
-    private function montantRestantDu(Reservation $reservation): int
-    {
-        $code = $reservation->bonCadeau() ?? $reservation->avoir();
-
-        if ($code === null) {
-            return $reservation->montant();
-        }
-
-        return max(0, $reservation->montant() - $code->montant());
     }
 
     private function laPlaceEstPartie(Reservation $reservation): bool
@@ -115,7 +114,7 @@ final class ConfirmerLePaiement
      * Le code est consommé ici, et non à sa saisie : un code appliqué sur une
      * réservation jamais payée doit rester utilisable ailleurs.
      */
-    private function confirmer(Reservation $reservation): void
+    private function confirmer(Reservation $reservation, int $verse): void
     {
         $reservation->confirmer();
         $reservation->bonCadeau()?->marquerUtilise();
@@ -123,8 +122,22 @@ final class ConfirmerLePaiement
 
         $this->entites->flush();
 
+        // Un versement nul ne laisse pas d'écriture : rien n'a été encaissé, et
+        // une ligne à zéro euro ferait croire à une transaction.
+        if ($verse > 0) {
+            $this->paiements->enregistrer(new Paiement(
+                $reservation,
+                Paiement::TYPE_ACOMPTE,
+                $verse,
+                Paiement::CANAL_EN_LIGNE,
+                $this->horloge->maintenant(),
+            ));
+        }
+
         // Une réservation prise après l'heure de rappel déclenche le rappel
-        // immédiatement, et non pas jamais (SPEC-CANCEL-05 AC-5).
+        // immédiatement, et non pas jamais (SPEC-CANCEL-05 AC-5). Le lien de
+        // règlement suit la même règle, pour la même raison (SPEC-CANCEL-07).
         $this->rappel->envoyerSiDu($reservation, $this->horloge->maintenant());
+        $this->lien->envoyerSiDu($reservation, $this->horloge->maintenant());
     }
 }

@@ -6,6 +6,9 @@
 **Niveau :** application
 **Statut :** automatisé
 
+> **Repris en v6, 2026-08-19.** `CR-06` remplace le paiement intégral par un
+> acompte. Le comportement vérifié ne change pas ; les montants, si.
+
 ## Préconditions
 
 - Sortie du 20 juillet à 14h, mise en alerte le 19 juillet, message parti à 18h00.
@@ -17,7 +20,7 @@
 Étant donné un client ayant réservé le 20 juillet à 11h00 sur un créneau déjà en alerte
 Quand le gérant annule ce créneau le 20 juillet à 11h30
 Alors ce client reçoit le message de confirmation d'annulation à 12h00
-Et il est remboursé intégralement
+Et il est remboursé de la totalité de ce qu'il a versé
 ```
 
 ## Résultat attendu

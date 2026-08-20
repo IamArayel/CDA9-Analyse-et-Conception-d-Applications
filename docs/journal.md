@@ -630,3 +630,331 @@ le rendu de vendredi : nous passons à l'étape suivante.
 - **Le fuseau horaire du lieu d'exploitation** n'a jamais été explicité. Les cas sont tous écrits en heure locale et le code de test porte une constante unique, aujourd'hui neutre, à changer quand le client répondra. Toutes nos règles étant horaires, c'est le point le plus silencieusement risqué du projet.
 - Le nom exact de la plateforme d'envoi, suspendu aux trois vérifications d'ouverture de compte.
 - Les neuf autres questions du §11, inchangées.
+
+---
+
+## J8 - 2026-08-19
+
+**Présents.** Équipe complète de développeurs. Journée de production de code,
+interrompue en fin d'après-midi par un sixième entretien client qui renverse
+une exigence `Must`.
+
+**Décisions.**
+- **Un vingtième plan de délégation a été écrit pour le socle**, alors que le
+  README ne l'exigeait pas : il n'impose un plan qu'avant la première tâche
+  « sur la spécification désignée », et le socle n'est pas une spécification.
+  Nous l'avons écrit quand même, parce que c'est lui qui fige l'API que les
+  76 tests appellent, et parce qu'un socle produit sans plan au milieu de
+  vingt-cinq se lirait comme un oubli plutôt que comme une décision.
+- **Persistance réelle, Doctrine et MySQL**, plutôt que des dépôts en mémoire.
+  Les dépôts en mémoire auraient fait passer les 66 tests applicatifs plus
+  vite, mais auraient contredit `ADR-002`, `architecture.md` §5 et la
+  stratégie de test, et vidé de leur objet les deux cas qui vérifient des
+  règles portées par la base.
+- **Mapping XML plutôt qu'attributs Doctrine.** `architecture.md` §2 range
+  Doctrine dans « ce qui n'a rien à y faire » dans le domaine. Le prix est un
+  fichier de correspondance par entité ; le gain est que les treize entités
+  restent du PHP nu, lisible et testable sans framework.
+- **Les trois ports portent l'identifiant du service, et non un alias.** Un
+  alias est résolu à la compilation : les cas de test n'auraient plus pu y
+  substituer leurs doublures.
+- **Deux adaptateurs échouent bruyamment.** `Notificateur` et
+  `PrestataireDePaiement` devaient être liés pour que le conteneur compile,
+  mais ni Brevo ni Stripe ne sont intégrés. Ils lèvent une exception nommant
+  l'ADR ou la spécification qui doit livrer le vrai adaptateur : un envoi ou
+  un encaissement silencieusement perdu coûterait bien plus cher.
+- **Les 76 tests sont au vert**, 317 assertions. Les trois cas d'usage `Must`
+  fonctionnent de bout en bout.
+- **Le code ne sera pas modifié après `CR-06`**, décision prise à réception de
+  l'analyse d'impact. Trois questions bloquantes sont sans réponse, douze
+  tests verts deviendraient faux, et la chaîne documentaire pèse 30 % de la
+  note contre 12 % pour le code. C'est un arbitrage, et il est écrit au §9 de
+  `impact-CR-004.md` pour pouvoir être défendu ou contesté.
+
+**Critiques de l'IA acceptées.**
+- Le plan du socle annonçait 19 types de contrat ; l'agent en a dénombré 24 en
+  écrivant, quatre n'étant atteignables que comme valeurs de retour → tableau
+  « Après » du plan renseigné `repris` avec le motif, plutôt qu'un `conforme`
+  qui n'aurait rien observé - `41ba442`
+- `doctrine:migrations:diff` ne produit ni la colonne générée du naturaliste
+  ni aucune contrainte `CHECK` → les trois éléments ont été écrits à la main
+  et **vérifiés en SQL** : six sondes, six refus attendus - `734226b`
+- `ExporterLePlanning` ne produit pas de PDF et `CASE-ADMIN-06` ne peut pas le
+  voir, puisqu'il interroge une valeur constante → déclaré dans
+  `traceability-trous.md` plutôt que masqué - `a690eab`
+- Écrire une branche « si le créneau était en alerte » dans
+  `EnregistrerUneIssueDannulation` laisserait croire que le barème dégressif
+  vit quelque part dans le code → aucune branche, le barème reste appliqué à
+  la main par le gérant - `0653f25`
+
+**Critiques de l'IA refusées, et pourquoi.**
+- Aucune, pour le troisième jour consécutif. L'en-tête de ce journal prévient
+  qu'un journal parfaitement propre peut vouloir dire qu'on a tout pris : nous
+  le notons plutôt que de l'ignorer. L'explication tient à la nature des trois
+  journées, J7 et J8 ayant consisté à exécuter des arbitrages rendus à J5 et
+  J6. **Trois choix ont bien été tranchés par l'équipe contre les options que
+  l'agent avait posées** : la persistance réelle, le vingtième plan de
+  délégation, et la profondeur plutôt que la largeur sur le périmètre. Ce sont
+  des arbitrages, pas des refus, et la distinction est honnête.
+
+**Erreurs produites par l'IA et détectées.**
+- L'agent a affirmé qu'une réservation à moins de 24 heures du départ était
+  impossible sur les créneaux de 7h et 10h, et que la demande du client ne
+  concernait donc que celui de 14h. **C'est faux** : pour un départ à 7h, la
+  fermeture à midi la veille tombe 19 heures avant, et la fenêtre existe donc
+  bien, large de cinq heures → repéré en rédigeant `CR-06`, avant que
+  l'analyse d'impact ne s'appuie dessus. Corrigé, et l'ambiguïté réelle
+  qu'elle masquait est consignée au §6 de `CR-06`.
+- Du **code de production dépendait d'une constante de test** :
+  `SortieRepository` importait `App\Tests\JeuDeDonneesDeReference` pour lire
+  le fuseau horaire → repéré par un contrôle mécanique,
+  `grep -rn 'App\\Tests' src/`, corrigé en créant `FuseauDexploitation` dans
+  le domaine - `fe0ed80`
+- Les 76 tests instanciaient les services applicatifs avec
+  `new Service($horloge)`, convention fixée à J7 avant que le socle n'existe.
+  Un service qui parle à la base reçoit ses dépôts, et cette liste ne regarde
+  pas le cas de test → 94 instanciations converties en lecture du conteneur,
+  **sans qu'aucune assertion ne bouge** - `bbe0e2f`
+- Trois assertions écrites à J7 étaient plus larges que le cas qu'elles
+  servaient : deux vérifiaient qu'aucun encaissement n'avait eu lieu alors que
+  le cas parle d'un client précis, une comptait tous les messages alors que le
+  cas exclut explicitement le rappel → recentrées sur ce que le fichier de cas
+  décrit - `6b59786`, `eba6759`
+- **`compose.yaml` déclare PostgreSQL 16** alors qu'`ADR-002` retient MySQL et
+  que la migration est écrite en dialecte MySQL, `AUTO_INCREMENT`, `utf8mb4`
+  et `DROP FOREIGN KEY` : elle échouerait entièrement sur ce conteneur. Le
+  fichier a été produit par la recette Symfony pendant l'installation et
+  commité sans relecture → **converti en MySQL 9.3 le jour même**, avec
+  `compose.override.yaml` qui exposait le port 5432, et une variante
+  documentée dans `.env` pour ceux qui travailleront sur le conteneur plutôt
+  que sur un MySQL local. Les marqueurs de recette sont conservés, et
+  l'en-tête du fichier dit pourquoi il s'écarte de ce que la recette produit.
+
+**Ce qui a été généré aujourd'hui.**
+- Vingtième plan de délégation, `docs/delegation-SOCLE.md` - `1fd48f1`
+- Socle : Symfony 8, Doctrine, treize entités en PHP nu, mapping XML, deux
+  migrations dont les trois éléments manuels - `dcef16f`, `c787115`,
+  `734226b`, `5fc6233`, `29a36e2`, `916d05e`, `ffa947b`
+- 24 types de contrat, 12 politiques et services de domaine, 30 services
+  applicatifs, 8 dépôts - `41ba442`, `18255d4`, `fe0ed80`, `ca42af8`,
+  `6f1c01d`, `0a99c87`, `4057885`, `87cbf39`, `a4a9ed9`, `91ed181`,
+  `3d8b113`, `e828447`, `0653f25`, `807f20b`
+- Catalogues de traduction français et anglais, gabarits des trois messages
+  **provisoires** faute de rédaction fournie - `807f20b`
+- `docs/compte-rendu-entretien-06.md` et `docs/impact-CR-004.md` - `58d08f8`,
+  `49acdc0`
+- Mises à jour documentaires : `mcd-mld.md` §10, `architecture.md` §4,
+  `traceability-trous.md`, les 26 tableaux « Après » - `b4105cf`, `66ad2f8`,
+  `a690eab`, `b142809`
+
+**Questions ouvertes pour le client.**
+- **Trois questions bloquantes** empêchent d'écrire la règle de plafonnement :
+  le taux de retenue en deçà de 24 heures, tranche que le barème n'a jamais
+  couverte ; le sort de la part d'acompte qui excède la commission dans les
+  deux tranches hautes ; et l'interdiction ou non du paiement en ligne pour
+  une réservation tardive.
+- Cinq autres questions au §8 de `CR-06`, dont la facture unique, qui
+  contredit `REQ-018` en déléguant la facturation à un prestataire qui ne
+  verra jamais un solde encaissé au quai.
+- La fenêtre de paiement du solde est une **déduction d'équipe**, la seule
+  réponse de `CR-06` que le client n'ait pas donnée lui-même.
+- Le texte des trois messages automatiques, toujours pas fourni. Des gabarits
+  provisoires sont écrits, ne disant que ce que les spécifications
+  établissent.
+
+### J8, second créneau - la descente du CR-06
+
+Le sixième entretien est arrivé en fin d'après-midi. Plutôt que de le laisser
+pour le lendemain, l'équipe a fait descendre le changement **le soir même**,
+du cahier des charges jusqu'aux tests. Ce qui suit s'ajoute donc à la journée
+ci-dessus, et non à J9.
+
+**Décisions.**
+- **La chaîne descend, le code ne bouge pas.** Cahier des charges v6, dix
+  spécifications, modèle de données, UML, `ADR-006`, 91 cas de test et
+  85 tests. Le code reste en v5, et le lot qui le mettra à jour est
+  conditionné à un **point d'arrêt le 21/08 à 09h00**. Trois arguments, écrits
+  au §9 de `impact-CR-004.md` : trois questions client sans réponse, douze
+  tests verts qui deviendraient faux, et un barème qui note la chaîne
+  documentaire 30 % contre 12 % pour le code.
+- **Trois hypothèses d'équipe** rendent la rédaction possible malgré les
+  questions ouvertes : l'acompte est retenu en totalité en deçà de 24 heures,
+  la part d'acompte excédant la commission est remboursée, et la fenêtre de
+  paiement est uniforme sans exception pour une réservation tardive. Toutes
+  trois sont sourcées `déduit` et reposées au §11.
+- **Une table plutôt que trois colonnes.** `PAIEMENT` porte les deux
+  transactions et l'historique des pointages. Trois colonnes sur `reservation`
+  auraient dit où en est une réservation, pas comment on y est arrivé, et
+  `REQ-113` exige qu'un pointage annulé laisse une trace.
+- **Les tests v6 sont écrits avant le code**, comme les 76 premiers l'ont été
+  à J7. 21 tests rouges sur la branche `feat-modification-acompte`, qui ne
+  rejoindra `main` qu'au vert.
+
+**Critiques de l'IA acceptées.**
+- Les cas de test étaient repris en v6 pendant que leurs tests restaient en
+  v5 : **douze tests passaient au vert en affirmant le contraire de leur
+  cas**. L'agent a signalé que c'était le seul artefact activement trompeur du
+  dépôt → les 17 assertions concernées ont été reprises le soir même -
+  `8baf585`
+- `CASE-BOOKING-39` passait aussi bien en v5 qu'en v6, donc ne prouvait rien →
+  assertion ajoutée sur le solde restant dû du sixième inscrit - `581f581`
+- Le plafonnement de la retenue n'était défini que dans une tranche du barème
+  sur trois ; dans les deux autres, l'acompte excède la commission et une part
+  revient au client → `CASE-ADMIN-16` exerce les deux sens, et la question 19
+  est posée au client - `8e50b77`
+- `reservationPayee` était devenue un nom faux, le client ne payant plus que
+  30 % → renommée `reservationConfirmee`, 52 occurrences - `8baf585`
+
+**Critiques de l'IA refusées, et pourquoi.**
+- **Prévenir le client qu'un solde lui reste dû.** L'agent a relevé qu'aucun
+  message ne le lui dira, alors que le rappel part précisément à l'ouverture
+  de la fenêtre de paiement. Refusé : le gérant l'a demandé deux fois,
+  `CR-06/Q16` et `Q17`. La conséquence est écrite dans la règle de
+  `SPEC-BOOKING-12`, elle n'est pas corrigée à sa place.
+- **Interdire le pointage d'un solde après le départ de la sortie.** Refusé :
+  un jour chargé, le gérant régularise au retour, et le lui interdire
+  produirait des réservations éternellement non soldées. Écrit en cas limite 6
+  de `SPEC-ADMIN-07`.
+
+**Erreurs produites par l'IA et détectées.**
+- L'agent a affirmé qu'une réservation à moins de 24 heures était impossible
+  sur les créneaux de 7h et 10h. **Faux**, et il s'en est aperçu en rédigeant
+  `CR-06` : pour un départ à 7h, la fermeture à midi la veille tombe 19 heures
+  avant, la fenêtre existe et fait cinq heures. Corrigé avant que l'analyse
+  d'impact ne s'appuie dessus.
+- L'agent a d'abord recommandé de **ne pas descendre la chaîne**, puis s'est
+  contredit une heure plus tard en constatant que la branche existait déjà et
+  que l'ordre de la chaîne servait de filet. L'équipe a tranché sur la seconde
+  version, mais le revirement est noté : une recommandation rendue trop vite
+  n'avait pas pesé le dépôt réel.
+- `CASE-BOOKING-39` a été écrit avec l'ancien constructeur de
+  `ControlerSeuilDeMaintien`, à trois arguments → repéré par un rouge dont le
+  message ne parlait pas de la v6 mais d'un `TypeError`, corrigé - `581f581`
+- Un bloc de code parasite a été laissé dans `SoldeDeLaReservationTest`, un
+  `new AnnulerCreneau(...)` inutile issu d'une réécriture → repéré au contrôle
+  de syntaxe, retiré avant commit.
+- Deux artefacts datés **J9** alors que tout s'est passé à J8, `ADR-006` et la
+  ligne des 21 tests rouges → corrigés en écrivant cette entrée.
+
+**Ce qui a été généré aujourd'hui, second créneau.**
+- `docs/compte-rendu-entretien-06.md`, `docs/impact-CR-004.md` - `58d08f8`,
+  `49acdc0`
+- Cahier des charges v6, `REQ-108` à `REQ-119`, `R-25` à `R-30`, six questions
+  au §11 - `1c9bfb2` et le commit qui le précède
+- `SPEC-BOOKING-07` refondue, `SPEC-BOOKING-12` et `SPEC-ADMIN-07` créées, sept
+  spécifications reprises - `916d0a6`, `be32351`, `2447e1d`
+- Table `PAIEMENT` au MCD et au MLD, `etats-reservation.puml`, séquence de
+  réservation en v2, `ADR-006` - `d11260b`, `73037f5`, `65371ba`, `8442411`
+- Douze cas repris, neuf créés, quatre étendus - `c2eddea`, `8e50b77`,
+  `48a54b8`
+- Dix-sept assertions reprises, neuf tests créés - `8baf585`, `581f581`
+- Déclarations de traçabilité - `0237557`, `ad83b49`
+
+**Questions ouvertes pour le client.**
+- Les huit questions du §8 de `CR-06`, dont trois sont couvertes par une
+  hypothèse d'équipe et cinq restent entières.
+- La plus coûteuse est la facture unique acquittée, `REQ-119`, qui contredit
+  `REQ-018` : un solde encaissé au quai est invisible du prestataire, donc
+  d'une facture qu'il émettrait.
+- La « boutique » évoquée au point 4 de l'entretien reste un lieu inconnu de
+  la mission.
+
+---
+
+## J9 - 2026-08-20
+
+**Présents.** Équipe complète. Journée à deux temps : un septième entretien
+client le matin, puis la descente de ses réponses jusqu'au code.
+
+**Le choix de la journée.** Deux lots s'excluaient sur le papier : descendre
+`CR-07` dans les documents, ou faire passer au vert les 21 tests rouges laissés
+la veille. Nous avons tenté les deux, contre l'avis initial du poste de travail
+qui recommandait de choisir. Les deux ont abouti, et la raison est que les deux
+lots se recouvraient plus que prévu : quatre des réponses de `CR-07` portaient
+précisément sur des règles que le code de la veille laissait en suspens. Les
+descendre revenait à écrire les constantes qui manquaient.
+
+**Décisions.**
+- **Le barème de remboursement entre dans le code**, alors qu'il en était
+  explicitement tenu à l'écart depuis J6. Il n'y était pas parce que nous ne
+  connaissions pas ses paliers, et non par principe : `EnregistrerUneIssue`
+  laissait le gérant saisir un montant. `CR-07/Q11` a donné les trois tranches,
+  `Politique\RetenueDannulation` les porte, et la saisie du gérant reste
+  possible, en geste commercial plutôt qu'en règle.
+- **Le barème n'est pas uniforme, et il ne sera pas « harmonisé ».** Deux
+  tranches portent sur l'acompte, la troisième sur le prix total. C'est ce que
+  le client a dit, cela paraît bancal, et le docblock de la classe le dit en
+  toutes lettres pour que personne ne le lisse plus tard.
+- **La fenêtre de règlement s'ouvre avec le lien, pas 24 heures avant le
+  départ.** Nous avions écrit les deux règles la veille sans voir qu'elles se
+  contredisaient : elles coïncident sur les créneaux de 7h et 10h, et divergent
+  de sept heures sur celui de 14h. Le client a tranché en une phrase.
+- **`SPEC-CANCEL-07` a été écrite en fin de journée**, pour le lien de
+  règlement. C'est la vingt-neuvième spécification, et la seule sans plan de
+  délégation : elle n'a pas été confiée à un agent, il n'y avait rien à cadrer.
+  Écrire son plan après coup aurait fabriqué une prévision à partir du
+  résultat, ce que la colonne « écart » de J10 cherche justement à mesurer.
+- **La colonne `paiement.pointe_par` reste nulle.** Elle existe pour
+  `SPEC-ADMIN-07` AC-3, mais `SessionDeGestion` ne porte qu'un jeton : aucun
+  service ne sait quel compte est connecté. Laissée vide plutôt que remplie
+  d'une valeur inventée.
+
+**Ce qui a été refusé à l'agent.**
+- **Aligner les trois tranches du barème sur une même assiette.** Refusé deux
+  fois. La formule du client n'est pas homogène ; la rendre homogène change les
+  montants rendus, et c'est de l'argent réel.
+- **Supprimer la ligne de pointage rétractée au lieu de la marquer.** Refusé :
+  `REQ-113` demande une trace, et un `DELETE` rend le pointage invisible autant
+  que réversible.
+- **Écrire un « montant zéro » en dur dans `EnregistrerUneAbsence`.** Plus court
+  et faux : le service pose l'issue et laisse le barème décider, pour que le
+  jour où le gérant assouplira ses tranches, l'absence suive sans qu'on y
+  touche.
+- **Remplir `pointe_par` avec l'e-mail du gérant de référence.** Refusé : ce
+  compte est une donnée de test, pas une identité de session.
+
+**Erreurs produites par l'IA et détectées.**
+- Les citations de `CR-07` ont été écrites sur une numérotation inventée,
+  `Q00` à `Q06`, alors que le compte rendu numérote de `Q01` à `Q12`. Onze
+  renvois faux dans le cahier des charges, l'analyse d'impact et trois
+  docblocks. **Détectées par `tools/traceability.sh`**, qui vérifie que chaque
+  question citée existe dans le compte rendu : c'est le premier jour où ce
+  contrôle attrape quelque chose que personne n'avait vu.
+- `CASE-ADMIN-19` créait une réservation le matin du départ, à une heure où le
+  créneau est fermé depuis la veille à midi. Le test échouait sur un `null`
+  sans rapport avec ce qu'il vérifiait. La réservation a été remontée dans les
+  préconditions, où le fichier de cas la plaçait déjà.
+- La doublure `PaiementSimule` rendait le **premier** encaissement d'une
+  réservation. Sans ambiguïté tant qu'il n'y en avait qu'un ; depuis l'acompte,
+  elle répondait 30 € à une question qui portait sur les 70 € du solde.
+  `dernierMontantEncaisse()` ajoutée, l'ancienne méthode documentée.
+- `PointerLeSolde` a d'abord renseigné `pointe_par` avec le lieu d'embarquement
+  du créneau, en appelant une méthode qui n'existe pas. La colonne dit **qui**,
+  pas **où**.
+- Le cas neuf a été écrit **par-dessus `CASE-CANCEL-20`**, qui existait déjà et
+  couvrait tout autre chose. Repéré parce que `git status` le montrait
+  *modifié* et non *nouveau* ; restauré depuis `HEAD`, et le cas neuf renuméroté
+  `CASE-CANCEL-25`. Le contrôle de traçabilité n'aurait pas attrapé l'écrasement :
+  le numéro existait toujours, et un test portait toujours son nom.
+
+**Ce qui a été généré aujourd'hui.**
+- `docs/compte-rendu-entretien-07.md`, `docs/impact-CR-005.md`
+- Cahier des charges **v7** : `REQ-119` renversée (deux factures), `REQ-111`
+  précisée, `REQ-120` et `REQ-121` ajoutées, `R-31` à `R-33`, quatre questions
+  du §11 fermées
+- `SPEC-BOOKING-12` v2, `SPEC-ADMIN-06` v3 avec son barème en tableau,
+  `SPEC-CANCEL-07` neuve
+- `CASE-BOOKING-41` et `CASE-ADMIN-16` réécrits, `CASE-CANCEL-25` créé
+- Trois politiques de domaine, `Service\EtatDuReglement`, l'entité `Paiement`,
+  son mapping et sa migration
+- Cinq services applicatifs neufs, six repris
+- Les deux plans de délégation manquants, et leurs tableaux « Après »
+
+**État du dépôt en fin de journée.** 87 tests, tous verts. 5 ruptures de
+traçabilité, les mêmes qu'au 18 août : trois cas de bout en bout sans scénario
+Behat et deux `SPEC-NFR` sans cas. `doctrine:schema:validate` rend deux `[OK]`.
+
+**Questions ouvertes pour le client.** Les cinq du §8 de `CR-07`, dont trois
+touchent le lien de règlement : son heure d'envoi est-elle réglable comme celle
+de l'alerte, que contient le message, et le lien expire-t-il. Les deux autres
+portent sur la facture, seule exigence de `CR-07` qui reste sans code.

@@ -16,6 +16,8 @@ final class ResultatDePaiement
     public const MOTIF_TRANSACTION_REFUSEE = 'TRANSACTION_REFUSEE';
     public const MOTIF_PLACES_INSUFFISANTES = 'PLACES_INSUFFISANTES';
     public const MOTIF_CRENEAU_ANNULE = 'CRENEAU_ANNULE';
+    public const MOTIF_HORS_FENETRE = 'HORS_FENETRE';
+    public const MOTIF_RIEN_A_REGLER = 'RIEN_A_REGLER';
 
     private function __construct(private readonly ?string $motifDuRefus)
     {

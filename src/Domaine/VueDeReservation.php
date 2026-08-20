@@ -28,7 +28,29 @@ final class VueDeReservation
         private readonly string $telephoneMobile,
         private readonly array $issuesProposees,
         private readonly ?string $avoirProduit,
+        private readonly int $montantVerse = 0,
+        private readonly int $soldeDu = 0,
     ) {
+    }
+
+    /** En centimes : la somme des versements qui comptent encore. */
+    public function montantVerse(): int
+    {
+        return $this->montantVerse;
+    }
+
+    /**
+     * En centimes : ce qui reste à régler. Vaut zéro dès qu'un code a couvert
+     * le prix, et dès que le créneau est annulé.
+     */
+    public function soldeDu(): int
+    {
+        return $this->soldeDu;
+    }
+
+    public function estSoldee(): bool
+    {
+        return $this->soldeDu === 0;
     }
 
     public function statut(): StatutDeReservation

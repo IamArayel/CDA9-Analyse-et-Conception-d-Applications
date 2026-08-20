@@ -6,10 +6,13 @@
 **Niveau :** application
 **Statut :** automatisé
 
+> **Repris en v6, 2026-08-19.** `CR-06` remplace le paiement intégral par un
+> acompte. Le comportement vérifié ne change pas ; les montants, si.
+
 ## Préconditions
 
 - Tarif adulte dauphins à 50 €.
-- Un client valide une réservation pour 2 adultes, soit 100 €, sans payer immédiatement.
+- Un client valide une réservation pour 2 adultes, soit 100 €, dont 30 € d'acompte.
 
 ## Scénario
 
@@ -17,7 +20,7 @@
 Étant donné un récapitulatif affichant 100 € pour 2 adultes
 Quand le gérant porte le tarif adulte dauphins à 55 €
 Et que le client paie ensuite
-Alors le montant encaissé est 100 €
+Alors l'acompte encaissé est 30 €, calculé sur les 100 € affichés
 Et il est exprimé en euros, y compris pour un client ayant choisi l'anglais
 ```
 

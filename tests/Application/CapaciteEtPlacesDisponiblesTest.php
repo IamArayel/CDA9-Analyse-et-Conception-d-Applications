@@ -6,6 +6,7 @@ namespace App\Tests\Application;
 
 use App\Application\ConsulterLesPlacesDisponibles;
 use App\Application\ConsulterUnCreneau;
+use App\Application\ConsulterUneReservation;
 use App\Application\CreerReservation;
 use App\Application\Tache\ControlerSeuilDeMaintien;
 use App\Domaine\NaturalisteIndisponible;
@@ -175,9 +176,9 @@ final class CapaciteEtPlacesDisponiblesTest extends CasDapplication
         $sortie = $this->sortieDauphinsDuTiKap();
 
         // Trois réservations, cinq participants, un de moins que le seuil.
-        $marie = $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
-        $john = $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 2);
-        $karim = $this->monde->reservationPayee($sortie, Reference::CLIENT_KARIM, adultes: 1);
+        $marie = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $john = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 2);
+        $karim = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_KARIM, adultes: 1);
 
         $this->horloge->nousSommesLe('2026-07-19 10:00');
         ($this->service(ControlerSeuilDeMaintien::class))
@@ -192,9 +193,19 @@ final class CapaciteEtPlacesDisponiblesTest extends CasDapplication
             $this->paiement->nombreDeRemboursements(),
             'chacun des trois clients est remboursé',
         );
-        self::assertSame(Reference::prixDauphins(2), $this->paiement->montantRembourse($marie));
-        self::assertSame(Reference::prixDauphins(2), $this->paiement->montantRembourse($john));
-        self::assertSame(Reference::prixDauphins(1), $this->paiement->montantRembourse($karim));
+        self::assertSame(
+            Reference::acompteSortie(Reference::prixDauphins(2)),
+            $this->paiement->montantRembourse($marie),
+            'le gérant ne rend que ce qu\'il a encaissé',
+        );
+        self::assertSame(
+            Reference::acompteSortie(Reference::prixDauphins(2)),
+            $this->paiement->montantRembourse($john),
+        );
+        self::assertSame(
+            Reference::acompteSortie(Reference::prixDauphins(1)),
+            $this->paiement->montantRembourse($karim),
+        );
         self::assertFalse(
             $this->creneauDeReference()->estReservable(),
             'le créneau n\'est plus proposé à la réservation',
@@ -245,6 +256,47 @@ final class CapaciteEtPlacesDisponiblesTest extends CasDapplication
             '',
             $dauphins,
             'une sortie dauphins sur l\'autre bateau au même créneau reste acceptée',
+        );
+    }
+
+    /**
+     * AC-10 : une réservation dont l'acompte est versé compte dans le seuil de
+     * 6 inscrits, même si son solde reste dû.
+     */
+    public function test_CASE_BOOKING_39_six_acomptes_maintiennent_la_sortie(): void
+    {
+        $sortie = $this->sortieDauphinsDuTiKap();
+        $this->monde->placesVendues($sortie, 5);
+        $sixieme = $this->monde->reservationConfirmee(
+            $sortie,
+            Reference::CLIENT_MARIE,
+            adultes: 1,
+        );
+
+        // Ce qui distingue la v6 : le sixième inscrit compte alors qu'il doit
+        // encore 70 % de sa réservation.
+        self::assertGreaterThan(
+            0,
+            $this->service(ConsulterUneReservation::class)->executer($sixieme)->soldeDu(),
+            'aucun des six n\'a réglé son solde',
+        );
+
+        $this->horloge->nousSommesLe('2026-07-19 10:00');
+        $this->service(ControlerSeuilDeMaintien::class)->executer();
+
+        self::assertSame(
+            StatutDeSortie::PROGRAMMEE,
+            $this->creneauDeReference()->statutDeLaSortie(Reference::TI_KAP),
+            'six acomptes suffisent : le seuil compte des inscrits, pas des soldes',
+        );
+        self::assertTrue(
+            $this->paiement->aucunRemboursementDemande(),
+            'aucun remboursement : la sortie est maintenue',
+        );
+        self::assertSame(
+            Reference::TI_KAP_CAPACITE - 6,
+            $this->placesDisponibles($sortie),
+            'les six places sont décomptées, bien qu\'aucune ne soit soldée',
         );
     }
 

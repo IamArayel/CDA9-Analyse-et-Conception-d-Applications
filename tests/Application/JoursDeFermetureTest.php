@@ -69,8 +69,8 @@ final class JoursDeFermetureTest extends CasDapplication
             Reference::TI_KAP,
             Reference::SORTIE_DAUPHINS,
         );
-        $marie = $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
-        $john = $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 2);
+        $marie = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $john = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 2);
 
         $resultat = ($this->service(AjouterUnJourDeFermeture::class))->executer(self::QUINZE_AOUT);
 

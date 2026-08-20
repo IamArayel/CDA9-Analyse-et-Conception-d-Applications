@@ -1,10 +1,13 @@
 # CASE-BOOKING-29 - une privatisation bloque le bateau au forfait, l'autre reste réservable
 
 **Spécification :** `SPEC-BOOKING-05`
-**Critères couverts :** AC-1, AC-2, AC-3, AC-5
+**Critères couverts :** AC-1, AC-2, AC-3, AC-5, AC-6
 **Type :** nominal
 **Niveau :** application
 **Statut :** automatisé
+
+> **Repris en v6, 2026-08-19.** `CR-06` remplace le paiement intégral par un
+> acompte. Le comportement vérifié ne change pas ; les montants, si.
 
 ## Préconditions
 
@@ -17,14 +20,15 @@
 Étant donné le Ti Kap libre sur le créneau du 20 juillet à 10h00
 Quand un client privatise ce bateau pour 4 personnes
 Et que son paiement est confirmé
-Alors le montant facturé est 600 €
+Alors l'acompte facturé est 300 €, soit 50 % du forfait
 Et aucune place individuelle n'est proposée sur le Ti Kap à ce créneau
 Et Le Grand Bleu reste réservable au même créneau
 ```
 
 ## Résultat attendu
 
-- Le montant est le forfait du bateau, 600 €, indépendant des 4 participants.
+- L'acompte est de **50 % du forfait**, soit 300 €, indépendant des 4 participants.
+- Un solde de 300 € reste dû.
 - Les 12 places du Ti Kap sont bloquées, pas seulement 4.
 - Une demande de place individuelle sur le Ti Kap à ce créneau est refusée.
 

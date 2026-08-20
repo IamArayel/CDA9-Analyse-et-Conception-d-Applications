@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Tache;
 
 use App\Application\Envoi\EnvoyerUnMessage;
+use App\Application\Envoi\LienDeReglement;
 use App\Application\Envoi\RappelDeSortie;
 use App\Domaine\Entite\Notification;
 use App\Domaine\Entite\Sortie;
@@ -18,7 +19,8 @@ use App\Infrastructure\Persistance\SortieRepository;
 use DateTimeImmutable;
 
 /**
- * La tâche qui envoie les trois messages automatiques (SPEC-CANCEL-05 et 06).
+ * La tâche qui envoie les quatre messages automatiques (SPEC-CANCEL-05, 06
+ * et 07).
  *
  * Elle est le seul traitement qui se déclenche sans utilisateur devant
  * l'écran : c'est pour elle que l'horloge est injectée plutôt que lue
@@ -44,6 +46,7 @@ final class EnvoyerLesMessagesProgrammes
         private readonly ReservationRepository $reservations,
         private readonly EnvoyerUnMessage $envoi,
         private readonly RappelDeSortie $rappel,
+        private readonly LienDeReglement $lien,
         private readonly CalendrierDesEnvois $calendrier,
         private readonly ParametreRepository $parametres,
     ) {
@@ -69,6 +72,7 @@ final class EnvoyerLesMessagesProgrammes
 
             foreach ($this->reservations->inscrits($sortie) as $reservation) {
                 $this->rappel->envoyerSiDu($reservation, $maintenant);
+                $this->lien->envoyerSiDu($reservation, $maintenant);
             }
         }
     }

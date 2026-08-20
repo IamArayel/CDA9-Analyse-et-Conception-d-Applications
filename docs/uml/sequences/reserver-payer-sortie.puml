@@ -1,7 +1,10 @@
 @startuml reserver-payer-sortie
 ' Séquence — Réserver et payer une sortie (UC2, UC1, UC3, UC11)
 ' Vocabulaire client (cf. cahier-des-charges.md §13 Glossaire).
-' Réalise SPEC-BOOKING-01 à 04, 06, 07, 09, 10.
+' Réalise SPEC-BOOKING-01 à 04, 06, 07, 09, 10, 12.
+' v2, 2026-08-19 : le client verse un acompte et non la totalité (CR-06).
+' Le règlement du solde n'est pas dessiné ici : il a lieu plus tard, hors de
+' ce parcours, et relève de SPEC-BOOKING-12.
 ' Les places sont immobilisées 15 minutes dès la validation du formulaire
 ' (ADR-003) : le second client sur la dernière place est refusé avant de
 ' saisir sa carte, et non après avoir payé.
@@ -82,8 +85,9 @@ else saisie valide
     Site -> Site : passe la réservation à « confirmée »,\ndécompte les places et marque le code utilisé
     note right of Site
       Un code couvrant tout le prix confirme
-      directement, sans paiement carte
-      — SPEC-BOOKING-07, AC-6
+      directement, sans paiement carte ni acompte,
+      et aucun solde ne reste dû
+      — SPEC-BOOKING-07, AC-6 et AC-8
     end note
     Site --> Client : confirmation de réservation
     deactivate Site
@@ -91,14 +95,16 @@ else saisie valide
   else montant restant dû supérieur à zéro
     Client -> Site : valide le paiement
     activate Site
-    Site -> Paiement : demande l'encaissement du solde
+    Site -> Site : calcule l'acompte,\n30 % du montant ou 50 % du forfait
+    Site -> Paiement : demande l'encaissement de l'acompte
     activate Paiement
     Paiement --> Site : résultat de la transaction
     deactivate Paiement
     note right of Site
-      Paiement intégral par carte, délégué au
-      prestataire ; aucune donnée de carte
-      n'est stockée — SPEC-BOOKING-07
+      Acompte par carte, délégué au prestataire ;
+      aucune donnée de carte n'est stockée.
+      L'acompte et le solde sont deux transactions
+      distinctes — SPEC-BOOKING-07, REQ-117
     end note
 
     alt paiement refusé ou abandonné
@@ -117,7 +123,7 @@ else saisie valide
         Place encore libre : la réservation est
         confirmée. Place vendue entre-temps : la
         réservation est refusée et le client est
-        remboursé intégralement
+        remboursé de son acompte
         — SPEC-BOOKING-07, AC-7, ADR-003
       end note
       Site --> Client : confirmation ou refus avec remboursement
@@ -129,8 +135,12 @@ else saisie valide
         Le décompte des places est visible par les
         autres clients sans rechargement
         — SPEC-BOOKING-03, AC-7
+        Un solde reste dû, réglable en ligne de 24 h
+        avant le départ à la fermeture du créneau,
+        ou par carte au quai — SPEC-BOOKING-12
         Un message de rappel sera envoyé avant le
-        départ — SPEC-CANCEL-05
+        départ, sans mentionner ce solde
+        — SPEC-CANCEL-05, CR-06/Q16
       end note
     end
     deactivate Site

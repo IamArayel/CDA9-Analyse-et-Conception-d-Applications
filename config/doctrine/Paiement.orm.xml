@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Domaine\Entite\Paiement" table="paiement">
+        <indexes>
+            <index name="idx_paiement_reservation" columns="reservation_id"/>
+        </indexes>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+
+        <field name="type" type="string" column="type" length="20" nullable="false"/>
+        <!-- En centimes, comme tous les montants du schéma. -->
+        <field name="montant" type="integer" column="montant" nullable="false"/>
+        <field name="canal" type="string" column="canal" length="20" nullable="false"/>
+        <field name="datePaiement" type="datetime_immutable" column="date_paiement" nullable="false"/>
+        <!-- Renseigné pour un solde encaissé au quai et pointé par le gérant. -->
+        <field name="pointePar" type="string" column="pointe_par" length="180" nullable="true"/>
+        <!-- Un pointage rétracté reste, marqué : l'historique de REQ-113 survit. -->
+        <field name="annule" type="boolean" column="annule" nullable="false"/>
+
+        <many-to-one field="reservation" target-entity="App\Domaine\Entite\Reservation">
+            <join-column name="reservation_id" referenced-column-name="id" nullable="false"/>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

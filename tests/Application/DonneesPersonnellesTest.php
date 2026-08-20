@@ -37,7 +37,7 @@ final class DonneesPersonnellesTest extends CasDapplication
             Reference::TI_KAP,
             Reference::SORTIE_DAUPHINS,
         );
-        $reservation = $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $reservation = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
 
         $champs = ($this->service(ConsulterLesDonneesConservees::class))->pour($reservation);
 
@@ -78,7 +78,7 @@ final class DonneesPersonnellesTest extends CasDapplication
             Reference::TI_KAP,
             Reference::SORTIE_DAUPHINS,
         );
-        $reservation = $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $reservation = $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
 
         $bonCadeau = $this->monde->bonCadeauAchete(
             Reference::euros(150),

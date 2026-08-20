@@ -229,9 +229,14 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 **Exigences :**
 
 - `REQ-029` : planning des réservations dans un format imprimable.
+- `REQ-114` : le planning distingue les réservations soldées de celles restant dues.
 
 **Statut :** revue IA faite
-**Version :** v1
+**Version :** v2
+
+> **v2, 2026-08-19.** Le planning porte désormais l'**état du solde**, pour que
+> le gérant n'embarque pas un client qui n'a versé que son acompte. C'est la
+> seule information dont il a besoin au quai et qui n'existait pas.
 
 ### Règle
 
@@ -295,6 +300,8 @@ Assumé au 2026-08-12.
 - [ ] AC-3 : une période sans réservation produit un document lisible
       mentionnant l'absence de réservation, et non une erreur.
 - [ ] AC-4 : une réservation non payée n'apparaît pas au document.
+- [ ] AC-5 : chaque ligne du planning indique si le solde de la réservation
+      est réglé ou reste dû.
 
 ### Revue IA
 
@@ -501,9 +508,26 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 - `REQ-019` : annulation à l'initiative du client, issue et barème dégressif.
 - `REQ-050` : l'avoir est délivré sous forme d'un code de réduction unique.
 - `REQ-056` : remboursement intégral si le créneau avait été mis en alerte.
+- `REQ-115` : la commission retenue est plafonnée au montant encaissé.
+- `REQ-118` : un client absent au départ est traité comme un client qui annule.
 
-**Statut :** revue IA faite
-**Version :** v1
+**Statut :** revue IA à refaire
+**Version :** v3
+
+> **v3, 2026-08-20.** `CR-07` rend le barème **calculable**, alors que la v1
+> le disait appliqué à la main par le gérant. Deux formules coexistent, et
+> c'est délibéré : au-delà de 48 heures la commission s'applique à **ce que le
+> client a versé**, en deçà elle s'applique au **prix total** puis se plafonne
+> au versé. Le client a confirmé les deux séparément, après que l'écart chiffré
+> lui a été montré.
+>
+> | Quand il annule | Versé | Récupère |
+> |---|---|---|
+> | plus de 7 jours avant | 30 € | 30 €, la totalité du versé |
+> | entre 7 jours et 48h | 30 € | 22,50 €, soit 75 % du versé |
+> | 48h et moins, non soldé | 30 € | 0 €, la commission de 50 € excède le versé |
+> | 48h et moins, soldé | 100 € | 50 €, soit 50 % du prix total |
+> | absent au départ | 30 ou 100 € | 0 €, quoi qu'il ait versé |
 
 ### Règle
 
@@ -587,6 +611,13 @@ Assumé au 2026-08-14.
       proposé est le montant intégral, sans retenue.
 - [ ] AC-5 : une réservation déjà annulée ne peut pas recevoir une seconde
       issue.
+- [ ] AC-6 : au-delà de 48 heures, le client récupère la totalité de ce qu'il
+      a versé s'il annule à plus de 7 jours, et 75 % s'il annule entre 7 jours
+      et 48 heures.
+- [ ] AC-7 : à 48 heures et moins, la commission vaut 50 % du prix total,
+      plafonnée au montant versé ; aucun solde n'est réclamé au client.
+- [ ] AC-8 : un client absent au départ ne récupère rien, qu'il ait soldé ou
+      non.
 
 ### Revue IA
 
@@ -598,3 +629,96 @@ Consigne utilisée : voir l'en-tête de ce fichier.
 | Le barème s'arrête à 24 heures du départ et ne dit rien en deçà | acceptée | cas limite 3 et hypothèse écrites plutôt que laissées implicites, faute de règle client |
 | Un client qui renonce après une alerte relève de deux règles contradictoires, le barème et le remboursement intégral | acceptée | cas limite 4 et AC-4 : l'alerte l'emporte, le risque venant du gérant |
 | Automatiser le calcul de la retenue à partir du barème | refusée | le client applique ce barème à la main depuis toujours et n'a jamais demandé son automatisation ; l'outil garde la trace de sa décision, il ne la prend pas à sa place |
+
+## SPEC-ADMIN-07 - Pointage d'un solde encaissé sur place
+
+**Exigences :**
+
+- `REQ-112` : le solde encaissé sur place ne passe pas par l'outil, le gérant le pointe.
+- `REQ-113` : le pointage est réversible et laisse une trace.
+- `REQ-114` : le planning d'embarquement distingue les réservations soldées.
+
+**Statut :** revue IA à faire
+**Version :** v1
+
+### Règle
+
+Le gérant encaisse le solde sur son terminal bancaire habituel, puis marque la
+réservation comme **soldée** depuis l'espace de gestion. **L'outil n'effectue
+aucune transaction** : il enregistre un fait, il ne le provoque pas.
+
+> Au quai, le gérant voit sur son planning que trois clients n'ont versé que
+> leur acompte. Il encaisse, il pointe, et la ligne cesse d'être signalée.
+
+Le pointage est **réversible**, et chaque geste, pointage comme annulation de
+pointage, est horodaté et conservé.
+
+### Portée
+
+Couvre l'enregistrement du règlement au quai et sa restitution au planning. Ne
+couvre ni le règlement en ligne, ni l'encaissement lui-même.
+
+- Ne couvre pas le règlement du solde en ligne : `SPEC-BOOKING-12`.
+- Ne couvre pas l'acompte : `SPEC-BOOKING-07`.
+- Ne couvre pas la mise en page du planning : `SPEC-ADMIN-03`.
+- **Ne couvre aucune transaction bancaire.** Le terminal du gérant est hors
+  périmètre logiciel, et l'outil n'en connaît ni le montant réel ni l'heure.
+
+### Scénarios nominaux
+
+```gherkin
+Étant donné une réservation confirmée dont le solde de 119 € reste dû
+Et un client présent au départ
+Quand le gérant marque la réservation comme soldée
+Alors la réservation est soldée
+Et aucune transaction n'est demandée au prestataire de paiement
+Et le pointage est horodaté au nom du gérant
+```
+
+### Cas limites
+
+| # | Situation | Comportement attendu |
+|---|---|---|
+| 1 | pointage d'une réservation déjà soldée en ligne | sans effet, et sans erreur : le gérant ne peut pas savoir de tête qui a payé |
+| 2 | annulation d'un pointage | la réservation redevient non soldée ; **les deux gestes restent dans la trace**, celui qui pointe et celui qui annule |
+| 3 | pointage d'une réservation annulée | refusé : il n'y a plus rien à encaisser |
+| 4 | pointage d'une réservation dont le solde est nul | sans objet, la réservation étant déjà soldée |
+| 5 | deux pointages successifs sur la même réservation | le second est sans effet |
+| 6 | pointage après le départ de la sortie | accepté : le gérant peut régulariser au retour, ce qui est le cas courant un jour chargé |
+
+### Ce qui n'est pas défini
+
+Assumé au 2026-08-19.
+
+- **L'outil ne vérifie aucun montant.** Il enregistre qu'un solde a été réglé,
+  pas combien. Un écart entre le terminal et le planning ne serait pas
+  détecté, et le rapprochement comptable reste à la charge du gérant.
+- Durée de conservation de la trace des pointages : `SPEC-NFR-04` fixe trois
+  mois pour les données personnelles, et un pointage n'en est pas une.
+  Hypothèse d'équipe : la trace suit la réservation.
+- Le lieu du règlement, que `CR-06` appelle « la boutique », n'est pas défini.
+  Question 21 du §11 du cahier des charges.
+
+### Critères d'acceptation
+
+- [ ] AC-1 : le gérant marque une réservation comme soldée, et **aucune
+      transaction n'est demandée au prestataire de paiement**.
+- [ ] AC-2 : le pointage est réversible.
+- [ ] AC-3 : chaque pointage et chaque annulation de pointage est horodaté et
+      conservé, y compris lorsqu'ils se succèdent sur la même réservation.
+- [ ] AC-4 : le planning d'embarquement distingue les réservations soldées de
+      celles dont le solde reste dû.
+- [ ] AC-5 : une réservation annulée ne peut pas être pointée.
+- [ ] AC-6 : pointer une réservation déjà soldée est sans effet et sans
+      erreur.
+
+### Revue IA
+
+Consigne utilisée : voir l'en-tête de ce fichier.
+
+| Remarque de l'IA | Décision | Motif |
+|---|---|---|
+| Rien ne dit ce qui se passe si le gérant pointe une réservation déjà réglée en ligne, situation fréquente puisqu'il ne peut pas le savoir de tête | acceptée | cas limite 1 et AC-6 : sans effet et sans erreur, plutôt qu'un message qui le ferait douter |
+| Un pointage annulé puis refait effacerait l'historique si la trace était un simple drapeau | acceptée | cas limite 2 et AC-3 : les deux gestes sont conservés, ce qui suppose un journal et non une colonne |
+| L'outil ne vérifie pas que le montant encaissé correspond au solde dû | acceptée | écrit dans « ce qui n'est pas défini » : c'est une limite assumée, le terminal étant hors périmètre |
+| Interdire le pointage après le départ, un solde ne pouvant plus être encaissé | **refusée** | un jour chargé, le gérant régularise au retour. Le lui interdire produirait des réservations éternellement non soldées |

@@ -31,9 +31,9 @@ final class ConsultationDunCreneauTest extends CasDapplication
     public function test_CASE_CANCEL_14_consultation_affiche_les_inscrits_sans_effet_de_bord(): void
     {
         $sortie = $this->sortie(Reference::JOUR_EN_SAISON, Reference::CRENEAU_MILIEU_DE_MATINEE);
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_MARIE, adultes: 2);
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_JOHN, adultes: 2, enfants: 2);
-        $this->monde->reservationPayee($sortie, Reference::CLIENT_KARIM, adultes: 1);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_MARIE, adultes: 2);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_JOHN, adultes: 2, enfants: 2);
+        $this->monde->reservationConfirmee($sortie, Reference::CLIENT_KARIM, adultes: 1);
         $this->monde->reservationImmobilisee($sortie, ['nom' => 'Nguyen', 'prenom' => 'Lan',
             'email' => 'lan.nguyen@example.test', 'telephone_mobile' => '0692000004', 'langue' => 'fr'],
             adultes: 1);
