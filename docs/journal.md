@@ -895,6 +895,32 @@ descendre revenait à écrire les constantes qui manquaient.
   confiée à un agent, il n'y avait rien à cadrer.
   Écrire son plan après coup aurait fabriqué une prévision à partir du
   résultat, ce que la colonne « écart » de J10 cherche justement à mesurer.
+- **Les trois scénarios de bout en bout sont écrits, et laissés non
+  exécutables.** La table des trous les promettait « au plus tard à J9 » : une
+  échéance intenable, puisqu'ils pilotent des écrans et qu'il n'y en a pas.
+  Plutôt que de reconduire la promesse, les scénarios ont été écrits dans
+  `tests/BoutEnBout/`, le Gherkin des cas repris tel quel, et **Behat 4
+  installé**. La v3 ne l'était pas : aucune de ses trente-deux versions
+  n'accepte Symfony 8, `v3.32.0` exigeant encore `symfony/config ^5.4 || ^6.4
+  || ^7.0`. Seule la branche 4, en `v4.0.0-alpha1`, résout, et c'est un tag qui
+  a été épinglé plutôt que la branche mouvante, la veille d'un gel. Behat
+  rapporte 3 scénarios et 21 étapes `undefined` : rien n'est vérifié, et c'est
+  le compte rendu honnête de l'état du projet. Ce que l'installation apporte
+  dès aujourd'hui est l'analyse du Gherkin, qui vaut relecture.
+- **Le contrôle de traçabilité aurait avalé ces trois fichiers.** Il compte
+  comme automatisé tout fichier de `tests/` portant l'identifiant d'un cas :
+  les trois `.feature`, qui ne vérifient rien, auraient fait tomber le compte
+  de **5 ruptures à 2**. Mesuré, pas supposé. Les scénarios portent donc
+  `@socle-absent`, l'outil les écarte et les signale à part, et le compte tient
+  à 5. C'est la deuxième fois en deux jours qu'un contrôle est corrigé parce
+  qu'il vérifiait la présence d'un fichier au lieu du fait lui-même, après le
+  port qui était « déclaré » plutôt que « qui répond ».
+- **La recette Symfony de `symfony/translation`**, tirée par Behat, a écrit un
+  `config/packages/translation.yaml` avec `default_locale: en`. Le projet
+  n'utilise pas le traducteur Symfony, il injecte son dossier de traductions
+  dans ses propres services : le fichier a été retiré, avec le
+  `translations/.gitignore` de la même recette. Une dépendance de test avait
+  changé la langue par défaut de l'application.
 - **La colonne `paiement.pointe_par` reste nulle.** Elle existe pour
   `SPEC-ADMIN-07` AC-3, mais `SessionDeGestion` ne porte qu'un jeton : aucun
   service ne sait quel compte est connecté. Laissée vide plutôt que remplie
@@ -991,6 +1017,9 @@ descendre revenait à écrire les constantes qui manquaient.
   ce qu'on montre et ce qu'on assume, avec les cinq ruptures à annoncer avant
   qu'on les trouve
 - `phpunit.xml.dist` : la balise `<server>` qui neutralise un `APP_ENV` de shell
+- `tests/BoutEnBout/` : les trois scénarios de bout en bout et leur contexte
+  vide, `behat.dist.php`, Behat 4 en dépendance de développement, la cible
+  `make behat`, et le garde-fou `@socle-absent` dans `tools/traceability.sh`
 
 **La démonstration de J10.** Il n'y a aucun écran, et il n'y en aura pas : en
 écrire sans spécification d'écran produirait du code non couvert le jour même
