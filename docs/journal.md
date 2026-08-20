@@ -949,6 +949,18 @@ descendre revenait à écrire les constantes qui manquaient.
   son mapping et sa migration
 - Cinq services applicatifs neufs, six repris
 - Les deux plans de délégation manquants, et leurs tableaux « Après »
+- `Interface\Console\DemontrerLeParcoursCommand` et les trois adaptateurs de
+  l'environnement `demo`
+
+**La démonstration de J10.** Il n'y a aucun écran, et il n'y en aura pas : en
+écrire sans spécification d'écran produirait du code non couvert le jour même
+où la règle 1 est notée. Le parcours se montre donc de deux façons, décidées ce
+soir : en exécutant les tests qui le protègent, et par une **commande console**
+qui rejoue « réserver, verser l'acompte, solder » en annonçant à chaque étape sa
+spécification et son cas de test. Elle n'enchaîne que des services applicatifs
+existants et tourne dans une transaction jamais validée, comme les 87 cas de
+test : elle est rejouable indéfiniment et ne laisse rien en base. La couche
+`Interface`, qui n'existait pas, porte donc désormais une entrée.
 
 **État du dépôt en fin de journée.** 87 tests, tous verts. 5 ruptures de
 traçabilité, les mêmes qu'au 18 août : trois cas de bout en bout sans scénario
