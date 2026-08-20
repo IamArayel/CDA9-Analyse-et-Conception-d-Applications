@@ -17,7 +17,9 @@
 #                                      chacune citant CR-nn/Qnn ou « déduit »
 #   specs/<domaine>.md                 sections titrées SPEC-<DOM>-nn, citant au moins un REQ
 #   tests/cases/CASE-<DOM>-nn.md       un fichier par cas, citant au moins un SPEC
-#   tests/**                           le nom du test contient l'ID CASE
+#   tests/**                           le nom du test contient l'ID CASE, et un
+#                                      fichier marqué @socle-absent est écrit
+#                                      mais pas exécuté : il ne compte pas
 #   git log                            le message de commit contient l'ID SPEC
 #
 # Les identifiants sont reconnus avec « - » ou « _ » comme séparateur, parce que
@@ -59,7 +61,27 @@ join_cell() {
 }
 
 # Fichiers de tests automatisés : tout tests/ sauf les cas de test et les gabarits.
-test_files=$(find tests -type f ! -path 'tests/cases/*' ! -name 'TEMPLATE.md' 2>/dev/null)
+#
+# Un scénario Behat marqué @socle-absent est **écrit mais pas exécuté** : il n'a
+# aucune implémentation d'étapes, faute de couche HTTP à piloter. Son fichier
+# porte pourtant l'identifiant de son cas, ce qui suffirait à le faire passer
+# pour automatisé et à éteindre une rupture que rien ne couvre. On l'écarte donc
+# ici, et on le compte à part, comme les cas « manuel assumé ».
+tous_les_fichiers=$(find tests -type f ! -path 'tests/cases/*' ! -name 'TEMPLATE.md' 2>/dev/null)
+
+test_files=""
+nnonexecutes=0
+while IFS= read -r f; do
+  [ -n "$f" ] || continue
+  if grep -q '@socle-absent' "$f" 2>/dev/null; then
+    nnonexecutes=$((nnonexecutes + 1))
+  else
+    test_files="${test_files}${f}
+"
+  fi
+done <<EOF
+$tous_les_fichiers
+EOF
 
 # --- REQ -> source et priorité ----------------------------------------------
 # Lues une fois pour toutes sur les lignes de définition du cahier des charges.
@@ -307,6 +329,9 @@ if [ "$ndeduits" -gt 0 ]; then
 fi
 if [ "$nmanuels" -gt 0 ]; then
   echo "$nmanuels cas de test déclaré(s) « manuel assumé » — à justifier, ce n'est pas une rupture."
+fi
+if [ "$nnonexecutes" -gt 0 ]; then
+  echo "$nnonexecutes scénario(s) marqué(s) @socle-absent — écrits, pas exécutés : ils ne comptent pas comme test et leur rupture reste."
 fi
 if [ "$ruptures" -gt 0 ]; then
   echo "$ruptures rupture(s) de traçabilité." >&2

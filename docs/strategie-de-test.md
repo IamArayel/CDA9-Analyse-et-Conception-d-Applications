@@ -149,7 +149,8 @@ tests/
 │   └── CASE-<DOM>-nn.md
 ├── Domaine/          PHPUnit, une classe par spécification
 ├── Application/      PHPUnit, une classe par spécification, avec la base
-├── BoutEnBout/       Behat, un fichier .feature par parcours
+├── BoutEnBout/       Behat, un fichier .feature par parcours, et le contexte
+│                     qui portera leurs définitions d'étapes
 ├── Doublures/        horloge figée, paiement, envois
 ├── CasDapplication.php          socle des tests de niveau application
 ├── MondeDeTest.php              l'état du monde avant un cas, en vocabulaire métier
@@ -183,7 +184,13 @@ test_CASE_BOOKING_03_derniere_place_second_client_refuse_avant_paiement
 ```
 
 Pour les scénarios Behat, l'identifiant figure dans le nom du fichier et dans
-le titre du scénario, ce qui suffit à `tools/traceability.sh`.
+le titre du scénario. Cela ne suffit **pas** à `tools/traceability.sh`, et c'est
+délibéré depuis J9 : un scénario écrit sans définition d'étapes ne vérifie rien,
+alors que son fichier porte l'identifiant de son cas et suffirait à le faire
+passer pour automatisé. Un tel scénario porte donc l'étiquette
+`@socle-absent`, que le contrôle écarte des tests et signale à part. Sans elle,
+les trois cas de bout en bout feraient tomber le compte de 5 ruptures à 2 sans
+qu'une seule ligne ait été vérifiée.
 
 **Trois doublures, et seulement trois :**
 
