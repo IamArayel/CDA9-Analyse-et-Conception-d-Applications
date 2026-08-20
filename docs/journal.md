@@ -931,6 +931,13 @@ descendre revenait à écrire les constantes qui manquaient.
 - `PointerLeSolde` a d'abord renseigné `pointe_par` avec le lieu d'embarquement
   du créneau, en appelant une méthode qui n'existe pas. La colonne dit **qui**,
   pas **où**.
+- **Le dépôt n'était pas clonable.** Chloé, sur un poste neuf, n'a pas pu
+  lancer `make presentation` : `config/packages/` était ignoré par git, avalé
+  par la règle NuGet `**/[Pp]ackages/*` du modèle Visual Studio dont est tiré
+  notre `.gitignore`. Cinq fichiers de configuration Symfony manquaient au
+  dépôt, dont `doctrine.yaml`, et `composer install` ne les régénère pas. Le
+  même modèle avait déjà avalé `.env` le matin. Reproduit sur un clone neuf,
+  corrigé, et revérifié : clone, `composer install`, 87 tests verts.
 - Le cas neuf a été écrit **par-dessus `CASE-CANCEL-20`**, qui existait déjà et
   couvrait tout autre chose. Repéré parce que `git status` le montrait
   *modifié* et non *nouveau* ; restauré depuis `HEAD`, et le cas neuf renuméroté

@@ -238,6 +238,16 @@ PublishScripts/
 **/[Pp]ackages/*
 # except build/, which is used as an MSBuild target.
 !**/[Pp]ackages/build/
+
+# ...et surtout pas config/packages/, qui n'est pas un dossier NuGet mais la
+# configuration des bundles Symfony : doctrine.yaml, framework.yaml,
+# doctrine_migrations.yaml, cache.yaml, routing.yaml. Sans eux, DoctrineBundle
+# est enregistré mais jamais configuré, et le premier appel à bin/console
+# échoue sur « non-existent parameter doctrine.dbal.connection_factory.types ».
+# Le dépôt n'était donc pas exécutable après un clone. Constaté le 2026-08-20
+# par une collègue sur un poste neuf.
+!config/packages/
+!config/packages/*
 # Uncomment if necessary however generally it will be regenerated when needed
 #!**/[Pp]ackages/repositories.config
 # NuGet v3's project.json files produces more ignorable files
