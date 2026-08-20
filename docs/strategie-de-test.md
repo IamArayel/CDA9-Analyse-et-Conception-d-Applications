@@ -35,11 +35,30 @@ sont couvertes en premier.
 |---|---|---|
 | Domaine | les règles métier pures : calcul du montant, saison, fermeture des réservations, éligibilité d'un code, seuil de maintien | rien, ce niveau ne touche ni base ni réseau |
 | Application | les cas d'usage complets, avec la base : capacité, concurrence sur la dernière place, immobilisation, changements d'état d'une sortie | le prestataire de paiement et les envois de messages, remplacés par des doublures |
-| Bout en bout | trois parcours seulement : réserver et payer, mettre en alerte puis annuler, acheter puis utiliser un bon cadeau | rien n'est remplacé, sauf le prestataire de paiement en mode test |
+| Bout en bout | **ce qu'aucun autre niveau ne peut voir** : un affichage qui se met à jour sans rechargement, un avertissement lu avant de valider, la traduction des écrans, le rendu sur trois familles d'appareils, la tenue sous charge | rien n'est remplacé, sauf le prestataire de paiement en mode test |
 
-La majorité des cas vit au niveau **domaine**, parce que la majorité de nos
-règles y vivent aussi, et que `architecture.md` §2 impose un domaine sans
-framework ni base de données, donc directement testable.
+**Ce tableau annonçait l'inverse de ce qui s'est produit, et le constat est
+gardé plutôt que lissé.** Écrit à J6, il prévoyait que la majorité des cas
+vivrait au niveau domaine, `architecture.md` §2 imposant un domaine sans
+framework ni base, donc directement testable. Au 2026-08-20, la répartition
+réelle des 92 cas est de **75 au niveau application, 12 au niveau domaine et 5
+de bout en bout**.
+
+La raison est écrite dans le socle de test lui-même : deux règles métier ne
+vivent pas dans le domaine mais **dans la base**, l'unicité du naturaliste et le
+non-cumul des codes, tenues par des contraintes. Un cas qui les touche ne peut
+pas être vérifié sans base, ce qui le pousse d'un niveau. Les cas de domaine
+restants sont ceux qui n'ont besoin de rien : le barème, la saison, les bornes
+de la fenêtre de règlement.
+
+Le niveau bout en bout, lui, s'est **réduit** à ce qu'aucun autre ne peut voir.
+Les trois parcours qu'il visait à J6, réserver et payer, mettre en alerte puis
+annuler, acheter puis utiliser un bon cadeau, sont couverts au niveau
+application : `FormulaireDeReservation`, `Paiement` et `SoldeDeLaReservation`
+pour le premier, `AlerteMeteo` et `AnnulationParLeGerant` pour le deuxième,
+`BonCadeau` et `Avoir` pour le troisième, ce dernier s'appuyant en plus sur
+`ValiditeDunAvoir` au niveau domaine. Les garder aussi en bout en bout aurait
+dupliqué ces tests sans rien vérifier de plus.
 
 ## 3. Le point dur de ce projet : le temps
 
