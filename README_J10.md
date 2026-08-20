@@ -31,10 +31,6 @@ php bin/console --env=test dbal:run-sql "SELECT DATABASE() AS base, @@port AS po
 # attendu : ti_baleine_test, 3306
 ```
 
-> Le MySQL Homebrew du poste a été **désactivé** pour libérer 3306
-> (`launchctl disable gui/$(id -u)/homebrew.mxcl.mysql`). Il ne remontera pas au
-> prochain démarrage, et plus rien d'autre ne dispute le port à Docker.
-
 ### 1.1 Les trois contrôles
 
 Cinq minutes, **avant** que la salle se remplisse. Si l'un échoue, on le règle
