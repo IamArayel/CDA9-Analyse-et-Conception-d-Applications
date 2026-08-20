@@ -120,6 +120,7 @@ vendor/bin/phpunit --filter LienDeReglement        # SPEC-CANCEL-07
 | Spécifications | **32**, dont 27 avec plan de délégation |
 | Cas de test | **92**, dont 3 « manuel assumé » |
 | Tests automatisés | **87 verts** : 11 domaine, 76 application, 360 assertions |
+| Bout en bout | 3 scénarios Behat écrits, **21 étapes non implémentées**, `make behat` |
 | Ruptures de traçabilité | **5** |
 | Conception | 6 ADR, 8 diagrammes PlantUML dont le MCD et le MLD |
 | Code | 118 fichiers PHP, aucune couche web |
@@ -127,8 +128,13 @@ vendor/bin/phpunit --filter LienDeReglement        # SPEC-CANCEL-07
 
 **Les 5 ruptures, à annoncer avant qu'on les trouve :**
 
-- `CASE-BOOKING-08`, `-22`, `-35` : les trois cas **de bout en bout** n'ont pas
-  de scénario Behat. Ils supposent un socle déployé, qui n'existe pas.
+- `CASE-BOOKING-08`, `-22`, `-35` : les trois cas **de bout en bout** ont bien
+  leur scénario Behat depuis J9, dans `tests/BoutEnBout/`, mais **aucune de
+  leurs 21 étapes n'est implémentée** : elles pilotent des écrans, et il n'y a
+  pas d'écran. Le fichier existe, la vérification non, donc la rupture reste.
+  C'est le contrôle de traçabilité qui le garantit : les scénarios portent
+  `@socle-absent` et il les écarte, sinon trois noms de fichiers auraient fait
+  tomber le compte de 5 à 2. À montrer avec `make behat`.
 - `SPEC-NFR-05` et `-06` : sans cas de test, et il n'y en aura pas. Leurs
   critères sont des actions de projet (poser une question au client, consigner
   la réponse), pas des comportements logiciels.

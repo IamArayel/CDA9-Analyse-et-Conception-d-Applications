@@ -14,6 +14,7 @@ SHELL := /bin/bash
 CONSOLE  := php bin/console
 COMPOSE  := docker compose
 PHPUNIT  := vendor/bin/phpunit
+BEHAT    := vendor/bin/behat
 ATTENTE  := 60
 
 # Attendus, à tenir à jour avec docs/README_J10.md §3.
@@ -22,7 +23,7 @@ RUPTURES_ATTENDUES := 5
 
 .DEFAULT_GOAL := aide
 
-.PHONY: aide presentation demarrer attendre port identite qui-ecoute bases verifier test tracabilite schema demo arreter
+.PHONY: aide presentation demarrer attendre port identite qui-ecoute bases verifier test behat tracabilite schema demo arreter
 
 aide:
 	@echo ""
@@ -35,6 +36,7 @@ aide:
 	@echo "  make bases          crée et migre ti_baleine et ti_baleine_test"
 	@echo "  make verifier       les trois contrôles, sans toucher à la base"
 	@echo "  make test           les $(TESTS_ATTENDUS) tests"
+	@echo "  make behat          les 3 scénarios de bout en bout, étapes non implémentées"
 	@echo "  make tracabilite    régénère docs/traceability.md"
 	@echo "  make schema         le mapping colle-t-il au MLD"
 	@echo "  make arreter        arrête la base"
@@ -158,6 +160,14 @@ test:
 	@echo ""
 	@echo "→ Tests (attendu : $(TESTS_ATTENDUS) verts)"
 	@$(PHPUNIT)
+
+# Volontairement hors de `verifier` : rien n'est exécuté ici, et une cible de
+# vérification qui ne vérifie rien n'a pas sa place dans `make presentation`.
+# Attendu : 3 scénarios, 21 étapes, toutes « undefined ». Cf. README_J10.md §3.
+behat:
+	@echo ""
+	@echo "→ Bout en bout (attendu : 3 scénarios, 21 étapes non implémentées)"
+	@$(BEHAT) --no-snippets
 
 tracabilite:
 	@echo ""
