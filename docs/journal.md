@@ -932,6 +932,22 @@ descendre revenait à écrire les constantes qui manquaient.
   rapporte 3 scénarios et 21 étapes `undefined` : rien n'est vérifié, et c'est
   le compte rendu honnête de l'état du projet. Ce que l'installation apporte
   dès aujourd'hui est l'analyse du Gherkin, qui vaut relecture.
+- **Écrire les scénarios a fait tomber deux affirmations fausses du §2 de la
+  stratégie de test**, et c'est le seul bénéfice imprévu de la journée. La
+  première : le niveau bout en bout y était décrit comme portant « trois
+  parcours seulement, réserver et payer, mettre en alerte puis annuler, acheter
+  puis utiliser un bon cadeau ». Aucun des cinq cas de ce niveau n'est l'un des
+  trois : ils sont couverts au niveau **application** depuis J8, et ce niveau
+  s'est en réalité réduit à ce qu'aucun autre ne peut voir, un affichage qui se
+  rafraîchit, un avertissement lu avant de valider, une traduction d'écran, un
+  rendu multi-support, une tenue sous charge. La seconde : « la majorité des cas
+  vit au niveau domaine », alors que la répartition réelle des 92 cas est de
+  **75 application, 12 domaine, 5 bout en bout**, mesurée sur la ligne
+  « Niveau » des fichiers de cas. La raison est déjà écrite dans le socle de
+  test : deux règles métier vivent dans la **base**, l'unicité du naturaliste et
+  le non-cumul des codes, et un cas qui les touche ne peut pas se vérifier sans
+  elle. Les deux phrases sont corrigées en gardant la prévision de J6 et l'écart
+  visibles, plutôt que réécrites comme si nous avions eu raison.
 - **Le contrôle de traçabilité aurait avalé ces trois fichiers.** Il compte
   comme automatisé tout fichier de `tests/` portant l'identifiant d'un cas :
   les trois `.feature`, qui ne vérifient rien, auraient fait tomber le compte
