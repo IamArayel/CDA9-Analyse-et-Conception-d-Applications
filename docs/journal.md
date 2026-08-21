@@ -1084,3 +1084,62 @@ sixième s'y ajoute ce soir**, sortie de la revue croisée : le passage à
 l'acompte fait payer deux frais de transaction au lieu d'un, et personne n'a
 chiffré ce que cela coûte au client. Sa réponse « budget illimité » lève la
 contrainte de montant, pas le devoir de l'écrire.
+
+---
+
+## J10 - 2026-08-21
+
+**Présents.** Équipe complète. Matinée courte : dépôt gelé à 11h30, présentation
+ensuite. Aucun développement n'était prévu au planning.
+
+**Ce qui a été fait.** La procédure de `README_J10.md` a été rejouée en entier,
+puis chacun de ses chiffres vérifié contre le dépôt plutôt que contre nos
+souvenirs.
+
+- `make presentation` : **87 tests verts, 360 assertions**, 5 ruptures de
+  traçabilité, deux `[OK]` au contrôle du mapping. Le mapping et le schéma sont
+  toujours en phase avec le MLD.
+- `make demo` : les huit étapes du parcours passent, chacune annonçant sa
+  spécification et son cas de test. La transaction est annulée en fin de course
+  et la base reste intacte, comme prévu.
+- `make behat` : **3 scénarios, 21 étapes `undefined`**. Le compte n'a pas
+  bougé, et c'est bien ce que nous annonçons.
+- Les trois `--filter` de repli du §2.2 sont verts séparément : 3, 2 et 2 tests.
+
+**Ce que la vérification des chiffres a trouvé.** Un seul écart, et il était sur
+la page la plus lue du dossier : **l'en-tête du cahier des charges annonçait
+encore `v6 - 2026-08-19`**, alors que son propre historique des versions
+enregistre la v7 au 2026-08-20, que `REQ-111` et `REQ-119` portent l'une et
+l'autre la mention « en v7 », et que le planning, la traçabilité et
+`README_J10.md` disent tous v7. La ligne « Sources » était figée au même
+moment : ni `CR-07` ni `impact-CR-005` n'y figuraient, alors que ce sont eux qui
+justifient la v7. La descente du 20 avait mis à jour le contenu du document et
+oublié sa première page. Corrigé.
+
+Ce trou n'aurait été attrapé par aucun de nos contrôles : `tools/traceability.sh` vérifie que les identifiants se répondent d'un fichier à l'autre, pas qu'un
+document dise la vérité sur lui-même. Un en-tête est de la prose, et rien ne le
+relie mécaniquement à la table des versions qu'il surplombe.
+
+Tous les autres chiffres du §3 sont exacts, vérifiés un par un : 82 exigences,
+7 comptes rendus, 32 spécifications, 27 plans de délégation pour les
+spécifications plus celui du socle, 92 cas de test dont 3 « manuel assumé »,
+6 ADR hors gabarit, 8 diagrammes PlantUML, 5 analyses d'impact, 118 fichiers PHP.
+
+**Une remarque sur le contrôle de traçabilité, à ne pas confondre avec un
+défaut.** `tools/traceability.sh` attribue les commits par `git log --grep`
+sur l'identifiant de spécification. Le commit de régénération de la veille cite
+`SPEC-NFR-03` dans son corps pour expliquer ce qu'il corrige : il devient donc
+lui-même une source de cette ligne, et la régénération suivante l'y ajoute. Le
+tableau se met à parler de lui-même. Ce n'est pas une boucle infinie, elle
+s'arrête dès qu'un message de régénération ne nomme aucune spécification, mais
+c'est à savoir si la question est posée.
+
+**Ce qui reste assumé** n'a pas bougé depuis hier soir : aucun écran, `REQ-119`
+non codée, `SPEC-CANCEL-07` sans plan de délégation, programmer une sortie sans
+spécification, `paiement.pointe_par` vide. Les cinq sont au §4 de
+`README_J10.md` et dans `docs/traceability-trous.md`, et nous les annonçons
+nous-mêmes plutôt que d'attendre qu'on les trouve.
+
+**Questions ouvertes pour le client.** Les six du §8 de `CR-07`, inchangées : le
+projet se rend avec ses questions ouvertes écrites, ce qui vaut mieux que des
+réponses inventées.
