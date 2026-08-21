@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block titre %}{{ 'site.nom'|trans }}{% endblock %}</title>
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    </head>
+    <body>
+        {% block rail %}
+            {% include '_partials/rail_profondeur.html.twig' %}
+        {% endblock %}
+
+        {% include '_partials/entete.html.twig' %}
+
+        {% block corps %}{% endblock %}
+
+        {% include '_partials/pied.html.twig' %}
+
+        {% block pied_scripts %}{% endblock %}
+    </body>
+</html>

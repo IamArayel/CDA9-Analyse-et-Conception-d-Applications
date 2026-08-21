@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block titre %}{{ 'site.accueil.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps %}
+    <section class="heros section-sombre">
+        <div class="heros__contenu">
+            <div class="heros__bandeau">
+                <span>{{ 'site.bandeau.lieu'|trans|upper }}</span>
+                <span class="heros__separateur">/</span>
+                <span>{{ 'site.bandeau.region'|trans|upper }}</span>
+                <span class="heros__separateur">/</span>
+                <span>{{ 'site.bandeau.saison'|trans|upper }}</span>
+            </div>
+            <h1 class="heros__titre">{{ 'site.accueil.titre'|trans }}</h1>
+            <p class="heros__chapo">{{ 'site.accueil.chapo'|trans }}</p>
+            <div class="heros__actions">
+                <a href="{{ path('calendrier', {_locale: app.request.locale}) }}" class="bouton bouton-principal">{{ 'site.accueil.action_reserver'|trans }}</a>
+                <a href="/{{ app.request.locale }}/sorties" class="bouton bouton-contour heros__action-secondaire">{{ 'site.accueil.action_sorties'|trans }}</a>
+            </div>
+            <div class="heros__chiffres chiffres">
+                <div>{{ 'site.accueil.chiffre_departs'|trans }}</div>
+                <div>{{ 'site.accueil.chiffre_bateaux'|trans }}</div>
+                <div>{{ 'site.accueil.chiffre_seuil'|trans }}</div>
+                <div>{{ 'site.accueil.chiffre_lieu'|trans }}</div>
+            </div>
+        </div>
+        <div class="heros__medaillon">
+            <div class="medaillon">
+                <video src="{{ asset('logo-ti-baleine-anime.mp4') }}"
+                       poster="{{ asset('logo-ti-baleine.jpg') }}"
+                       autoplay muted loop playsinline>
+                </video>
+            </div>
+        </div>
+        <div class="heros__vague"></div>
+    </section>
+{% endblock %}

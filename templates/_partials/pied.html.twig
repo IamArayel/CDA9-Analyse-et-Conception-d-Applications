@@ -1,0 +1,28 @@
+{% set locale = app.request.locale %}
+<footer class="pied">
+    <div class="pied__colonnes">
+        <div>
+            <a href="{{ path('accueil', {_locale: locale}) }}" class="pied__logo">
+                <img src="{{ asset('logo-ti-baleine.jpg') }}" alt="">
+                <span>{{ 'site.nom'|trans }}</span>
+            </a>
+            <p>{{ 'site.pied.presentation'|trans }}</p>
+        </div>
+        <div>
+            <div class="intitule-colonne">{{ 'site.pied.quai'|trans }}</div>
+            <p>{{ 'site.pied.adresse'|trans }}</p>
+        </div>
+        <div>
+            <div class="intitule-colonne">{{ 'site.pied.horaires'|trans }}</div>
+            <p>{{ 'site.pied.horaires_detail'|trans }}<br>{{ 'site.pied.fermeture'|trans }}</p>
+        </div>
+        <div>
+            <div class="intitule-colonne">{{ 'site.pied.contact'|trans }}</div>
+            <p><a href="/{{ locale }}/gestion">{{ 'site.nav.gestion'|trans }} →</a></p>
+        </div>
+    </div>
+    <div class="pied__mentions">
+        <span>© 2026 {{ 'site.nom'|trans|upper }}</span>
+        <span>{{ 'site.pied.mentions'|trans }} · {{ 'site.pied.donnees'|trans }} · {{ 'site.pied.cgv'|trans }}</span>
+    </div>
+</footer>

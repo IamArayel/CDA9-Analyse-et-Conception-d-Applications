@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Deux suites, une par niveau de test automatisé, cf. docs/strategie-de-test.md §9.
-  Le troisième niveau, « bout en bout », relève de Behat et n'est pas décrit ici.
+  Trois suites : Domaine et Application, une par niveau de test automatisé, cf.
+  docs/strategie-de-test.md §9, et Interface pour les WebTestCase des écrans.
+  Le niveau « bout en bout » relève de Behat et n'est pas décrit ici.
 -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
@@ -33,6 +34,9 @@
         </testsuite>
         <testsuite name="Application">
             <directory>tests/Application</directory>
+        </testsuite>
+        <testsuite name="Interface">
+            <directory>tests/Interface</directory>
         </testsuite>
     </testsuites>
     <source>

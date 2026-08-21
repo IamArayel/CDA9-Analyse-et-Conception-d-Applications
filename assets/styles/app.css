@@ -1,0 +1,548 @@
+/* Styles du site public, par écran.
+   Valeurs de charte (couleurs, tailles de police, filets) toujours via les
+   jetons de tokens.css ; les dimensions de mise en page propres à un bloc
+   restent en dur, comme dans la maquette. */
+
+/* En-tête */
+
+.entete {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--marine);
+  color: var(--papier);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 34px;
+  border-bottom: var(--filet-clair);
+}
+
+.entete__logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: var(--papier);
+}
+
+.entete__logo img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--papier);
+}
+
+.entete__logo span {
+  font-size: 19px;
+  letter-spacing: .02em;
+}
+
+.entete__nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-size: 14px;
+}
+
+.entete__nav a {
+  color: color-mix(in srgb, var(--papier) 73%, transparent);
+}
+
+.entete__nav a:hover {
+  color: var(--ambre);
+}
+
+.entete__reserver {
+  padding: 9px 20px;
+  font-size: 14px;
+}
+
+.entete__reserver:hover {
+  color: var(--marine);
+}
+
+/* Sélecteur de langue */
+
+.selecteur-langue {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--t-kicker);
+  letter-spacing: .12em;
+  padding-left: 6px;
+  border-left: 1px solid color-mix(in srgb, var(--papier) 15%, transparent);
+}
+
+.selecteur-langue__option {
+  color: color-mix(in srgb, var(--papier) 40%, transparent);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+
+.selecteur-langue__option--active {
+  color: var(--papier);
+  border-bottom-color: var(--ambre);
+}
+
+/* Pied de page */
+
+.pied {
+  background: var(--marine);
+  color: var(--papier);
+  padding: 56px 34px 34px;
+}
+
+.pied__colonnes {
+  max-width: var(--largeur-page);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 34px;
+  border-bottom: 1px solid color-mix(in srgb, var(--papier) 12%, transparent);
+}
+
+.pied__logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 14px;
+  color: var(--papier);
+}
+
+.pied__logo img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--papier);
+}
+
+.pied p {
+  font-size: var(--t-note);
+  line-height: 1.8;
+  color: color-mix(in srgb, var(--papier) 68%, transparent);
+  margin: 0;
+  max-width: 32ch;
+}
+
+.pied .intitule-colonne {
+  color: var(--ambre);
+  margin-bottom: 12px;
+}
+
+.pied a {
+  color: var(--papier);
+}
+
+.pied__mentions {
+  max-width: var(--largeur-page);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--t-kicker);
+  letter-spacing: .1em;
+  color: color-mix(in srgb, var(--papier) 40%, transparent);
+  padding-top: 20px;
+}
+
+/* Écran Accueil */
+
+.heros {
+  position: relative;
+  overflow: hidden;
+  padding: 78px 34px 0;
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 48px;
+  align-items: center;
+  max-width: var(--largeur-page);
+  margin: 0 auto;
+}
+
+.heros__bandeau {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  font-size: var(--t-kicker);
+  letter-spacing: .22em;
+  color: var(--ambre);
+  margin-bottom: 26px;
+}
+
+.heros__separateur {
+  color: color-mix(in srgb, var(--papier) 27%, transparent);
+}
+
+.heros__titre {
+  font-size: var(--t-heros);
+  line-height: .94;
+  margin: 0 0 26px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+
+.heros__chapo {
+  font-size: var(--t-corps-large);
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--papier) 77%, transparent);
+  max-width: 34ch;
+  margin: 0 0 36px;
+}
+
+.heros__actions {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 56px;
+}
+
+.heros__action-secondaire {
+  border: var(--filet-clair);
+  color: var(--papier);
+}
+
+.heros__chiffres {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 34px;
+  justify-content: start;
+  border-top: 1px solid color-mix(in srgb, var(--papier) 12%, transparent);
+  padding: 22px 0 34px;
+  font-size: var(--t-corps-petit);
+  color: color-mix(in srgb, var(--papier) 77%, transparent);
+}
+
+.heros__medaillon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.medaillon {
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--papier);
+  border: var(--filet-clair);
+}
+
+.medaillon video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--papier);
+}
+
+@media (max-width: 900px) {
+  .heros {
+    grid-template-columns: 1fr;
+  }
+
+  .entete__nav {
+    gap: 14px;
+    font-size: 12px;
+  }
+}
+
+.heros__vague {
+  grid-column: 1 / -1;
+  height: 54px;
+  background: var(--papier);
+  margin: 0 -34px -1px;
+  clip-path: polygon(0 62%, 8% 40%, 20% 58%, 33% 34%, 47% 56%, 60% 32%, 74% 54%, 87% 36%, 100% 58%, 100% 100%, 0 100%);
+}
+
+/* Calendrier public */
+
+.calendrier {
+  max-width: var(--largeur-page);
+  margin: 0 auto;
+  padding: var(--e-6) var(--e-4) var(--e-8);
+}
+
+.calendrier__entete {
+  margin-bottom: var(--e-5);
+}
+
+.calendrier__chapo {
+  font-size: var(--t-corps-petit);
+  color: var(--texte-doux);
+  max-width: 62ch;
+  margin: var(--e-2) 0 0;
+}
+
+.calendrier__barre {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  padding-bottom: var(--e-3);
+  border-bottom: var(--filet);
+  margin-bottom: var(--e-4);
+  flex-wrap: wrap;
+}
+
+.calendrier__fleche {
+  border: var(--filet);
+  padding: 6px 12px;
+  color: var(--encre);
+}
+
+.calendrier__semaine {
+  font-size: var(--t-corps);
+  font-weight: 600;
+}
+
+.calendrier__filtres {
+  display: flex;
+  gap: var(--e-2);
+  margin-left: auto;
+}
+
+.calendrier__filtre {
+  font-size: var(--t-note);
+  padding: 6px 14px;
+  border: var(--filet);
+  color: var(--texte-doux);
+}
+
+.calendrier__filtre--actif {
+  background: var(--marine);
+  color: var(--papier);
+  border-color: var(--marine);
+}
+
+.calendrier__grille {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: rgba(13, 34, 51, .13);
+  border: var(--filet);
+}
+
+.calendrier__jour {
+  background: var(--papier);
+  padding: var(--e-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-1);
+  min-height: 160px;
+}
+
+.calendrier__jour-entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: var(--e-1);
+  border-bottom: var(--filet);
+  margin-bottom: var(--e-1);
+}
+
+.calendrier__jour-nom {
+  font-size: var(--t-colonne);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--sable);
+}
+
+.calendrier__jour-quantieme {
+  font-size: var(--t-corps);
+  font-weight: 600;
+}
+
+.calendrier__aucun-depart {
+  font-size: var(--t-note);
+  color: var(--texte-faible);
+  margin: 0;
+}
+
+.calendrier__carte {
+  border-left: 3px solid var(--gris);
+  padding: 6px 8px;
+  font-size: var(--t-note);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.calendrier__carte--disponible {
+  border-left-color: var(--vert);
+}
+
+.calendrier__carte--alerte {
+  border-left-color: var(--alerte);
+}
+
+.calendrier__carte--complet,
+.calendrier__carte--ferme {
+  border-left-color: var(--gris);
+  color: var(--texte-faible);
+}
+
+.calendrier__carte-heure {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendrier__carte-bateau {
+  color: var(--texte-doux);
+}
+
+.calendrier__carte-etat {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: inherit;
+}
+
+.calendrier__pastille {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gris);
+  flex-shrink: 0;
+}
+
+.calendrier__carte--disponible .calendrier__pastille {
+  background: var(--vert);
+}
+
+.calendrier__carte--alerte .calendrier__pastille {
+  background: var(--alerte);
+}
+
+.calendrier__pastille--disponible {
+  background: var(--vert);
+}
+
+.calendrier__pastille--alerte {
+  background: var(--alerte);
+}
+
+.calendrier__pastille--indisponible {
+  background: var(--gris);
+}
+
+.calendrier__legende {
+  display: flex;
+  gap: var(--e-4);
+  margin-top: var(--e-4);
+  font-size: var(--t-note);
+  color: var(--texte-faible);
+}
+
+.calendrier__legende span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 900px) {
+  .calendrier__grille {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Rail de profondeur */
+
+.rail-profondeur {
+  --rail-encre: var(--encre);
+  position: fixed;
+  left: 18px;
+  top: 0;
+  height: 100vh;
+  width: 74px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.rail-profondeur[data-sombre="true"] {
+  --rail-encre: var(--papier);
+}
+
+@media (max-width: 1399px) {
+  .rail-profondeur {
+    display: none;
+  }
+}
+
+.rail-profondeur__graduations {
+  position: relative;
+  height: 62vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.rail-profondeur__trait {
+  position: absolute;
+  left: 11px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: color-mix(in srgb, var(--rail-encre) 40%, transparent);
+}
+
+.rail-profondeur__graduation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  letter-spacing: .16em;
+  color: color-mix(in srgb, var(--rail-encre) 60%, transparent);
+}
+
+.rail-profondeur__marque {
+  display: inline-block;
+  width: 15px;
+  height: 1px;
+  background: color-mix(in srgb, var(--rail-encre) 66%, transparent);
+}
+
+.rail-profondeur__marque--longue {
+  width: 23px;
+}
+
+.rail-profondeur__curseur {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 74px;
+  transition: top .12s linear;
+}
+
+.rail-profondeur__ligne {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.rail-profondeur__ligne::before {
+  content: '';
+  width: 23px;
+  height: 2px;
+  background: var(--ambre);
+}
+
+.rail-profondeur__ligne::after {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ambre);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ambre) 20%, transparent);
+}
+
+.rail-profondeur__libelle {
+  margin-left: 2px;
+  margin-top: 5px;
+  font-size: 10px;
+  letter-spacing: .1em;
+  color: var(--rail-encre);
+}
