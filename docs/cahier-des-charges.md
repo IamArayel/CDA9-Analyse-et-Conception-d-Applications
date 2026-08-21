@@ -5,8 +5,8 @@
 - [Arnaud Maxime](mailto:arnaudmaxime.bidel@gmail.com)
 - [Anthony Dégeilh](mailto:anthony.degeilh@gmail.com)
 
-**Version :** v6 — 2026-08-19
-**Sources :** [`compte-rendu-entretien-01.md`](./compte-rendu-entretien-01.md) (CR-01), [`compte-rendu-entretien-02.md`](./compte-rendu-entretien-02.md) (CR-02), [`compte-rendu-entretien-03.md`](./compte-rendu-entretien-03.md) (CR-03), [`compte-rendu-entretien-04.md`](./compte-rendu-entretien-04.md) (CR-04), [`compte-rendu-entretien-05.md`](./compte-rendu-entretien-05.md) (CR-05), [`compte-rendu-entretien-06.md`](./compte-rendu-entretien-06.md) (CR-06), échange oral du 2026-08-11, analyses d'impact [`impact-CR-001.md`](./impact-CR-001.md), [`impact-CR-002.md`](./impact-CR-002.md), [`impact-CR-003.md`](./impact-CR-003.md) et [`impact-CR-004.md`](./impact-CR-004.md).
+**Version :** v7 - 2026-08-20
+**Sources :** [`compte-rendu-entretien-01.md`](./compte-rendu-entretien-01.md) (CR-01), [`compte-rendu-entretien-02.md`](./compte-rendu-entretien-02.md) (CR-02), [`compte-rendu-entretien-03.md`](./compte-rendu-entretien-03.md) (CR-03), [`compte-rendu-entretien-04.md`](./compte-rendu-entretien-04.md) (CR-04), [`compte-rendu-entretien-05.md`](./compte-rendu-entretien-05.md) (CR-05), [`compte-rendu-entretien-06.md`](./compte-rendu-entretien-06.md) (CR-06), [`compte-rendu-entretien-07.md`](./compte-rendu-entretien-07.md) (CR-07), échange oral du 2026-08-11, analyses d'impact [`impact-CR-001.md`](./impact-CR-001.md), [`impact-CR-002.md`](./impact-CR-002.md), [`impact-CR-003.md`](./impact-CR-003.md), [`impact-CR-004.md`](./impact-CR-004.md) et [`impact-CR-005.md`](./impact-CR-005.md).
 
 Ce document formalise le **problème compris**, pas la solution. Aucun nom de
 technologie, aucun nom de framework, aucune structure de base de données ici
