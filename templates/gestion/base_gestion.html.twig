@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% set locale = app.request.locale %}
+
+{% block rail %}{% endblock %}
+{% block entete %}{% endblock %}
+{% block pied %}{% endblock %}
+
+{% block corps %}
+    <div class="gestion">
+        <nav class="gestion__barre">
+            <div class="gestion__marque">
+                <img src="{{ asset('logo-ti-baleine.jpg') }}" alt="">
+                <span>{{ 'gestion.espace'|trans }}</span>
+            </div>
+            <a href="{{ path('gestion_journee', {_locale: locale}) }}"
+               class="gestion__lien{% if app.request.attributes.get('_route') starts with 'gestion_journee' or app.request.attributes.get('_route') == 'gestion_creneau' %} gestion__lien--actif{% endif %}">{{ 'gestion.nav_journee'|trans }}</a>
+            <a href="{{ path('gestion_alerte', {_locale: locale}) }}"
+               class="gestion__lien{% if app.request.attributes.get('_route') starts with 'gestion_alerte' %} gestion__lien--actif{% endif %}">{{ 'gestion.nav_alerte'|trans }}</a>
+            <a href="{{ path('gestion_annulation_bareme', {_locale: locale}) }}"
+               class="gestion__lien{% if app.request.attributes.get('_route') starts with 'gestion_annulation' %} gestion__lien--actif{% endif %}">{{ 'gestion.nav_annulations'|trans }}</a>
+            <a href="{{ path('gestion_reglages', {_locale: locale}) }}"
+               class="gestion__lien{% if app.request.attributes.get('_route') == 'gestion_reglages' %} gestion__lien--actif{% endif %}">{{ 'gestion.reglages.titre'|trans }}</a>
+            <form method="post" action="{{ path('gestion_deconnexion', {_locale: locale}) }}" class="gestion__deconnexion">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                <button type="submit" class="gestion__lien gestion__lien--bouton">{{ 'gestion.fermer_session'|trans }}</button>
+            </form>
+        </nav>
+        <main class="gestion__contenu">
+            {% block corps_gestion %}{% endblock %}
+        </main>
+    </div>
+{% endblock %}

@@ -7,6 +7,8 @@ namespace App\Tests;
 use App\Domaine\Horloge;
 use App\Domaine\Notificateur;
 use App\Domaine\PrestataireDePaiement;
+use App\Infrastructure\Persistance\GerantRepository;
+use App\Infrastructure\Securite\GerantUtilisateur;
 use App\Tests\Doublures\EnvoisEnregistres;
 use App\Tests\Doublures\HorlogeFigee;
 use App\Tests\Doublures\PaiementSimule;
@@ -56,6 +58,20 @@ abstract class CasDinterface extends WebTestCase
 
         $this->monde = new MondeDeTest($conteneur, $this->entites, $this->horloge);
         $this->monde->chargerLeJeuDeReference();
+    }
+
+    /**
+     * Simule une session ouverte du gérant, sans repasser par le formulaire de
+     * connexion : ce que celui-ci vérifie (identifiants, CSRF) est déjà
+     * couvert par `SecuriteControllerTest`, pas à refaire dans chaque écran de
+     * gestion.
+     */
+    protected function connecterLeGerant(): void
+    {
+        $gerant = static::getContainer()->get(GerantRepository::class)
+            ->parEmail(JeuDeDonneesDeReference::EMAIL_DU_GERANT);
+
+        $this->client->loginUser(new GerantUtilisateur($gerant), 'gestion');
     }
 
     protected function tearDown(): void

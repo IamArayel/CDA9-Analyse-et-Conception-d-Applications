@@ -11,12 +11,16 @@
             {% include '_partials/rail_profondeur.html.twig' %}
         {% endblock %}
 
-        {% include '_partials/entete.html.twig' %}
+        {% block entete %}
+            {% include '_partials/entete.html.twig' %}
+        {% endblock %}
         {% include '_partials/message_flash.html.twig' %}
 
         {% block corps %}{% endblock %}
 
-        {% include '_partials/pied.html.twig' %}
+        {% block pied %}
+            {% include '_partials/pied.html.twig' %}
+        {% endblock %}
 
         {% block pied_scripts %}{% endblock %}
     </body>

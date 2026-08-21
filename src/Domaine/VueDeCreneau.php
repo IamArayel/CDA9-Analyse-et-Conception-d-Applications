@@ -19,9 +19,10 @@ use DateTimeImmutable;
 final class VueDeCreneau
 {
     /**
-     * @param array<string, StatutDeSortie>            $statutsParBateau
-     * @param array<string, DateTimeImmutable|null>    $datesDeMiseEnAlerteParBateau
-     * @param array<string, list<array<string, mixed>>> $inscritsParBateau
+     * @param array<string, StatutDeSortie>                    $statutsParBateau
+     * @param array<string, DateTimeImmutable|null>            $datesDeMiseEnAlerteParBateau
+     * @param array<string, list<array<string, mixed>>>        $inscritsParBateau
+     * @param array<string, list<array{minutes: int}>>         $immobilisationsParBateau
      */
     public function __construct(
         private readonly array $statutsParBateau,
@@ -30,7 +31,27 @@ final class VueDeCreneau
         private readonly bool $estReservable,
         private readonly bool $risqueDannulationSignale,
         private readonly bool $estAnnulable,
+        private readonly array $immobilisationsParBateau = [],
+        private readonly ?string $previsionMeteo = null,
+        private readonly ?DateTimeImmutable $fermetureDesVentes = null,
     ) {
+    }
+
+    public function previsionMeteo(): ?string
+    {
+        return $this->previsionMeteo;
+    }
+
+    /** Quand les ventes ferment pour ce créneau (`FermetureDesReservations`). */
+    public function fermetureDesVentes(): ?DateTimeImmutable
+    {
+        return $this->fermetureDesVentes;
+    }
+
+    /** @return list<string> */
+    public function bateaux(): array
+    {
+        return array_keys($this->statutsParBateau);
     }
 
     public function statutDeLaSortie(string $bateau): ?StatutDeSortie
@@ -68,5 +89,17 @@ final class VueDeCreneau
     public function estAnnulable(): bool
     {
         return $this->estAnnulable;
+    }
+
+    /**
+     * Les réservations dont le formulaire est validé mais le paiement non
+     * abouti : elles retiennent des places sans compter dans les inscrits
+     * (SPEC-CANCEL-01, cas limite 2).
+     *
+     * @return list<array{minutes: int}>
+     */
+    public function immobilisations(string $bateau): array
+    {
+        return $this->immobilisationsParBateau[$bateau] ?? [];
     }
 }

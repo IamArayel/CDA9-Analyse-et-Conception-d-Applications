@@ -1,4 +1,9 @@
-# Enable stateless CSRF protection for forms and logins/logouts
+# Le double-submit sans état (recette par défaut du bundle) suppose un
+# navigateur qui exécute assets/controllers/csrf_protection_controller.js sur
+# chaque soumission. La connexion et la déconnexion du gérant en avaient
+# hérité, ce qui rend le pare-feu invérifiable par un client HTTP sans
+# JavaScript (WebTestCase compris) : elles repassent par le jeton de session
+# habituel, seul « submit » (le composant Form, inutilisé ici) reste sans état.
 framework:
     form:
         csrf_protection:
@@ -7,5 +12,3 @@ framework:
     csrf_protection:
         stateless_token_ids:
             - submit
-            - authenticate
-            - logout

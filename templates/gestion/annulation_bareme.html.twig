@@ -1,0 +1,41 @@
+{% extends 'gestion/base_gestion.html.twig' %}
+
+{% block titre %}{{ 'gestion.annulation.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps_gestion %}
+    <h1>{{ 'gestion.annulation.titre'|trans }}</h1>
+
+    <div class="gestion__creneau-grille">
+        <div class="gestion__encart">
+            <div class="intitule-colonne">{{ 'gestion.annulation.bareme_titre'|trans }}</div>
+            <table class="gestion__export-table">
+                <tbody>
+                    <tr>
+                        <td>{{ 'gestion.annulation.bareme_7j'|trans }}</td>
+                        <td>{{ 'gestion.annulation.bareme_quoi_qu_il_ait'|trans }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'gestion.annulation.bareme_48h'|trans }}</td>
+                        <td>75 % {{ 'gestion.annulation.bareme_sur_verse'|trans|lower }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'gestion.annulation.bareme_moins_48h'|trans }}</td>
+                        <td>{{ 'gestion.annulation.bareme_calcul'|trans }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'gestion.annulation.bareme_absent'|trans }}</td>
+                        <td>{{ 'gestion.annulation.bareme_variable'|trans }} (0 €)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="gestion__encart">
+            <p class="reservation__note">{{ 'parcours.confirmation.reference'|trans }}</p>
+            <form method="post">
+                <input type="text" name="reference" class="champ" placeholder="123">
+                <button type="submit" class="bouton bouton-principal">{{ 'gestion.annulation.issue_enregistrer'|trans }}</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

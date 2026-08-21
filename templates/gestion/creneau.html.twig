@@ -1,0 +1,80 @@
+{% extends 'gestion/base_gestion.html.twig' %}
+
+{% block titre %}{{ jour }} {{ heure }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps_gestion %}
+    <div class="gestion__entete-page">
+        <h1>{{ jour|format_date('long', locale=locale) }} · {{ heure }}</h1>
+        <div class="gestion__actions-tete">
+            <a href="{{ path('gestion_export_planning', {_locale: locale, jour: jour}) }}" class="bouton bouton-contour">{{ 'gestion.creneau.exporter'|trans }}</a>
+            <a href="{{ path('gestion_alerte', {_locale: locale, jour: jour, heure: heure}) }}" class="bouton bouton-contour">{{ 'gestion.creneau.mettre_en_alerte'|trans }}</a>
+            {% if creneau.estAnnulable %}
+                <a href="{{ path('gestion_annulation_creneau', {_locale: locale, jour: jour, heure: heure}) }}" class="bouton bouton-destructeur">{{ 'gestion.creneau.annuler'|trans }}</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="gestion__creneau-grille">
+        <div>
+            {% for bateau in creneau.bateaux %}
+                <h2>{{ bateau }}</h2>
+                <table class="gestion__export-table">
+                    <thead>
+                        <tr>
+                            <th>{{ 'gestion.creneau.colonne_passager'|trans }}</th>
+                            <th>{{ 'gestion.creneau.colonne_mobile'|trans }}</th>
+                            <th>{{ 'gestion.creneau.colonne_composition'|trans }}</th>
+                            <th>{{ 'gestion.creneau.colonne_montant'|trans }}</th>
+                            <th>{{ 'gestion.creneau.colonne_solde'|trans }}</th>
+                            <th>{{ 'gestion.creneau.colonne_etat'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ligne in creneau.inscrits(bateau) %}
+                            <tr>
+                                <td>{{ ligne.prenom }} {{ ligne.nom }}</td>
+                                <td>{{ ligne.telephone_mobile }}</td>
+                                <td class="chiffres">{{ ligne.participants }}</td>
+                                <td class="chiffres">{{ (ligne.montant / 100)|format_currency('EUR', locale=locale) }}</td>
+                                <td class="chiffres">{{ (ligne.solde_du / 100)|format_currency('EUR', locale=locale) }}</td>
+                                <td>{{ ('gestion.creneau.etat_' ~ ligne.etat)|trans }}</td>
+                            </tr>
+                        {% endfor %}
+                        {% for immobilisation in creneau.immobilisations(bateau) %}
+                            <tr class="gestion__ligne-immobilisee">
+                                <td colspan="6">{{ 'gestion.creneau.etat_immobilisee'|trans({'%minutes%': immobilisation.minutes}) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        </div>
+
+        <div class="gestion__encarts">
+            <div class="gestion__encart">
+                <div class="intitule-colonne">{{ 'gestion.creneau.occupation'|trans }}</div>
+                {% for bateau in creneau.bateaux %}
+                    {% set inscrits = creneau.inscrits(bateau)|length ? creneau.inscrits(bateau)|reduce((c, l) => c + l.participants, 0) : 0 %}
+                    <p>{{ bateau }} : {{ inscrits }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="gestion__encart">
+                <div class="intitule-colonne">{{ 'gestion.creneau.meteo_saisie'|trans }}</div>
+                {% if creneau.previsionMeteo %}
+                    <p>{{ creneau.previsionMeteo }}</p>
+                {% else %}
+                    <p class="reservation__note">—</p>
+                {% endif %}
+                <a href="{{ path('gestion_alerte', {_locale: locale, jour: jour, heure: heure}) }}">{{ 'gestion.creneau.modifier_prevision'|trans }}</a>
+            </div>
+
+            {% if creneau.fermetureDesVentes %}
+                <div class="gestion__encart">
+                    <div class="intitule-colonne">{{ 'gestion.creneau.fermeture'|trans }}</div>
+                    <p>{{ 'gestion.creneau.fermeture_note'|trans({'%heure%': heure, '%limite%': creneau.fermetureDesVentes|format_time('short', 'none', locale=locale) ~ ' ' ~ creneau.fermetureDesVentes|format_date('short', locale=locale)}) }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

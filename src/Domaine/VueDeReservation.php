@@ -38,7 +38,14 @@ final class VueDeReservation
         private readonly int $nombreDEnfants = 0,
         private readonly int $acompteAPayer = 0,
         private readonly int $tauxDAcompte = 0,
+        private readonly string $nomClient = '',
+        private readonly string $prenomClient = '',
     ) {
+    }
+
+    public function nomComplet(): string
+    {
+        return trim($this->prenomClient.' '.$this->nomClient);
     }
 
     /** En centimes : la somme des versements qui comptent encore. */

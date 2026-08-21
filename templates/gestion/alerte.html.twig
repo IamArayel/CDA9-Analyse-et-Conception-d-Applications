@@ -1,0 +1,45 @@
+{% extends 'gestion/base_gestion.html.twig' %}
+
+{% block titre %}{{ 'gestion.alerte.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps_gestion %}
+    <h1>{{ 'gestion.alerte.titre'|trans }}</h1>
+    <p class="reservation__note">{{ 'gestion.alerte.chapo'|trans }}</p>
+
+    <div class="gestion__creneau-grille">
+        <div class="gestion__encart">
+            {% if creneau is not null %}
+                <h2>{{ 'gestion.alerte.formulaire_titre'|trans({'%creneau%': jour ~ ' ' ~ heure}) }}</h2>
+                <form method="post">
+                    <input type="hidden" name="jour" value="{{ jour }}">
+                    <input type="hidden" name="heure" value="{{ heure }}">
+
+                    <label for="prevision">{{ 'gestion.creneau.meteo_saisie'|trans }}</label>
+                    <textarea id="prevision" name="prevision" class="champ">{{ creneau.previsionMeteo }}</textarea>
+
+                    <p class="reservation__note">
+                        {{ 'gestion.alerte.envoi'|trans }} —
+                        {{ 'gestion.alerte.envoi_ce_soir'|trans({'%heure%': parametres.heureDalerte}) }}
+                        {{ 'gestion.alerte.envoi_immediat'|trans|lower }}.
+                    </p>
+
+                    <button type="submit" class="bouton bouton-destructeur">{{ 'gestion.alerte.confirmer'|trans }}</button>
+                    <a href="{{ path('gestion_creneau', {_locale: locale, jour: jour, heure: heure}) }}" class="bouton bouton-contour">{{ 'gestion.alerte.annuler'|trans }}</a>
+                </form>
+            {% else %}
+                <p>{{ 'gestion.creneau.modifier_prevision'|trans }} — {{ 'gestion.journee.ouvrir'|trans|lower }} {{ 'gestion.journee.titre'|trans|lower }}.</p>
+                <a href="{{ path('gestion_journee', {_locale: locale}) }}" class="bouton bouton-contour">{{ 'gestion.journee.titre'|trans }}</a>
+            {% endif %}
+        </div>
+
+        <div class="gestion__encarts">
+            <div class="gestion__encart">
+                <div class="intitule-colonne">{{ 'gestion.alerte.reglages'|trans }}</div>
+                <p>{{ 'gestion.alerte.reglage_heure'|trans }} : {{ parametres.heureDalerte }}</p>
+                <p>{{ 'gestion.alerte.reglage_decision'|trans }} : {{ parametres.delaiDeConfirmationEnHeures }} h</p>
+                <p>{{ 'gestion.alerte.reglage_rappel'|trans }} : {{ parametres.delaiDeRappelEnHeures }} h</p>
+                <a href="{{ path('gestion_reglages', {_locale: locale}) }}">{{ 'gestion.reglages.titre'|trans }}</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -57,6 +57,8 @@ final class ConsulterUneReservation
             tauxDAcompte: $reservation->sortie()->estPrivatisee()
                 ? Acompte::TAUX_PRIVATISATION
                 : Acompte::TAUX_SORTIE,
+            nomClient: $reservation->nomClient(),
+            prenomClient: $reservation->prenomClient(),
         );
     }
 }

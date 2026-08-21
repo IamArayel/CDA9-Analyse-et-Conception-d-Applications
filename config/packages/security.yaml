@@ -3,29 +3,38 @@ security:
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    # Le compte unique du gérant (SPEC-ADMIN-01) ; aucun verrouillage
+    # automatique après plusieurs échecs, cf. specs/admin.md « Ce qui n'est
+    # pas défini » de SPEC-ADMIN-01 : le client n'en a pas demandé.
     providers:
-        users_in_memory: { memory: null }
+        gerants:
+            id: App\Infrastructure\Securite\GerantUserProvider
 
     firewalls:
         dev:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+        gestion:
+            pattern: ^/(fr|en)/gestion
+            lazy: true
+            provider: gerants
+            form_login:
+                login_path: gestion_connexion
+                check_path: gestion_connexion
+                default_target_path: gestion_journee
+                enable_csrf: true
+            logout:
+                path: gestion_deconnexion
+                target: /
         main:
             lazy: true
-            provider: users_in_memory
-
-            # Activate different ways to authenticate:
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            provider: gerants
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/(fr|en)/gestion/connexion, roles: PUBLIC_ACCESS }
+        - { path: ^/(fr|en)/gestion, roles: ROLE_GERANT }
 
 when@test:
     security:

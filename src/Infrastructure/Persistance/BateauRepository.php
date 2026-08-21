@@ -33,6 +33,12 @@ final class BateauRepository
         );
     }
 
+    /** @return list<Bateau> */
+    public function tous(): array
+    {
+        return $this->entites->getRepository(Bateau::class)->findAll();
+    }
+
     public function enregistrer(Bateau $bateau): void
     {
         $this->entites->persist($bateau);

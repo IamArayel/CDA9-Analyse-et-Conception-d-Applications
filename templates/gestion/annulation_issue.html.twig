@@ -1,0 +1,24 @@
+{% extends 'gestion/base_gestion.html.twig' %}
+
+{% block titre %}{{ 'gestion.annulation.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps_gestion %}
+    <h1>{{ 'gestion.annulation.issue_titre'|trans({
+        '%client%': reservation.nomComplet ?: reference,
+        '%verse%': (reservation.montantVerse / 100)|format_currency(reservation.devise, locale=locale),
+    }) }}</h1>
+
+    <div class="gestion__encart">
+        <form method="post">
+            <label><input type="radio" name="issue" value="REPORT"> {{ 'gestion.annulation.issue_report'|trans }} <span class="reservation__note">({{ 'gestion.annulation.issue_report_note'|trans }})</span></label>
+            <label><input type="radio" name="issue" value="AVOIR"> {{ 'gestion.annulation.issue_avoir'|trans }}</label>
+            <label><input type="radio" name="issue" value="REMBOURSEMENT"> {{ 'gestion.annulation.issue_remboursement'|trans }}</label>
+
+            <label for="montant">{{ 'parcours.recapitulatif.total'|trans }}</label>
+            <input type="number" step="0.01" min="0" id="montant" name="montant" class="champ" placeholder="{{ 'gestion.annulation.bareme_variable'|trans }}">
+            <p class="reservation__note">{{ 'gestion.annulation.bareme_titre'|trans }}</p>
+
+            <button type="submit" class="bouton bouton-principal">{{ 'gestion.annulation.issue_enregistrer'|trans }}</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'gestion/base_gestion.html.twig' %}
+
+{% block titre %}{{ 'gestion.journee.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps_gestion %}
+    <div class="gestion__entete-page">
+        <h1>{{ 'gestion.journee.titre'|trans }}</h1>
+        <a href="{{ path('gestion_export_planning', {_locale: locale, jour: jour}) }}" class="bouton bouton-contour">{{ 'gestion.journee.exporter'|trans }}</a>
+    </div>
+
+    <div class="gestion__indicateurs">
+        <div class="gestion__indicateur">
+            <div class="chiffres gestion__indicateur-valeur">{{ tableau.inscritsDuJour }}</div>
+            <div class="intitule-colonne">{{ 'gestion.journee.inscrits_du_jour'|trans }}</div>
+        </div>
+        <div class="gestion__indicateur">
+            <div class="chiffres gestion__indicateur-valeur">{{ tableau.sortiesProgrammees }}</div>
+            <div class="intitule-colonne">{{ 'gestion.journee.sorties_programmees'|trans }}</div>
+        </div>
+        <div class="gestion__indicateur">
+            <div class="chiffres gestion__indicateur-valeur">{{ tableau.decisionsAPrendre }}</div>
+            <div class="intitule-colonne">{{ 'gestion.journee.decisions'|trans }}</div>
+        </div>
+        <div class="gestion__indicateur">
+            <div class="chiffres gestion__indicateur-valeur">{{ (tableau.encaisse / 100)|format_currency('EUR', locale=locale) }}</div>
+            <div class="intitule-colonne">{{ 'gestion.journee.encaisse'|trans({'%solde%': (tableau.soldeABord / 100)|format_currency('EUR', locale=locale)}) }}</div>
+        </div>
+    </div>
+
+    {% for decision in tableau.decisions %}
+        <div class="gestion__bandeau">
+            <div>
+                <strong>{{ 'gestion.journee.seuil_titre'|trans({'%heure%': decision.heure, '%bateau%': decision.bateau, '%inscrits%': decision.inscrits}) }}</strong>
+                <p>{{ 'gestion.journee.seuil_texte'|trans({'%seuil%': seuil}) }}</p>
+            </div>
+            <div class="gestion__bandeau-actions">
+                <form method="post" action="{{ path('gestion_journee_maintenir', {_locale: locale, jour: decision.jour, heure: decision.heure}) }}">
+                    <button type="submit" class="bouton bouton-contour">{{ 'gestion.journee.maintenir'|trans }}</button>
+                </form>
+                <a href="{{ path('gestion_annulation_creneau', {_locale: locale, jour: decision.jour, heure: decision.heure}) }}" class="bouton bouton-destructeur">{{ 'gestion.journee.annuler_sortie'|trans }}</a>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="gestion__cartes">
+        {% for carte in tableau.cartes %}
+            <div class="gestion__carte gestion__carte--{{ carte.statut.name|lower }}">
+                <div class="gestion__carte-heure">{{ carte.heure }}</div>
+                <div class="gestion__carte-statut">{{ ('gestion.journee.statut_' ~ (carte.statut.name|lower))|trans }}</div>
+                <div class="gestion__carte-ligne">{{ carte.bateau }} · {{ (carte.type == 'BALEINES' ? 'parcours.calendrier.filtre_baleines' : 'parcours.calendrier.filtre_dauphins')|trans }}</div>
+                <div class="gestion__carte-barre">
+                    <div class="gestion__carte-remplissage" style="width: {{ carte.capacite > 0 ? (carte.inscrits / carte.capacite * 100)|round : 0 }}%"></div>
+                </div>
+                <div class="gestion__carte-compte">
+                    {% if carte.inscrits < seuil and carte.statut.name != 'PARTIE' %}
+                        {{ 'gestion.journee.seuil_non_atteint'|trans({'%inscrits%': carte.inscrits, '%capacite%': carte.capacite}) }}
+                    {% else %}
+                        {{ 'gestion.journee.inscrits_sur'|trans({'%inscrits%': carte.inscrits, '%capacite%': carte.capacite}) }}
+                    {% endif %}
+                </div>
+                <a href="{{ path('gestion_creneau', {_locale: locale, jour: carte.jour, heure: carte.heure}) }}" class="bouton bouton-contour gestion__carte-ouvrir">{{ 'gestion.journee.ouvrir'|trans }}</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

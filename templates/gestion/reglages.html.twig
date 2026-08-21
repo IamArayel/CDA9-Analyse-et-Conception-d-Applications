@@ -1,0 +1,105 @@
+{% extends 'gestion/base_gestion.html.twig' %}
+
+{% block titre %}{{ 'gestion.reglages.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps_gestion %}
+    <h1>{{ 'gestion.reglages.titre'|trans }}</h1>
+    <p class="reservation__note">{{ 'gestion.reglages.chapo'|trans }}</p>
+
+    <section class="gestion__section">
+        <h2>{{ 'gestion.reglages.grille'|trans }}</h2>
+        <form method="post" action="{{ path('gestion_reglages_tarifs', {_locale: locale}) }}">
+            <table class="gestion__export-table">
+                <thead>
+                    <tr>
+                        <th>{{ 'gestion.reglages.colonne_type'|trans }}</th>
+                        <th>{{ 'gestion.reglages.colonne_prix_adulte'|trans }}</th>
+                        <th>{{ 'gestion.reglages.colonne_prix_enfant'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for type in ['BALEINES', 'DAUPHINS'] %}
+                        <tr>
+                            <td>{{ (type == 'BALEINES' ? 'parcours.calendrier.filtre_baleines' : 'parcours.calendrier.filtre_dauphins')|trans }}</td>
+                            <td><input type="number" step="0.01" min="0" name="adulte_{{ type }}" class="champ" value="{{ grille[type] is defined ? (grille[type].adulte / 100) : '' }}"></td>
+                            <td><input type="number" step="0.01" min="0" name="enfant_{{ type }}" class="champ" value="{{ grille[type] is defined ? (grille[type].enfant / 100) : '' }}"></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="bouton bouton-principal">{{ 'gestion.reglages.enregistrer_grille'|trans }}</button>
+        </form>
+    </section>
+
+    <section class="gestion__section">
+        <h2>{{ 'gestion.flotte'|trans }}</h2>
+        <p class="reservation__note">{{ 'gestion.reglages.bateau_fige'|trans }}</p>
+        <div class="gestion__flotte">
+            {% for bateau in flotte %}
+                <div class="gestion__encart">
+                    <h3>{{ bateau.nom }}</h3>
+                    <p>{{ bateau.capacite }} {{ 'parcours.places_restantes'|trans|lower }}</p>
+                    {% if bateau.estPrivatisable %}
+                        <p>{{ 'gestion.reglages.forfait'|trans({'%montant%': (bateau.forfaitDePrivatisation / 100)|format_currency('EUR', locale=locale)}) }}</p>
+                    {% else %}
+                        <form method="post" action="{{ path('gestion_reglages_forfait', {_locale: locale}) }}">
+                            <input type="hidden" name="bateau" value="{{ bateau.nom }}">
+                            <input type="number" step="0.01" min="0" name="forfait" class="champ" placeholder="{{ 'gestion.reglages.forfait'|trans({'%montant%': ''}) }}">
+                            <button type="submit" class="bouton bouton-contour">{{ 'gestion.reglages.forfait'|trans({'%montant%': ''}) }}</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <form method="post" action="{{ path('gestion_reglages_bateau', {_locale: locale}) }}" class="gestion__ajout">
+            <input type="text" name="nom" placeholder="{{ 'gestion.reglages.ajouter_bateau'|trans }}" class="champ">
+            <input type="number" min="1" name="capacite" placeholder="{{ 'parcours.places_restantes'|trans }}" class="champ">
+            <button type="submit" class="bouton bouton-contour">{{ 'gestion.reglages.ajouter_bateau'|trans }}</button>
+        </form>
+    </section>
+
+    <section class="gestion__section">
+        <h2>{{ 'gestion.reglages.horaires_titre'|trans }}</h2>
+        <p>{{ 'gestion.reglages.ouverture'|trans }} : {{ parametres.heureDouverture }} — {{ 'gestion.reglages.fermeture'|trans }} : {{ parametres.heureDeFermeture }}</p>
+        <p class="reservation__note">{{ 'gestion.reglages.horaires_note'|trans({'%creneaux%': '07:00 · 10:00 · 14:00'}) }}</p>
+    </section>
+
+    <section class="gestion__section">
+        <h2>{{ 'gestion.reglages.jours_fermeture'|trans }}</h2>
+        <p class="reservation__note">{{ 'gestion.reglages.jours_note'|trans }}</p>
+        <ul class="gestion__liste-jours">
+            {% for jour in joursDeFermeture %}
+                <li>
+                    {{ jour|format_date('long', locale=locale) }}
+                    <form method="post" action="{{ path('gestion_reglages_fermeture_retirer', {_locale: locale}) }}">
+                        <input type="hidden" name="jour" value="{{ jour }}">
+                        <button type="submit" class="bouton bouton-contour">{{ 'gestion.reglages.retirer'|trans }}</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+        <form method="post" action="{{ path('gestion_reglages_fermeture_ajouter', {_locale: locale}) }}" class="gestion__ajout">
+            <input type="date" name="jour" class="champ">
+            <label><input type="checkbox" name="recurrent" value="1"> {{ 'gestion.reglages.jours_fermeture'|trans }}</label>
+            <button type="submit" class="bouton bouton-contour">{{ 'gestion.reglages.ajouter_jour'|trans }}</button>
+        </form>
+    </section>
+
+    <section class="gestion__section">
+        <h2>{{ 'gestion.reglages.codes_titre'|trans }}</h2>
+        <table class="gestion__export-table">
+            <tbody>
+                {% for code in codes %}
+                    <tr>
+                        <td class="chiffres">{{ code.code }}</td>
+                        <td>{{ (code.origine == 'bon' ? 'gestion.reglages.code_bon' : 'gestion.reglages.code_avoir')|trans }}</td>
+                        <td class="chiffres">{{ (code.montant / 100)|format_currency('EUR', locale=locale) }}</td>
+                        <td>{{ code.statut.value }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <a href="{{ path('accueil', {_locale: locale}) }}">{{ 'gestion.reglages.voir_public'|trans }}</a>
+{% endblock %}

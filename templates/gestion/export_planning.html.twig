@@ -1,0 +1,40 @@
+{% extends 'gestion/base_gestion.html.twig' %}
+
+{% block titre %}{{ 'gestion.export.titre'|trans({'%date%': jour|format_date('long', locale=locale)}) }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps_gestion %}
+    <div class="gestion__entete-page gestion__entete-page--impression-masquee">
+        <h1>{{ 'gestion.export.titre'|trans({'%date%': jour|format_date('long', locale=locale)}) }}</h1>
+        <button type="button" onclick="window.print()" class="bouton bouton-contour">{{ 'gestion.export.imprimer'|trans }}</button>
+    </div>
+
+    {% if document.mentionneLabsenceDeReservation %}
+        <p>{{ 'gestion.export.aucune_reservation'|trans }}</p>
+    {% else %}
+        {% for creneau in document.creneaux %}
+            <h2 class="gestion__export-creneau">{{ creneau }}</h2>
+            <table class="gestion__export-table">
+                <thead>
+                    <tr>
+                        <th>{{ 'gestion.export.colonne_bateau'|trans }}</th>
+                        <th>{{ 'gestion.export.colonne_passager'|trans }}</th>
+                        <th>{{ 'gestion.export.colonne_mobile'|trans }}</th>
+                        <th>{{ 'gestion.export.colonne_participants'|trans }}</th>
+                        <th>{{ 'gestion.export.colonne_solde'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ligne in document.lignes|filter(l => l.creneau == creneau) %}
+                        <tr>
+                            <td>{{ ligne.bateau }}</td>
+                            <td>{{ ligne.prenom }} {{ ligne.nom }}</td>
+                            <td>{{ ligne.telephone_mobile }}</td>
+                            <td class="chiffres">{{ ligne.participants }}</td>
+                            <td>{{ (ligne.solde_regle ? 'gestion.export.solde_regle' : 'gestion.export.solde_du')|trans }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

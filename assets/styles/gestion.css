@@ -1,0 +1,405 @@
+/* Espace de gestion, par écran.
+   Valeurs de charte via les jetons de tokens.css, comme app.css. */
+
+/* Connexion */
+
+.connexion {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.connexion__marine {
+  padding: var(--e-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--e-2);
+}
+
+.connexion__marine a {
+  color: var(--papier);
+  margin-top: var(--e-3);
+}
+
+.connexion__papier {
+  background: var(--papier);
+  color: var(--encre);
+  padding: var(--e-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.connexion__papier form {
+  max-width: 40ch;
+}
+
+.connexion__papier label {
+  display: block;
+  font-size: var(--t-note);
+  margin: var(--e-2) 0 4px;
+}
+
+.connexion__papier input.champ {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.connexion__mdp {
+  display: flex;
+  gap: 8px;
+}
+
+.connexion__mdp .champ {
+  flex: 1;
+}
+
+.connexion__papier button[type="submit"] {
+  margin-top: var(--e-3);
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .connexion {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Squelette de l'espace de gestion */
+
+.gestion {
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  min-height: 100vh;
+}
+
+.gestion__barre {
+  background: var(--marine);
+  color: var(--papier);
+  display: flex;
+  flex-direction: column;
+  padding: var(--e-3) 0;
+}
+
+.gestion__marque {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 var(--e-3) var(--e-3);
+  border-bottom: 1px solid rgba(255, 255, 255, .13);
+  margin-bottom: var(--e-2);
+}
+
+.gestion__marque img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--papier);
+}
+
+.gestion__marque span {
+  font-size: var(--t-note);
+  letter-spacing: .05em;
+}
+
+.gestion__lien {
+  display: block;
+  padding: 12px var(--e-3);
+  color: color-mix(in srgb, var(--papier) 80%, transparent);
+  font-size: var(--t-corps-petit);
+  border: 0;
+  background: none;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.gestion__lien:hover {
+  color: var(--papier);
+}
+
+.gestion__lien--actif {
+  background: var(--ambre);
+  color: var(--marine);
+}
+
+.gestion__deconnexion {
+  margin-top: auto;
+}
+
+.gestion__contenu {
+  background: var(--papier);
+  color: var(--encre);
+  padding: var(--e-5) var(--e-5) var(--e-8);
+}
+
+/* La journée (G2) */
+
+.gestion__entete-page {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--e-4);
+}
+
+.gestion__indicateurs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(13, 34, 51, .13);
+  border: var(--filet);
+  margin-bottom: var(--e-4);
+}
+
+.gestion__indicateur {
+  background: var(--papier);
+  padding: var(--e-3);
+}
+
+.gestion__indicateur-valeur {
+  font-size: var(--t-sous-titre);
+  margin-bottom: 4px;
+}
+
+.gestion__bandeau {
+  background: var(--alerte);
+  color: var(--papier);
+  padding: var(--e-3);
+  margin-bottom: var(--e-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--e-3);
+}
+
+.gestion__bandeau p {
+  margin: 4px 0 0;
+  font-size: var(--t-corps-petit);
+}
+
+.gestion__bandeau-actions {
+  display: flex;
+  gap: var(--e-2);
+  flex-shrink: 0;
+}
+
+.gestion__cartes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--e-2);
+}
+
+.gestion__carte {
+  border: var(--filet);
+  border-left: 3px solid var(--gris);
+  padding: var(--e-2);
+}
+
+.gestion__carte--ouverte {
+  border-left-color: var(--vert);
+}
+
+.gestion__carte--en_alerte {
+  border-left-color: var(--alerte);
+}
+
+.gestion__carte--complete {
+  border-left-color: var(--marine-clair);
+}
+
+.gestion__carte--partie {
+  border-left-color: var(--gris);
+  color: var(--texte-faible);
+}
+
+.gestion__carte-heure {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.gestion__carte-statut {
+  font-size: var(--t-note);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--texte-faible);
+}
+
+.gestion__carte-ligne {
+  font-size: var(--t-corps-petit);
+  margin: 6px 0;
+}
+
+.gestion__carte-barre {
+  height: 4px;
+  background: rgba(13, 34, 51, .13);
+  margin-bottom: 6px;
+}
+
+.gestion__carte-remplissage {
+  height: 100%;
+  background: var(--vert);
+}
+
+.gestion__carte-compte {
+  font-size: var(--t-note);
+  margin-bottom: var(--e-2);
+}
+
+.gestion__carte-ouvrir {
+  width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .gestion {
+    grid-template-columns: 1fr;
+  }
+
+  .gestion__barre {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .gestion__deconnexion {
+    margin-top: 0;
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .gestion__indicateurs,
+  .gestion__cartes {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Export du planning */
+
+.gestion__export-creneau {
+  font-size: var(--t-corps);
+  margin: var(--e-3) 0 var(--e-1);
+}
+
+.gestion__export-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-corps-petit);
+  margin-bottom: var(--e-3);
+}
+
+.gestion__export-table th,
+.gestion__export-table td {
+  border-bottom: var(--filet);
+  padding: 6px 8px;
+  text-align: left;
+}
+
+/* Créneau détaillé (G3) */
+
+.gestion__actions-tete {
+  display: flex;
+  gap: var(--e-2);
+}
+
+.gestion__creneau-grille {
+  display: grid;
+  grid-template-columns: 1.55fr .45fr;
+  gap: var(--e-4);
+  align-items: start;
+}
+
+.gestion__ligne-immobilisee {
+  background: var(--papier-ombre);
+  color: var(--alerte);
+  font-size: var(--t-note);
+}
+
+.gestion__encarts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-2);
+}
+
+.gestion__encart {
+  border: var(--filet);
+  padding: var(--e-3);
+}
+
+.gestion__encart--rouge {
+  border: 1px solid var(--rouge);
+  border-left-width: 3px;
+  padding: var(--e-4);
+  max-width: 60ch;
+}
+
+.gestion__encart--rouge textarea,
+.gestion__encart--rouge form {
+  width: 100%;
+}
+
+.gestion__encart p {
+  margin: 4px 0;
+  font-size: var(--t-corps-petit);
+}
+
+@media (max-width: 1100px) {
+  .gestion__creneau-grille {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Réglages (G6) */
+
+.gestion__section {
+  margin-bottom: var(--e-5);
+  padding-bottom: var(--e-4);
+  border-bottom: var(--filet);
+}
+
+.gestion__flotte {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--e-2);
+  margin: var(--e-3) 0;
+}
+
+.gestion__ajout {
+  display: flex;
+  gap: var(--e-2);
+  align-items: center;
+  margin-top: var(--e-2);
+  flex-wrap: wrap;
+}
+
+.gestion__liste-jours {
+  list-style: none;
+  padding: 0;
+  margin: var(--e-2) 0;
+}
+
+.gestion__liste-jours li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: var(--filet);
+}
+
+.gestion__liste-jours form {
+  display: inline;
+}
+
+@media print {
+  .gestion__barre,
+  .gestion__entete-page--impression-masquee button,
+  .message-flash {
+    display: none;
+  }
+
+  .gestion {
+    grid-template-columns: 1fr;
+  }
+}

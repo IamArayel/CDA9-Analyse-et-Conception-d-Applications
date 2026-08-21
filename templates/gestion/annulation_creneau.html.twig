@@ -1,0 +1,25 @@
+{% extends 'gestion/base_gestion.html.twig' %}
+
+{% block titre %}{{ 'gestion.annulation.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps_gestion %}
+    {% set reservations = 0 %}
+    {% set inscrits = 0 %}
+    {% for bateau in creneau.bateaux %}
+        {% set reservations = reservations + creneau.inscrits(bateau)|length %}
+        {% set inscrits = inscrits + (creneau.inscrits(bateau)|length ? creneau.inscrits(bateau)|reduce((c, l) => c + l.participants, 0) : 0) %}
+    {% endfor %}
+
+    <div class="gestion__encart gestion__encart--rouge">
+        <h1>{{ 'gestion.annulation.creneau_titre'|trans({'%creneau%': jour ~ ' ' ~ heure}) }}</h1>
+        <p>{{ 'gestion.annulation.creneau_texte'|trans({'%reservations%': reservations, '%inscrits%': inscrits}) }}</p>
+
+        <form method="post">
+            <label for="motif">{{ 'gestion.annulation.motif'|trans }}</label>
+            <textarea id="motif" name="motif" class="champ"></textarea>
+
+            <button type="submit" class="bouton bouton-destructeur">{{ 'gestion.annulation.confirmer'|trans }}</button>
+            <a href="{{ path('gestion_creneau', {_locale: locale, jour: jour, heure: heure}) }}" class="bouton bouton-contour">{{ 'gestion.annulation.revenir'|trans }}</a>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block rail %}{% endblock %}
+{% block entete %}{% endblock %}
+{% block pied %}{% endblock %}
+
+{% block titre %}{{ 'gestion.connexion.intitule'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps %}
+    {% include '_partials/message_flash.html.twig' %}
+    <section class="connexion">
+        <div class="connexion__marine section-sombre">
+            <h1>{{ 'gestion.connexion.titre'|trans }}</h1>
+            <p>{{ 'gestion.connexion.chapo'|trans }}</p>
+            <p class="reservation__note">{{ 'gestion.connexion.inactivite'|trans }}</p>
+            <a href="{{ path('accueil', {_locale: app.request.locale}) }}">{{ 'gestion.connexion.retour_public'|trans }}</a>
+        </div>
+        <div class="connexion__papier">
+            <h2>{{ 'gestion.connexion.intitule'|trans }}</h2>
+
+            {% if erreur %}
+                <div class="reservation__erreur">{{ 'erreur.identifiants_invalides'|trans }}</div>
+            {% endif %}
+
+            <form method="post">
+                <label for="username">{{ 'parcours.formulaire.courriel'|trans }}</label>
+                <input type="email" id="username" name="_username" class="champ" value="{{ dernierIdentifiant }}">
+
+                <label for="password">{{ 'gestion.connexion.mot_de_passe'|trans }}</label>
+                <div class="connexion__mdp">
+                    <input type="password" id="password" name="_password" class="champ">
+                    <button type="button" id="bascule-mdp" class="bouton bouton-contour">{{ 'gestion.connexion.afficher'|trans }}</button>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button type="submit" class="bouton bouton-principal">{{ 'gestion.connexion.ouvrir'|trans }}</button>
+            </form>
+            <p class="reservation__note">{{ 'gestion.connexion.complexite'|trans }}</p>
+        </div>
+    </section>
+{% endblock %}
+
+{% block pied_scripts %}
+    <script>
+    (function () {
+        var bouton = document.getElementById('bascule-mdp');
+        var champ = document.getElementById('password');
+        if (!bouton || !champ) {
+            return;
+        }
+        bouton.addEventListener('click', function () {
+            champ.type = champ.type === 'password' ? 'text' : 'password';
+        });
+    })();
+    </script>
+{% endblock %}

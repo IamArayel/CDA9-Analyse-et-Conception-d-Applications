@@ -43,4 +43,16 @@ final class CodeRepository
     {
         return strtoupper(bin2hex(random_bytes(6)));
     }
+
+    /** @return list<BonCadeau> */
+    public function tousLesBonsCadeaux(): array
+    {
+        return $this->entites->getRepository(BonCadeau::class)->findAll();
+    }
+
+    /** @return list<Avoir> */
+    public function tousLesAvoirs(): array
+    {
+        return $this->entites->getRepository(Avoir::class)->findAll();
+    }
 }
