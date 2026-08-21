@@ -37,6 +37,10 @@ abstract class CasDinterface extends WebTestCase
         parent::setUp();
 
         $this->client = static::createClient();
+        // Sans cela, chaque requête reboote le noyau : un second appel du même
+        // cas de test perdrait la transaction et les doublures posées ici, et
+        // reprendrait sur un état de base différent de celui du premier appel.
+        $this->client->disableReboot();
         $conteneur = static::getContainer();
 
         $this->horloge = new HorlogeFigee($this->instantInitial());

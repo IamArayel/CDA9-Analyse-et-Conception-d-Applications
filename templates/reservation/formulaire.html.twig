@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+
+{% set locale = app.request.locale %}
+
+{% block titre %}{{ 'parcours.formulaire.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps %}
+    <section class="reservation section-sombre">
+        <div class="reservation__colonnes">
+            <div class="reservation__panneau">
+                <h1>{{ 'parcours.formulaire.titre'|trans }}</h1>
+                <p class="reservation__chapo">{{ 'parcours.formulaire.chapo'|trans }}</p>
+
+                <div class="reservation__depart">
+                    <div class="intitule-colonne">{{ 'parcours.formulaire.votre_depart'|trans }}</div>
+                    <p>
+                        {{ depart.heure }} ·
+                        {{ (depart.type == 'BALEINES' ? 'parcours.calendrier.filtre_baleines' : 'parcours.calendrier.filtre_dauphins')|trans }} ·
+                        {{ depart.bateau }}
+                        <a href="{{ path('calendrier', {_locale: locale}) }}">{{ 'parcours.formulaire.changer'|trans }}</a>
+                    </p>
+                </div>
+
+                {% if depart.etat.name == 'ALERTE' %}
+                    <div class="reservation__alerte">{{ 'parcours.risque_annulation'|trans }}</div>
+                {% endif %}
+
+                {% if erreur and champEnCause is null %}
+                    <div class="reservation__erreur">{{ erreur|trans }}</div>
+                {% endif %}
+
+                {% if reservation is null %}
+                    <form method="post">
+                        <div class="reservation__compteurs">
+                            <div>
+                                <label for="adultes">{{ 'parcours.adultes'|trans }}</label>
+                                <input type="number" min="0" id="adultes" name="adultes" value="{{ valeurs.adultes|default(1) }}" class="champ">
+                                <div class="reservation__prix">{{ 'parcours.formulaire.prix_adulte'|trans({'%prix%': (depart.prixAdulte / 100)|format_currency('EUR', locale=locale)}) }}</div>
+                            </div>
+                            <div>
+                                <label for="enfants">{{ 'parcours.enfants'|trans }}</label>
+                                <input type="number" min="0" id="enfants" name="enfants" value="{{ valeurs.enfants|default(0) }}" class="champ">
+                                <div class="reservation__prix">{{ 'parcours.formulaire.prix_enfant'|trans({'%prix%': (depart.prixEnfant / 100)|format_currency('EUR', locale=locale)}) }}</div>
+                            </div>
+                        </div>
+
+                        <div class="reservation__avertissement">{{ 'parcours.avertissement_age'|trans }}</div>
+
+                        <div class="intitule-colonne">{{ 'parcours.formulaire.coordonnees'|trans }}</div>
+                        <label for="prenom">{{ 'parcours.formulaire.prenom'|trans }}</label>
+                        <input type="text" id="prenom" name="prenom" value="{{ valeurs.prenom|default('') }}" class="champ">
+
+                        <label for="nom">{{ 'parcours.formulaire.nom'|trans }}</label>
+                        <input type="text" id="nom" name="nom" value="{{ valeurs.nom|default('') }}" class="champ">
+
+                        <label for="email">{{ 'parcours.formulaire.courriel'|trans }}</label>
+                        <input type="email" id="email" name="email" value="{{ valeurs.email|default('') }}"
+                               class="champ{% if champEnCause == 'email' %} champ--erreur{% endif %}">
+                        {% if champEnCause == 'email' %}
+                            <span class="reservation__erreur-champ">{{ erreur|trans }}</span>
+                        {% endif %}
+
+                        <label for="telephone_mobile">{{ 'parcours.formulaire.mobile'|trans }}</label>
+                        <input type="tel" id="telephone_mobile" name="telephone_mobile" value="{{ valeurs.telephone_mobile|default('') }}"
+                               class="champ{% if champEnCause == 'telephone_mobile' %} champ--erreur{% endif %}">
+                        {% if champEnCause == 'telephone_mobile' %}
+                            <span class="reservation__erreur-champ">{{ erreur|trans }}</span>
+                        {% endif %}
+                        <p class="reservation__note">{{ 'parcours.formulaire.mobile_note'|trans }}</p>
+
+                        <button type="submit" class="bouton bouton-principal">{{ 'parcours.titre'|trans }}</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{{ path('code_verifier', {_locale: locale}) }}" class="reservation__code">
+                        <label for="code">{{ 'parcours.code_promotionnel'|trans }}</label>
+                        <input type="text" id="code" name="code" class="champ">
+                        <button type="submit" class="bouton bouton-contour">{{ 'parcours.formulaire.code_appliquer'|trans }}</button>
+                    </form>
+                    <p class="reservation__note">{{ 'parcours.formulaire.code_note'|trans }}</p>
+                {% endif %}
+            </div>
+
+            {% if reservation is not null %}
+                <aside class="reservation__recapitulatif" data-expire-a="{{ reservation.expireLe|date('c') }}"
+                       data-calendrier="{{ path('calendrier', {_locale: locale, expire: 1}) }}">
+                    <div class="intitule-colonne">{{ 'parcours.recapitulatif.titre'|trans }}</div>
+                    <div class="reservation__ligne">
+                        <span>{{ 'parcours.recapitulatif.ligne_adultes'|trans({'%nombre%': reservation.nombreDAdultes, '%prix%': (depart.prixAdulte / 100)|format_currency('EUR', locale=locale)}) }}</span>
+                    </div>
+                    {% if reservation.nombreDEnfants > 0 %}
+                        <div class="reservation__ligne">
+                            <span>{{ 'parcours.recapitulatif.ligne_enfants'|trans({'%nombre%': reservation.nombreDEnfants, '%prix%': (depart.prixEnfant / 100)|format_currency('EUR', locale=locale)}) }}</span>
+                        </div>
+                    {% endif %}
+                    <div class="reservation__ligne reservation__ligne--total">
+                        <span>{{ 'parcours.recapitulatif.total'|trans }}</span>
+                        <span>{{ (reservation.montantDu / 100)|format_currency(reservation.devise, locale=locale) }}</span>
+                    </div>
+                    <div class="reservation__acompte">
+                        <div class="reservation__ligne">
+                            <span>{{ 'parcours.recapitulatif.acompte'|trans }}</span>
+                            <span>{{ (reservation.acompteAPayer / 100)|format_currency(reservation.devise, locale=locale) }}</span>
+                        </div>
+                        <p class="reservation__note">{{ 'parcours.recapitulatif.acompte_detail'|trans({
+                            '%taux%': reservation.tauxDAcompte ~ ' %',
+                            '%solde%': ((reservation.montantDu - reservation.acompteAPayer) / 100)|format_currency(reservation.devise, locale=locale),
+                        }) }}</p>
+                    </div>
+
+                    <div class="reservation__immobilisation">
+                        <span class="intitule-colonne">{{ 'parcours.recapitulatif.immobilisation'|trans }}</span>
+                        <span id="compte-a-rebours" class="chiffres">15 : 00</span>
+                    </div>
+
+                    <form method="post" action="{{ path('paiement_demarrer', {_locale: locale, reference: reference}) }}">
+                        <button type="submit" class="bouton bouton-secondaire reservation__payer">{{ 'parcours.recapitulatif.payer_acompte'|trans }}</button>
+                    </form>
+                    <p class="reservation__note">{{ 'parcours.recapitulatif.stripe'|trans }}</p>
+                </aside>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
+
+{% block pied_scripts %}
+    {% if reservation is not null %}
+        <script>
+        (function () {
+            var panneau = document.querySelector('[data-expire-a]');
+            var affichage = document.getElementById('compte-a-rebours');
+            if (!panneau || !affichage) {
+                return;
+            }
+            var echeance = new Date(panneau.dataset.expireA).getTime();
+            var versLeCalendrier = panneau.dataset.calendrier;
+
+            function actualiser() {
+                var restant = Math.max(0, Math.floor((echeance - Date.now()) / 1000));
+                var minutes = Math.floor(restant / 60);
+                var secondes = restant % 60;
+                affichage.textContent = minutes + ' : ' + (secondes < 10 ? '0' : '') + secondes;
+
+                if (restant <= 0) {
+                    window.location.href = versLeCalendrier;
+                    return;
+                }
+
+                setTimeout(actualiser, 1000);
+            }
+
+            actualiser();
+        })();
+        </script>
+    {% endif %}
+{% endblock %}

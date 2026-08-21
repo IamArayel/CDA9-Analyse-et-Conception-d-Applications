@@ -22,6 +22,8 @@ final class VueDuDepart
         private readonly EtatDuDepart $etat,
         private readonly int $placesRestantes,
         private readonly DateTimeImmutable $heureDeFermeture,
+        private readonly int $prixAdulte,
+        private readonly int $prixEnfant,
     ) {
     }
 
@@ -59,5 +61,17 @@ final class VueDuDepart
     public function heureDeFermeture(): DateTimeImmutable
     {
         return $this->heureDeFermeture;
+    }
+
+    /** En centimes. */
+    public function prixAdulte(): int
+    {
+        return $this->prixAdulte;
+    }
+
+    /** En centimes. */
+    public function prixEnfant(): int
+    {
+        return $this->prixEnfant;
     }
 }

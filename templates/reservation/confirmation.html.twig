@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% set locale = app.request.locale %}
+
+{% block titre %}{{ 'parcours.confirmation.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps %}
+    <section class="confirmation">
+        <div class="confirmation__colonnes">
+            <div class="confirmation__panneau">
+                <h1>{{ 'parcours.confirmation.titre'|trans }}</h1>
+                <p class="confirmation__chapo">{{ 'parcours.confirmation.chapo'|trans }}</p>
+
+                <div class="confirmation__chiffres chiffres">
+                    <div>
+                        <div class="intitule-colonne">{{ 'parcours.confirmation.reference'|trans }}</div>
+                        <div>{{ reference }}</div>
+                    </div>
+                    <div>
+                        <div class="intitule-colonne">{{ 'parcours.confirmation.depart'|trans }}</div>
+                        <div>{{ reservation.depart|format_date('long', locale=locale) }} · {{ reservation.depart|format_time('short', locale=locale) }}</div>
+                    </div>
+                    <div>
+                        <div class="intitule-colonne">{{ 'parcours.confirmation.acompte_verse'|trans }}</div>
+                        <div>{{ (reservation.montantVerse / 100)|format_currency(reservation.devise, locale=locale) }}</div>
+                    </div>
+                    <div>
+                        <div class="intitule-colonne">{{ 'parcours.confirmation.solde'|trans }}</div>
+                        <div>{{ (reservation.soldeDu / 100)|format_currency(reservation.devise, locale=locale) }}</div>
+                    </div>
+                </div>
+
+                <a href="{{ path('reservation_agenda', {_locale: locale, reference: reference}) }}" class="bouton bouton-contour">{{ 'parcours.confirmation.agenda'|trans }}</a>
+            </div>
+
+            <aside class="confirmation__suite section-sombre">
+                <div class="intitule-colonne">{{ 'parcours.confirmation.suite_titre'|trans }}</div>
+                <div class="confirmation__suite-ligne">
+                    <div class="confirmation__suite-titre">{{ 'parcours.confirmation.suite_rappel_titre'|trans }}</div>
+                    <p>{{ 'parcours.confirmation.suite_rappel'|trans }}</p>
+                </div>
+                <div class="confirmation__suite-ligne">
+                    <div class="confirmation__suite-titre">{{ 'parcours.confirmation.suite_alerte_titre'|trans }}</div>
+                    <p>{{ 'parcours.confirmation.suite_alerte'|trans }}</p>
+                </div>
+                <div class="confirmation__suite-ligne">
+                    <div class="confirmation__suite-titre">{{ 'parcours.confirmation.suite_annulation_titre'|trans }}</div>
+                    <p>{{ 'parcours.confirmation.suite_annulation'|trans }}</p>
+                </div>
+                <div class="confirmation__suite-ligne">
+                    <div class="confirmation__suite-titre">{{ 'parcours.confirmation.suite_client_titre'|trans }}</div>
+                    <p>{{ 'parcours.confirmation.suite_client'|trans }}</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+{% endblock %}

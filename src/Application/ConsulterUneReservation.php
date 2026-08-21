@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application;
 
+use App\Domaine\Politique\Acompte;
 use App\Domaine\Service\EtatDuReglement;
 use App\Domaine\VueDeReservation;
 use App\Infrastructure\Persistance\PaiementRepository;
@@ -44,10 +45,18 @@ final class ConsulterUneReservation
             $reservation->montant(),
             self::DEVISE,
             $reservation->telephoneMobile(),
+            $reservation->sortie()->creneau()->departPrevu(),
+            $reservation->expireLe(),
             issuesProposees: [],
             avoirProduit: null,
             montantVerse: $verse,
             soldeDu: $this->reglement->soldeDu($reservation, $verse),
+            nombreDAdultes: $reservation->nombreDAdultes(),
+            nombreDEnfants: $reservation->nombreDEnfants(),
+            acompteAPayer: $this->reglement->versementDentree($reservation),
+            tauxDAcompte: $reservation->sortie()->estPrivatisee()
+                ? Acompte::TAUX_PRIVATISATION
+                : Acompte::TAUX_SORTIE,
         );
     }
 }

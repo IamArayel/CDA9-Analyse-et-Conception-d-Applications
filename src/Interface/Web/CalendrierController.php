@@ -27,6 +27,10 @@ final class CalendrierController extends AbstractController
         $lundi = $this->lundiDemande($request);
         $filtre = (string) $request->query->get('type', 'TOUTES');
 
+        if ($request->query->getBoolean('expire')) {
+            $this->addFlash('erreur', 'erreur.immobilisation_expiree');
+        }
+
         return $this->render('reservation/calendrier.html.twig', [
             'jours' => $this->calendrier->executerPourLaSemaine($lundi),
             'heures' => OffreDeCreneaux::CRENEAUX,

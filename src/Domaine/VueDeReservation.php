@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domaine;
 
+use DateTimeImmutable;
+
 /**
  * Ce qu'une réservation donne à voir.
  *
@@ -26,10 +28,16 @@ final class VueDeReservation
         private readonly int $montantDu,
         private readonly string $devise,
         private readonly string $telephoneMobile,
+        private readonly DateTimeImmutable $depart,
+        private readonly DateTimeImmutable $expireLe,
         private readonly array $issuesProposees,
         private readonly ?string $avoirProduit,
         private readonly int $montantVerse = 0,
         private readonly int $soldeDu = 0,
+        private readonly int $nombreDAdultes = 0,
+        private readonly int $nombreDEnfants = 0,
+        private readonly int $acompteAPayer = 0,
+        private readonly int $tauxDAcompte = 0,
     ) {
     }
 
@@ -76,6 +84,17 @@ final class VueDeReservation
         return $this->telephoneMobile;
     }
 
+    public function depart(): DateTimeImmutable
+    {
+        return $this->depart;
+    }
+
+    /** L'échéance de l'immobilisation des places, cf. ADR-003. */
+    public function expireLe(): DateTimeImmutable
+    {
+        return $this->expireLe;
+    }
+
     /** @return list<IssueDannulation> */
     public function issuesProposees(): array
     {
@@ -86,5 +105,27 @@ final class VueDeReservation
     public function avoirProduit(): ?string
     {
         return $this->avoirProduit;
+    }
+
+    public function nombreDAdultes(): int
+    {
+        return $this->nombreDAdultes;
+    }
+
+    public function nombreDEnfants(): int
+    {
+        return $this->nombreDEnfants;
+    }
+
+    /** En centimes : ce que la réservation demande à l'instant de la réservation. */
+    public function acompteAPayer(): int
+    {
+        return $this->acompteAPayer;
+    }
+
+    /** En pourcentage : 30 pour une sortie, 50 pour une privatisation. */
+    public function tauxDAcompte(): int
+    {
+        return $this->tauxDAcompte;
     }
 }

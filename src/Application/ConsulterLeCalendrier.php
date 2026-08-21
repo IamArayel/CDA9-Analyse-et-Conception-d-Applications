@@ -9,10 +9,12 @@ use App\Domaine\Horloge;
 use App\Domaine\Politique\FermetureDesReservations;
 use App\Domaine\Politique\OffreDeCreneaux;
 use App\Domaine\Service\CalculDeLetatDuDepart;
+use App\Domaine\Service\CalculDuMontant;
 use App\Domaine\VueDeJournee;
 use App\Domaine\VueDuDepart;
 use App\Infrastructure\Persistance\CalendrierRepository;
 use App\Infrastructure\Persistance\SortieRepository;
+use App\Infrastructure\Persistance\TarifRepository;
 use DateTimeImmutable;
 
 /**
@@ -38,6 +40,7 @@ final class ConsulterLeCalendrier
         private readonly FermetureDesReservations $fermeture,
         private readonly CalculDeLetatDuDepart $etatDuDepart,
         private readonly Horloge $horloge,
+        private readonly TarifRepository $tarifs,
     ) {
     }
 
@@ -79,6 +82,7 @@ final class ConsulterLeCalendrier
     private function departsDuJour(string $jour): array
     {
         $maintenant = $this->horloge->maintenant();
+        $montant = new CalculDuMontant($this->tarifs->grille());
         $departs = [];
 
         foreach (OffreDeCreneaux::CRENEAUX as $heure) {
@@ -97,6 +101,8 @@ final class ConsulterLeCalendrier
                     $this->etatDuDepart->pour($sortie, $restantes, $maintenant),
                     $restantes,
                     $this->fermeture->fermetureDe($sortie->creneau()->departPrevu()),
+                    $montant->pour($sortie->typeDeSortie(), 1, 0),
+                    $montant->pour($sortie->typeDeSortie(), 0, 1),
                 );
             }
         }
