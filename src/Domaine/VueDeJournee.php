@@ -14,13 +14,22 @@ namespace App\Domaine;
 final class VueDeJournee
 {
     /**
-     * @param list<string> $creneauxProposes     heures de départ, ordre chronologique
-     * @param list<string> $typesDeSortieProposes
+     * @param list<string>      $creneauxProposes     heures de départ, ordre chronologique
+     * @param list<string>      $typesDeSortieProposes
+     * @param list<VueDuDepart> $departs              un par bateau engagé, tous créneaux confondus
      */
     public function __construct(
+        private readonly string $date,
         private readonly array $creneauxProposes,
         private readonly array $typesDeSortieProposes,
+        private readonly array $departs,
     ) {
+    }
+
+    /** « 2026-07-20 ». */
+    public function date(): string
+    {
+        return $this->date;
     }
 
     /** @return list<string> */
@@ -33,5 +42,11 @@ final class VueDeJournee
     public function typesDeSortieProposes(): array
     {
         return $this->typesDeSortieProposes;
+    }
+
+    /** @return list<VueDuDepart> */
+    public function departs(): array
+    {
+        return $this->departs;
     }
 }

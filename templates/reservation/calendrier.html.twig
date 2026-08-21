@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block titre %}{{ 'parcours.calendrier.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps %}
+    {% set locale = app.request.locale %}
+    {% set premier_jour = jours|first %}
+    {% set dernier_jour = jours|last %}
+
+    <section class="calendrier">
+        <div class="calendrier__entete">
+            <div class="kicker">{{ 'parcours.calendrier.titre'|trans }}</div>
+            <p class="calendrier__chapo">{{ 'parcours.calendrier.chapo'|trans }}</p>
+        </div>
+
+        <div class="calendrier__barre">
+            <a class="calendrier__fleche"
+               href="{{ path('calendrier', {_locale: locale, semaine: semaine_precedente|date('Y-m-d'), type: filtre}) }}">←</a>
+            <div class="calendrier__semaine">
+                {{ 'parcours.calendrier.semaine'|trans({
+                    '%debut%': premier_jour.date|format_date('none', pattern='d MMMM', locale=locale),
+                    '%fin%': dernier_jour.date|format_date('none', pattern='d MMMM y', locale=locale),
+                }) }}
+            </div>
+            <a class="calendrier__fleche"
+               href="{{ path('calendrier', {_locale: locale, semaine: semaine_suivante|date('Y-m-d'), type: filtre}) }}">→</a>
+
+            <div class="calendrier__filtres">
+                {% for valeur, cle in {TOUTES: 'filtre_toutes', BALEINES: 'filtre_baleines', DAUPHINS: 'filtre_dauphins'} %}
+                    <a href="{{ path('calendrier', {_locale: locale, semaine: premier_jour.date, type: valeur}) }}"
+                       class="calendrier__filtre{% if filtre == valeur %} calendrier__filtre--actif{% endif %}">{{ ('parcours.calendrier.' ~ cle)|trans }}</a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="calendrier__grille">
+            {% for jour in jours %}
+                <div class="calendrier__jour">
+                    <div class="calendrier__jour-entete">
+                        <div class="calendrier__jour-nom">{{ jour.date|format_date('none', pattern='EEE', locale=locale) }}</div>
+                        <div class="calendrier__jour-quantieme">{{ jour.date|format_date('none', pattern='d', locale=locale) }}</div>
+                    </div>
+
+                    {% set departs_filtres = jour.departs|filter(depart => filtre == 'TOUTES' or depart.type == filtre) %}
+
+                    {% if departs_filtres is empty %}
+                        <p class="calendrier__aucun-depart">{{ 'parcours.calendrier.aucun_creneau'|trans }}</p>
+                    {% else %}
+                        {% for heure in heures %}
+                            {% for depart in departs_filtres|filter(depart => depart.heure == heure) %}
+                                <div class="calendrier__carte calendrier__carte--{{ depart.etat.name|lower }}">
+                                    <div class="calendrier__carte-heure">{{ depart.heure }}</div>
+                                    <div class="calendrier__carte-type intitule-colonne">
+                                        {{ (depart.type == 'BALEINES' ? 'parcours.calendrier.filtre_baleines' : 'parcours.calendrier.filtre_dauphins')|trans }}
+                                    </div>
+                                    <div class="calendrier__carte-bateau">{{ depart.bateau }}</div>
+
+                                    {% set etat_html %}
+                                        {% if depart.etat.name == 'FERME' %}
+                                            {{ 'parcours.calendrier.etat_ferme'|trans({'%heure%': depart.heureDeFermeture|format_time('short', 'none', locale=locale)}) }}
+                                        {% elseif depart.etat.name == 'COMPLET' %}
+                                            {{ 'parcours.calendrier.etat_complet'|trans }}
+                                        {% elseif depart.etat.name == 'ALERTE' %}
+                                            {{ 'parcours.calendrier.etat_alerte'|trans }}
+                                        {% elseif depart.placesRestantes == 1 %}
+                                            {{ 'parcours.calendrier.etat_derniere_place'|trans }}
+                                        {% else %}
+                                            {{ 'parcours.calendrier.etat_disponible'|trans({'%nombre%': depart.placesRestantes}) }}
+                                        {% endif %}
+                                    {% endset %}
+
+                                    {% if depart.etat.name in ['DISPONIBLE', 'ALERTE'] %}
+                                        <a href="/{{ locale }}/reserver/{{ depart.idDeLaSortie }}" class="calendrier__carte-etat">
+                                            <span class="calendrier__pastille"></span>{{ etat_html|trim }}
+                                        </a>
+                                    {% else %}
+                                        <span class="calendrier__carte-etat">
+                                            <span class="calendrier__pastille"></span>{{ etat_html|trim }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="calendrier__legende">
+            <span><span class="calendrier__pastille calendrier__pastille--disponible"></span>{{ 'parcours.calendrier.legende_disponible'|trans }}</span>
+            <span><span class="calendrier__pastille calendrier__pastille--alerte"></span>{{ 'parcours.calendrier.legende_alerte'|trans }}</span>
+            <span><span class="calendrier__pastille calendrier__pastille--indisponible"></span>{{ 'parcours.calendrier.legende_indisponible'|trans }}</span>
+        </div>
+    </section>
+{% endblock %}
