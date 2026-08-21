@@ -24,12 +24,15 @@ machine déjà prête ne fait que revérifier.
 | **vérifie que la base est bien sur 3306** | `base publiée sur 0.0.0.0:3306` |
 | crée `ti_baleine` et `ti_baleine_test` si elles manquent, puis migre | `[OK] Already at the latest version` |
 | affiche à quelle base on parle réellement | `ti_baleine_test`, `3306` |
-| passe les tests | `OK (87 tests, 360 assertions)` |
+| passe les tests | `OK (113 tests, 469 assertions)` |
 | régénère la traçabilité | `5 rupture(s)`, pas une de plus |
 | valide le mapping contre le MLD | deux `[OK]` |
 
-Vérifié le 2026-08-20 **volume Docker détruit**, donc depuis une machine
-réellement vierge : 37 secondes, 87 tests verts.
+La suite compte maintenant 113 tests verts. La vérification **volume Docker
+détruit**, donc depuis une machine réellement vierge, date du 2026-08-20 (37
+secondes, 87 tests, avant la couche web) et n'a pas été rejouée depuis : le
+chiffre alors mesuré n'est plus cité pour ne pas laisser croire à une mesure
+qu'on n'a pas refaite sur l'état actuel.
 
 Les autres cibles, avec `make` seul pour la liste :
 
@@ -90,7 +93,7 @@ Ce qu'elle affiche, dans l'ordre :
    applicatifs et affiche ce qu'ils rendent. Tout montant affiché vient du
    domaine ; s'il était calculé dans la commande, la démonstration ne prouverait
    rien.
-2. Elle tourne dans une **transaction jamais validée**, comme les 87 cas de test.
+2. Elle tourne dans une **transaction jamais validée**, comme les 113 tests automatisés.
    Elle se rejoue indéfiniment et ne laisse rien en base.
 3. L'horloge avance de trois jours en une seconde parce qu'elle est **injectée**
    (`ADR-005`). C'est la même décision qui rend les tests déterministes.
@@ -119,11 +122,11 @@ vendor/bin/phpunit --filter LienDeReglement        # SPEC-CANCEL-07
 | Cahier des charges | **v7**, 82 exigences, 7 comptes rendus d'entretien |
 | Spécifications | **32**, dont 27 avec plan de délégation |
 | Cas de test | **92**, dont 3 « manuel assumé » |
-| Tests automatisés | **87 verts** : 11 domaine, 76 application, 360 assertions |
+| Tests automatisés | **113 verts** : 11 domaine, 76 application, 26 interface, 469 assertions |
 | Bout en bout | 3 scénarios Behat écrits, **21 étapes non implémentées**, `make behat` |
 | Ruptures de traçabilité | **5** |
 | Conception | 6 ADR, 8 diagrammes PlantUML dont le MCD et le MLD |
-| Code | 118 fichiers PHP, aucune couche web |
+| Code | 154 fichiers PHP, dont 15 dans la couche `Interface` (site public et espace de gestion) |
 | Analyses d'impact | 5, une par retour client structurant |
 
 **Les 5 ruptures, à annoncer avant qu'on les trouve :**
@@ -278,7 +281,7 @@ que l'ordre a été tenu, et `main` n'a jamais reçu de rouge.
 
 | Symptôme | Cause probable | Geste |
 |---|---|---|
-| **`Tests: 87, Assertions: 39, Errors: 76`** | les 11 tests de domaine passent, les 76 applicatifs meurent tous sur la connexion : **la base n'est pas joignable** | `make presentation`, qui démarre la base, la vérifie et rejoue les contrôles |
+| **`Tests: 113, Assertions: 45, Errors: 100`** | les tests de domaine passent, les applicatifs et ceux d'interface meurent tous sur la connexion : **la base n'est pas joignable** | `make presentation`, qui démarre la base, la vérifie et rejoue les contrôles |
 | `make presentation` : *port is already allocated*, ou « publiée sur ... et non sur 3306 » | un autre MySQL a pris 3306 avant Docker | `lsof -nP -iTCP:3306 -sTCP:LISTEN` pour voir qui, puis l'arrêter |
 | `phpunit` : table inconnue | la base de test n'est pas migrée | `make bases` |
 | `make demo` : environnement non autorisé | cache d'une ancienne version | `php bin/console cache:clear --env=demo` |
