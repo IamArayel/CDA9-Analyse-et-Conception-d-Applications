@@ -191,6 +191,8 @@ parcours:
     a_payer: "To pay"
     payer: "Pay and receive the voucher"
     expiration: "Expires on %date%."
+    achat_confirme: "Your gift voucher is ready."
+    code_du_bon: "Voucher code"
 
 gestion:
   tarifs: "Prices"
@@ -348,6 +350,7 @@ erreur:
   bateau_deja_engage: "This boat is privatised: it is no longer offered for individual booking."
   paiement_indisponible: "Payment is temporarily unavailable. No seat has been held; please try again in a few minutes."
   transaction_refusee: "The payment was declined. Your seats remain held until the deadline expires: you can try again."
+  montant_invalide: "Enter an amount greater than zero."
   session_expiree: "Your session has expired. Please sign in again."
   identifiants_invalides: "Incorrect email or password."
   acces_suspendu: "Too many attempts: access is suspended for fifteen minutes."

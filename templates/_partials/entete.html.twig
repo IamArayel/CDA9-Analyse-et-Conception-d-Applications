@@ -8,7 +8,7 @@
         <a href="/{{ locale }}/sorties">{{ 'site.nav.sorties'|trans }}</a>
         <a href="/{{ locale }}/bateaux">{{ 'site.nav.bateau'|trans }}</a>
         <a href="/{{ locale }}/tarifs">{{ 'site.nav.tarifs'|trans }}</a>
-        <a href="/{{ locale }}/bon-cadeau">{{ 'site.nav.bon_cadeau'|trans }}</a>
+        <a href="{{ path('bon_cadeau', {_locale: locale}) }}">{{ 'site.nav.bon_cadeau'|trans }}</a>
         {% include '_partials/selecteur_langue.html.twig' %}
         <a href="{{ path('calendrier', {_locale: locale}) }}" class="bouton bouton-principal entete__reserver">{{ 'site.nav.reserver'|trans }}</a>
     </nav>

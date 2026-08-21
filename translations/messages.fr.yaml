@@ -195,6 +195,8 @@ parcours:
     a_payer: "À payer"
     payer: "Payer et recevoir le bon"
     expiration: "Expire le %date%."
+    achat_confirme: "Votre bon cadeau est prêt."
+    code_du_bon: "Code du bon"
 
 gestion:
   tarifs: "Tarifs"
@@ -352,6 +354,7 @@ erreur:
   bateau_deja_engage: "Ce bateau est privatisé : il n'est plus proposé à la réservation individuelle."
   paiement_indisponible: "Le paiement est momentanément indisponible. Aucune place n'a été retenue, réessayez dans quelques minutes."
   transaction_refusee: "Le paiement a été refusé. Vos places restent tenues jusqu'à l'expiration du délai : vous pouvez réessayer."
+  montant_invalide: "Indiquez un montant supérieur à zéro."
   session_expiree: "Votre session a expiré. Reconnectez-vous."
   identifiants_invalides: "Courriel ou mot de passe incorrect."
   acces_suspendu: "Trop de tentatives : l'accès est suspendu quinze minutes."

@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% set locale = app.request.locale %}
+
+{% block titre %}{{ 'parcours.bon_cadeau.formulaire_titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps %}
+    <section class="bon-cadeau section-sombre">
+        <div class="bon-cadeau__colonnes">
+            <div class="bon-cadeau__presentation">
+                <div class="kicker">{{ 'parcours.bon_cadeau.kicker'|trans }}</div>
+                <h1>{{ 'parcours.bon_cadeau.titre'|trans }}</h1>
+                <p class="bon-cadeau__chapo">{{ 'parcours.bon_cadeau.chapo'|trans }}</p>
+                <p class="reservation__note">{{ 'parcours.bon_cadeau.envoi'|trans }}</p>
+            </div>
+
+            <div class="bon-cadeau__panneau">
+                {% if vueDuCode is not null %}
+                    <h2>{{ 'parcours.bon_cadeau.achat_confirme'|trans }}</h2>
+                    <div class="bon-cadeau__code">
+                        <div class="intitule-colonne">{{ 'parcours.bon_cadeau.code_du_bon'|trans }}</div>
+                        <div class="chiffres">{{ code }}</div>
+                    </div>
+                    <p class="reservation__note">{{ 'parcours.bon_cadeau.expiration'|trans({'%date%': vueDuCode.expireLe|format_date('long', locale=locale)}) }}</p>
+                {% else %}
+                    <h2>{{ 'parcours.bon_cadeau.formulaire_titre'|trans }}</h2>
+
+                    {% if erreur and champEnCause is null %}
+                        <div class="reservation__erreur">{{ erreur|trans }}</div>
+                    {% endif %}
+
+                    <form method="post">
+                        <div class="bon-cadeau__montants">
+                            <label class="bon-cadeau__pastille">
+                                <input type="radio" name="montant_suggere" value="{{ (suggestions.unePlace / 100) }}" data-cible-montant>
+                                <span>{{ 'parcours.bon_cadeau.une_place'|trans }}</span>
+                            </label>
+                            <label class="bon-cadeau__pastille">
+                                <input type="radio" name="montant_suggere" value="{{ (suggestions.deuxPlaces / 100) }}" data-cible-montant>
+                                <span>{{ 'parcours.bon_cadeau.deux_places'|trans }}</span>
+                            </label>
+                            <label class="bon-cadeau__pastille">
+                                <input type="radio" name="montant_suggere" value="" data-cible-montant checked>
+                                <span>{{ 'parcours.bon_cadeau.montant_libre'|trans }}</span>
+                            </label>
+                        </div>
+
+                        <label for="montant">{{ 'parcours.bon_cadeau.montant'|trans }}</label>
+                        <input type="number" step="0.01" min="0" id="montant" name="montant" class="champ" value="{{ valeurs.montant|default('') }}">
+                        <p class="reservation__note">{{ 'parcours.bon_cadeau.montant_libre_note'|trans }}</p>
+
+                        <label for="beneficiaire">{{ 'parcours.bon_cadeau.beneficiaire'|trans }}</label>
+                        <input type="text" id="beneficiaire" name="beneficiaire" class="champ" value="{{ valeurs.beneficiaire|default('') }}">
+
+                        <label for="courriel_acheteur">{{ 'parcours.bon_cadeau.courriel_acheteur'|trans }}</label>
+                        <input type="email" id="courriel_acheteur" name="courriel_acheteur" class="champ{% if champEnCause == 'courriel_acheteur' %} champ--erreur{% endif %}" value="{{ valeurs.courriel_acheteur|default('') }}">
+                        {% if champEnCause == 'courriel_acheteur' %}
+                            <span class="reservation__erreur-champ">{{ erreur|trans }}</span>
+                        {% endif %}
+
+                        <label for="message">{{ 'parcours.bon_cadeau.message'|trans }}</label>
+                        <textarea id="message" name="message" class="champ">{{ valeurs.message|default('') }}</textarea>
+
+                        <button type="submit" class="bouton bouton-principal">{{ 'parcours.bon_cadeau.payer'|trans }}</button>
+                        <p class="reservation__note">{{ 'parcours.recapitulatif.stripe'|trans }}</p>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block pied_scripts %}
+    <script>
+    (function () {
+        var montant = document.getElementById('montant');
+        if (!montant) {
+            return;
+        }
+        document.querySelectorAll('[data-cible-montant]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                if (radio.value !== '') {
+                    montant.value = radio.value;
+                }
+            });
+        });
+    })();
+    </script>
+{% endblock %}
