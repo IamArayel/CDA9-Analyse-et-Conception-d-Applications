@@ -70,7 +70,7 @@ une exigence que plus aucune spécification ne reprend · un cas de test utilis�
 | `SPEC-CANCEL-07` | `REQ-120`, `REQ-121` | `CR-07/Q09`, `CR-07/Q10` | `CASE-CANCEL-25` | `test_CASE_CANCEL_25_lien_de_reglement_envoye_a_sept_heures_la_veille`, `test_CASE_CANCEL_25_lien_envoye_des_lacompte_pour_une_reservation_tardive` | `7c0ef5f`, `22ec439`, `4145596` |
 | `SPEC-NFR-01` | `REQ-100` | `déduit` | `CASE-NFR-05` | — | `347a598` |
 | `SPEC-NFR-02` | `REQ-040`, `REQ-102` | `CR-03/Q02` | `CASE-NFR-01`, `CASE-NFR-02` | `test_CASE_NFR_01_messages_dans_la_langue_de_la_reservation`, `test_CASE_NFR_02_aucun_contenu_sans_traduction` | `807f20b`, `8f07933`, `15d9de4`, `0944f07` |
-| `SPEC-NFR-03` | `REQ-103` | `déduit` | `CASE-NFR-06` | — | `35933a7`, `347a598`, `ffc7ad3` |
+| `SPEC-NFR-03` | `REQ-103` | `déduit` | `CASE-NFR-06` | — | `d57dc04`, `35933a7`, `347a598`, `ffc7ad3` |
 | `SPEC-NFR-04` | `REQ-105` | `déduit` | `CASE-NFR-03`, `CASE-NFR-04` | `test_CASE_NFR_03_seules_les_donnees_du_formulaire_sont_stockees`, `test_CASE_NFR_04_purge_a_trois_mois_sauf_bon_cadeau_vivant` | `ffa947b`, `72861fe`, `ffc7ad3` |
 | `SPEC-NFR-05` | `REQ-106` | `déduit` | — | — | — |
 | `SPEC-NFR-06` | `REQ-107` | `déduit` | — | — | — |
