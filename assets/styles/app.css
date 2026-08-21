@@ -753,6 +753,215 @@
   margin: var(--e-3) 0;
 }
 
+/* Pages éditoriales */
+
+.editorial {
+  padding: var(--e-7) var(--e-4);
+}
+
+.editorial--papier-ombre {
+  background: var(--papier-ombre);
+}
+
+.editorial > h1,
+.editorial__chapo {
+  max-width: var(--largeur-page);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.editorial > h1 {
+  font-size: var(--t-section);
+  line-height: 1.02;
+  margin-top: var(--e-2);
+  margin-bottom: 0;
+}
+
+.editorial__chapo {
+  font-size: var(--t-corps-large);
+  color: var(--texte-doux);
+  max-width: 62ch;
+  margin-top: var(--e-2);
+  margin-bottom: var(--e-5);
+}
+
+.editorial__cartes {
+  max-width: var(--largeur-page);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.editorial__cartes--sans-gouttiere {
+  gap: 0;
+}
+
+.editorial__carte {
+  padding: var(--e-4);
+}
+
+.editorial__carte--marine-clair {
+  background: var(--marine-clair);
+  color: var(--papier);
+}
+
+.editorial__carte--papier-ombre {
+  background: var(--papier-ombre);
+}
+
+.editorial__fenetre {
+  font-size: var(--t-note);
+  letter-spacing: .05em;
+  margin: 4px 0 var(--e-2);
+  opacity: .8;
+}
+
+.editorial__stats {
+  display: flex;
+  gap: var(--e-4);
+  margin: var(--e-2) 0;
+}
+
+.halftone-placeholder {
+  height: 160px;
+  margin-bottom: var(--e-2);
+  background-color: var(--gris);
+  background-image: radial-gradient(circle, rgba(13, 34, 51, .35) 1.5px, transparent 1.6px);
+  background-size: 10px 10px;
+}
+
+.halftone-placeholder--haut {
+  height: 200px;
+}
+
+.frise {
+  max-width: var(--largeur-page);
+  margin: var(--e-6) auto 0;
+}
+
+.frise__entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--e-2);
+}
+
+.frise__legende {
+  display: flex;
+  gap: var(--e-3);
+  font-size: var(--t-note);
+}
+
+.frise__pastille {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+
+.frise__pastille--baleines {
+  background: var(--ambre);
+}
+
+.frise__pastille--dauphins {
+  background: var(--bleu-frise);
+}
+
+.frise__grille {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1px;
+}
+
+.frise__mois {
+  padding: var(--e-2) 0;
+  text-align: center;
+  font-size: var(--t-note);
+  text-transform: uppercase;
+  color: var(--papier);
+}
+
+.frise__mois--baleines {
+  background: var(--ambre);
+  color: var(--marine);
+}
+
+.frise__mois--dauphins {
+  background: var(--bleu-frise);
+}
+
+.frise__mois--partiel {
+  background: linear-gradient(to right, var(--bleu-frise) 50%, var(--ambre) 50%);
+  color: var(--marine);
+}
+
+.charte__grille {
+  max-width: var(--largeur-page);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(13, 34, 51, .13);
+  border: var(--filet);
+}
+
+.charte__encart {
+  background: var(--papier);
+  padding: var(--e-3);
+}
+
+.charte__encart--vert {
+  background: var(--vert-clair);
+}
+
+.tarifs__table {
+  max-width: var(--largeur-page);
+  margin: var(--e-4) auto 0;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tarifs__table th,
+.tarifs__table td {
+  border-bottom: var(--filet);
+  padding: var(--e-2) var(--e-2);
+  text-align: left;
+}
+
+.tarifs__table thead th {
+  border-bottom: var(--filet-fort);
+  font-size: var(--t-colonne);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--sable);
+}
+
+.tarifs__notes {
+  max-width: var(--largeur-page);
+  margin: var(--e-5) auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--e-4);
+}
+
+.tarifs__notes p {
+  font-size: var(--t-corps-petit);
+  color: var(--texte-doux);
+}
+
+@media (max-width: 900px) {
+  .editorial__cartes,
+  .charte__grille,
+  .tarifs__notes {
+    grid-template-columns: 1fr;
+  }
+
+  .frise__grille {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 /* Rail de profondeur */
 
 .rail-profondeur {

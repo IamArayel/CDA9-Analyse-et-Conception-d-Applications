@@ -5,9 +5,9 @@
         <span>{{ 'site.nom'|trans }}</span>
     </a>
     <nav class="entete__nav">
-        <a href="/{{ locale }}/sorties">{{ 'site.nav.sorties'|trans }}</a>
-        <a href="/{{ locale }}/bateaux">{{ 'site.nav.bateau'|trans }}</a>
-        <a href="/{{ locale }}/tarifs">{{ 'site.nav.tarifs'|trans }}</a>
+        <a href="{{ path('sorties', {_locale: locale}) }}">{{ 'site.nav.sorties'|trans }}</a>
+        <a href="{{ path('flotte', {_locale: locale}) }}">{{ 'site.nav.bateau'|trans }}</a>
+        <a href="{{ path('tarifs', {_locale: locale}) }}">{{ 'site.nav.tarifs'|trans }}</a>
         <a href="{{ path('bon_cadeau', {_locale: locale}) }}">{{ 'site.nav.bon_cadeau'|trans }}</a>
         {% include '_partials/selecteur_langue.html.twig' %}
         <a href="{{ path('calendrier', {_locale: locale}) }}" class="bouton bouton-principal entete__reserver">{{ 'site.nav.reserver'|trans }}</a>

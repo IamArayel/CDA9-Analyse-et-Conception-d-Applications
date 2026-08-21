@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% set locale = app.request.locale %}
+
+{% block titre %}{{ 'site.sorties.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps %}
+    <section class="editorial">
+        <div class="kicker">{{ 'site.sorties.kicker'|trans }}</div>
+        <h1>{{ 'site.sorties.titre'|trans }}</h1>
+        <p class="editorial__chapo">{{ 'site.sorties.chapo'|trans }}</p>
+
+        <div class="editorial__cartes editorial__cartes--sans-gouttiere">
+            <div class="editorial__carte editorial__carte--marine-clair">
+                <div class="halftone-placeholder" aria-hidden="true"></div>
+                <h2>{{ 'site.sorties.baleines.titre'|trans }}</h2>
+                <div class="editorial__fenetre">{{ 'site.sorties.baleines.fenetre'|trans }} · {{ 'site.sorties.baleines.etat'|trans }}</div>
+                <p>{{ 'site.sorties.baleines.texte'|trans }}</p>
+            </div>
+            <div class="editorial__carte editorial__carte--papier-ombre">
+                <div class="halftone-placeholder" aria-hidden="true"></div>
+                <h2>{{ 'site.sorties.dauphins.titre'|trans }}</h2>
+                <div class="editorial__fenetre">{{ 'site.sorties.dauphins.fenetre'|trans }} · {{ 'site.sorties.dauphins.etat'|trans }}</div>
+                <p>{{ 'site.sorties.dauphins.texte'|trans }}</p>
+            </div>
+        </div>
+
+        <div class="frise">
+            <div class="frise__entete">
+                <h3>{{ 'site.sorties.frise.titre'|trans }}</h3>
+                <div class="frise__legende">
+                    <span><span class="frise__pastille frise__pastille--baleines"></span>{{ 'parcours.calendrier.filtre_baleines'|trans }}</span>
+                    <span><span class="frise__pastille frise__pastille--dauphins"></span>{{ 'parcours.calendrier.filtre_dauphins'|trans }}</span>
+                </div>
+            </div>
+            <div class="frise__grille">
+                {% for mois in frise %}
+                    <div class="frise__mois frise__mois--{{ mois.type|lower }}">
+                        {{ ('2024-' ~ mois.mois ~ '-01')|format_date('none', pattern='MMM', locale=locale) }}
+                    </div>
+                {% endfor %}
+            </div>
+            <p class="reservation__note">{{ 'site.sorties.frise.note'|trans }}</p>
+        </div>
+    </section>
+
+    <section class="editorial editorial--papier-ombre">
+        <div class="kicker">{{ 'site.charte.kicker'|trans }}</div>
+        <h1>{{ 'site.charte.titre'|trans }}</h1>
+        <p class="editorial__chapo">{{ 'site.charte.chapo'|trans }}</p>
+
+        <div class="charte__grille">
+            <div class="charte__encart">
+                <div class="intitule-colonne">{{ 'site.charte.approche.intitule'|trans }}</div>
+                <p>{{ 'site.charte.approche.texte'|trans }}</p>
+            </div>
+            <div class="charte__encart">
+                <div class="intitule-colonne">{{ 'site.charte.distance.intitule'|trans }}</div>
+                <p>{{ 'site.charte.distance.texte'|trans }}</p>
+            </div>
+            <div class="charte__encart">
+                <div class="intitule-colonne">{{ 'site.charte.mise_a_l_eau.intitule'|trans }}</div>
+                <p>{{ 'site.charte.mise_a_l_eau.texte'|trans }}</p>
+            </div>
+            <div class="charte__encart charte__encart--vert">
+                <div class="intitule-colonne">{{ 'site.charte.duree.intitule'|trans }}</div>
+                <p>{{ 'site.charte.duree.texte'|trans }}</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}

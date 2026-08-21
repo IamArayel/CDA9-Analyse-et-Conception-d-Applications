@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% set locale = app.request.locale %}
+
+{% block titre %}{{ 'site.tarifs.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps %}
+    <section class="editorial">
+        <div class="kicker">{{ 'site.tarifs.kicker'|trans }}</div>
+        <h1>{{ 'site.tarifs.titre'|trans }}</h1>
+
+        <table class="tarifs__table">
+            <thead>
+                <tr>
+                    <th>{{ 'site.tarifs.colonne_prestation'|trans }}</th>
+                    <th>{{ 'site.tarifs.colonne_duree'|trans }}</th>
+                    <th>{{ 'site.tarifs.colonne_adulte'|trans }}</th>
+                    <th>{{ 'site.tarifs.colonne_enfant'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if grille.BALEINES is defined %}
+                    <tr>
+                        <td>{{ 'site.tarifs.ligne_baleines'|trans }}<br><span class="reservation__note">{{ 'site.tarifs.ligne_baleines_note'|trans }}</span></td>
+                        <td>—</td>
+                        <td class="chiffres">{{ (grille.BALEINES.adulte / 100)|format_currency('EUR', locale=locale) }}</td>
+                        <td class="chiffres">{{ (grille.BALEINES.enfant / 100)|format_currency('EUR', locale=locale) }}</td>
+                    </tr>
+                {% endif %}
+                {% if grille.DAUPHINS is defined %}
+                    <tr>
+                        <td>{{ 'site.tarifs.ligne_dauphins'|trans }}<br><span class="reservation__note">{{ 'site.tarifs.ligne_dauphins_note'|trans }}</span></td>
+                        <td>—</td>
+                        <td class="chiffres">{{ (grille.DAUPHINS.adulte / 100)|format_currency('EUR', locale=locale) }}</td>
+                        <td class="chiffres">{{ (grille.DAUPHINS.enfant / 100)|format_currency('EUR', locale=locale) }}</td>
+                    </tr>
+                {% endif %}
+                {% for bateau in flotte %}
+                    {% if bateau.estPrivatisable %}
+                        <tr>
+                            <td>{{ 'site.tarifs.ligne_privatisation'|trans({'%bateau%': bateau.nom}) }}<br><span class="reservation__note">{{ 'site.tarifs.ligne_privatisation_note'|trans }}</span></td>
+                            <td>—</td>
+                            <td class="chiffres">{{ (bateau.forfaitDePrivatisation / 100)|format_currency('EUR', locale=locale) }}</td>
+                            <td>—</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                <tr>
+                    <td>{{ 'site.tarifs.ligne_moins_de_4'|trans }}<br><span class="reservation__note">{{ 'site.tarifs.ligne_moins_de_4_note'|trans }}</span></td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>—</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="tarifs__notes">
+            <div>
+                <div class="intitule-colonne">{{ 'site.tarifs.note_acompte_titre'|trans }}</div>
+                <p>{{ 'site.tarifs.note_acompte'|trans }}</p>
+            </div>
+            <div>
+                <div class="intitule-colonne">{{ 'site.tarifs.note_changement_titre'|trans }}</div>
+                <p>{{ 'site.tarifs.note_changement'|trans }}</p>
+            </div>
+            <div>
+                <div class="intitule-colonne">{{ 'site.tarifs.note_code_titre'|trans }}</div>
+                <p>{{ 'site.tarifs.note_code'|trans }}</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block titre %}{{ 'site.flotte.titre'|trans }} — {{ 'site.nom'|trans }}{% endblock %}
+
+{% block corps %}
+    <section class="editorial">
+        <div class="kicker">{{ 'site.flotte.kicker'|trans }}</div>
+        <h1>{{ 'site.flotte.titre'|trans }}</h1>
+        <p class="editorial__chapo">{{ 'site.flotte.chapo'|trans }}</p>
+
+        <div class="editorial__cartes editorial__cartes--sans-gouttiere">
+            {% for bateau in flotte %}
+                {% set cle = bateau.nom == 'Ti Kap' ? 'ti_kap' : (bateau.nom == 'Le Grand Bleu' ? 'grand_bleu' : null) %}
+                <div class="editorial__carte editorial__carte--{{ loop.index0 % 2 == 0 ? 'marine-clair' : 'papier-ombre' }}">
+                    <div class="halftone-placeholder halftone-placeholder--haut" aria-hidden="true"></div>
+                    <h2>{{ bateau.nom }}</h2>
+                    <div class="editorial__stats">
+                        <div>
+                            <div class="intitule-colonne">{{ 'site.flotte.capacite'|trans }}</div>
+                            <div>{{ 'site.flotte.places'|trans({'%nombre%': bateau.capacite}) }}</div>
+                        </div>
+                        {% if bateau.estPrivatisable %}
+                            <div>
+                                <div class="intitule-colonne">{{ 'site.flotte.privatisation'|trans }}</div>
+                                <div>{{ (bateau.forfaitDePrivatisation / 100)|format_currency('EUR', locale=app.request.locale) }}</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if cle %}
+                        <p>{{ ('site.flotte.' ~ cle)|trans }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

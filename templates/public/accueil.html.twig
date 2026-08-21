@@ -16,7 +16,7 @@
             <p class="heros__chapo">{{ 'site.accueil.chapo'|trans }}</p>
             <div class="heros__actions">
                 <a href="{{ path('calendrier', {_locale: app.request.locale}) }}" class="bouton bouton-principal">{{ 'site.accueil.action_reserver'|trans }}</a>
-                <a href="/{{ app.request.locale }}/sorties" class="bouton bouton-contour heros__action-secondaire">{{ 'site.accueil.action_sorties'|trans }}</a>
+                <a href="{{ path('sorties', {_locale: app.request.locale}) }}" class="bouton bouton-contour heros__action-secondaire">{{ 'site.accueil.action_sorties'|trans }}</a>
             </div>
             <div class="heros__chiffres chiffres">
                 <div>{{ 'site.accueil.chiffre_departs'|trans }}</div>
