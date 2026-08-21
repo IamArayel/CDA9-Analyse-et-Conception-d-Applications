@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/broadsheet-f4e54408-0b27-4e71-a7dd-17ba17bc3f4e/styles.css">
+<script src="_ds/broadsheet-f4e54408-0b27-4e71-a7dd-17ba17bc3f4e/_ds_bundle.js"></script>
+<style>
+  body { margin:0; background:#f4f1e8; color:#0d2233; font-family:"Source Serif 4", Georgia, serif; }
+  a { color:#1c4a68; text-decoration:none; }
+  a:hover { color:#e08c4d; }
+  ::selection { background:#e08c4d; color:#0f2436; }
+</style>
+</helmet>
+
+<section data-screen-label="G1 Connexion" style="background:#0f2436; color:#f4f1e8; min-height:640px; display:grid; grid-template-columns:1.1fr .9fr">
+  <div style="padding:56px 48px; display:flex; flex-direction:column; justify-content:space-between">
+    <div style="display:flex; align-items:center; gap:11px">
+      <img src="uploads/81831645-bleu-baleine-logo-sauter-en-dehors-de-l-eau-illustration-vectoriel.jpg" alt="" style="width:34px; height:34px; border-radius:50%; object-fit:cover; background:#f4f1e8">
+      <span style="font-size:19px">Ti Baleine</span>
+      <span style="font-size:11px; letter-spacing:.18em; color:#e08c4d; margin-left:8px">ESPACE DE GESTION</span>
+    </div>
+    <div>
+      <h1 style="font-size:56px; line-height:1.02; margin:0 0 20px; font-weight:600; letter-spacing:-.02em">Le pont,<br>vu de la capitainerie.</h1>
+      <p style="font-size:16px; line-height:1.7; color:#f4f1e8aa; margin:0; max-width:42ch">Un seul compte, celui du gérant. Le planning du jour, les inscrits par bateau, l'alerte météo de 18 h et la grille tarifaire. Rien d'autre n'a besoin d'être ici.</p>
+    </div>
+    <div style="font-size:11px; letter-spacing:.14em; color:#f4f1e866">SESSION FERMÉE APRÈS 30 MINUTES D'INACTIVITÉ</div>
+  </div>
+  <div style="background:#f4f1e8; color:#0d2233; display:flex; align-items:center; justify-content:center; padding:48px">
+    <div style="width:100%; max-width:380px">
+      <div style="font-size:11px; letter-spacing:.18em; color:#8a6a49; margin-bottom:22px">CONNEXION</div>
+      <div style="display:flex; flex-direction:column; gap:18px">
+        <div><label style="display:block; font-size:12px; color:#5b6b76; margin-bottom:7px">Courriel</label><div style="border:1px solid #0d223333; height:50px; display:flex; align-items:center; padding:0 14px; font-size:16px">gerant@ti-baleine.re</div></div>
+        <div><label style="display:block; font-size:12px; color:#5b6b76; margin-bottom:7px">Mot de passe</label><div style="border:1px solid #1c4a68; height:50px; display:flex; align-items:center; justify-content:space-between; padding:0 14px; font-size:18px; letter-spacing:.3em">••••••••<span style="font-size:12px; letter-spacing:0; color:#1c4a68">Afficher</span></div></div>
+      </div>
+      <div style="background:#0f2436; color:#f4f1e8; text-align:center; padding:15px; margin-top:22px; font-size:16px">Ouvrir la session</div>
+      <p style="font-size:12.5px; line-height:1.6; color:#5b6b76; margin:18px 0 0">Huit caractères au minimum, avec une majuscule, un chiffre et un caractère spécial. Après cinq échecs, l'accès est suspendu quinze minutes.</p>
+      <p style="font-size:12.5px; margin:26px 0 0"><a href="Ti Baleine — Parcours client.dc.html">← Retour au site public</a></p>
+    </div>
+  </div>
+</section>
+
+<div style="display:flex; align-items:stretch; min-height:100vh; background:#f4f1e8">
+  <aside style="width:232px; flex:none; background:#0f2436; color:#f4f1e8; padding:22px 0; position:sticky; top:0; height:100vh; display:flex; flex-direction:column">
+    <div style="display:flex; align-items:center; gap:10px; padding:0 22px 24px; border-bottom:1px solid #ffffff1a">
+      <img src="uploads/81831645-bleu-baleine-logo-sauter-en-dehors-de-l-eau-illustration-vectoriel.jpg" alt="" style="width:28px; height:28px; border-radius:50%; object-fit:cover; background:#f4f1e8">
+      <div><div style="font-size:16px">Ti Baleine</div><div style="font-size:9.5px; letter-spacing:.16em; color:#f4f1e877">GESTION</div></div>
+    </div>
+    <nav style="display:flex; flex-direction:column; padding:16px 0; font-size:15px">
+      <a href="#journee" style="padding:11px 22px; color:#0f2436; background:#e08c4d">La journée</a>
+      <a href="#creneau" style="padding:11px 22px; color:#f4f1e8cc">Planning</a>
+      <a href="#meteo" style="padding:11px 22px; color:#f4f1e8cc">Alerte météo</a>
+      <a href="#annulation" style="padding:11px 22px; color:#f4f1e8cc">Annulations</a>
+      <a href="#reglages" style="padding:11px 22px; color:#f4f1e8cc">Tarifs</a>
+      <a href="#reglages" style="padding:11px 22px; color:#f4f1e8cc">Horaires</a>
+      <a href="#reglages" style="padding:11px 22px; color:#f4f1e8cc">Flotte</a>
+      <a href="#codes" style="padding:11px 22px; color:#f4f1e8cc">Bons et avoirs</a>
+    </nav>
+    <div style="margin-top:auto; padding:20px 22px 0; border-top:1px solid #ffffff1a">
+      <div style="font-size:13px; color:#f4f1e8cc">gerant@ti-baleine.re</div>
+      <div style="font-size:12px; color:#f4f1e866; margin-top:4px">Fermer la session</div>
+    </div>
+  </aside>
+
+  <main style="flex:1; min-width:0">
+    <section id="journee" data-screen-label="G2 Tableau de bord" style="padding:34px 40px 44px">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:28px">
+        <div>
+          <div style="font-size:11px; letter-spacing:.2em; color:#8a6a49; margin-bottom:10px">LUNDI 20 JUILLET 2026 · 06 H 42</div>
+          <h1 style="font-size:42px; line-height:1.05; margin:0; font-weight:600; letter-spacing:-.015em">La journée</h1>
+        </div>
+        <div style="display:flex; gap:10px; font-size:14px">
+          <div style="border:1px solid #0d223333; padding:11px 18px">Exporter le planning</div>
+          <div style="background:#0f2436; color:#f4f1e8; padding:11px 18px">Programmer une sortie</div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:#0d223322; border:1px solid #0d223322; margin-bottom:12px">
+        <div style="background:#f4f1e8; padding:20px 22px"><div style="font-size:34px">54</div><div style="font-size:10px; letter-spacing:.16em; color:#8a6a49; margin-top:6px">INSCRITS AUJOURD'HUI</div></div>
+        <div style="background:#f4f1e8; padding:20px 22px"><div style="font-size:34px">6 / 6</div><div style="font-size:10px; letter-spacing:.16em; color:#8a6a49; margin-top:6px">SORTIES PROGRAMMÉES</div></div>
+        <div style="background:#f4f1e8; padding:20px 22px"><div style="font-size:34px; color:#c9702a">2</div><div style="font-size:10px; letter-spacing:.16em; color:#8a6a49; margin-top:6px">DÉCISIONS À PRENDRE</div></div>
+        <div style="background:#f4f1e8; padding:20px 22px"><div style="font-size:34px">1 842 €</div><div style="font-size:10px; letter-spacing:.16em; color:#8a6a49; margin-top:6px">ENCAISSÉ, DONT 612 € À BORD</div></div>
+      </div>
+
+      <div style="background:#c9702a; color:#f4f1e8; padding:16px 22px; display:flex; align-items:center; justify-content:space-between; margin-bottom:26px">
+        <div>
+          <div style="font-size:17px">Départ de 14 h — Ti Kap : 4 inscrits à 24 heures du départ</div>
+          <div style="font-size:13px; color:#f4f1e8cc; margin-top:3px">Le seuil de maintien est de 6. Sans décision de votre part, la sortie sera annulée et les clients intégralement remboursés.</div>
+        </div>
+        <div style="display:flex; gap:10px; flex:none">
+          <div style="background:#f4f1e8; color:#0f2436; padding:10px 18px; font-size:14px">Maintenir</div>
+          <div style="border:1px solid #f4f1e888; padding:10px 18px; font-size:14px">Annuler la sortie</div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:#0d223322; border:1px solid #0d223322">
+        <sc-for list="{{ sorties }}" as="s" hint-placeholder-count="6">
+          <article style="background:#f4f1e8; padding:20px 22px 22px; display:flex; flex-direction:column; gap:12px">
+            <div style="display:flex; justify-content:space-between; align-items:baseline">
+              <div style="font-size:26px">{{ s.heure }}</div>
+              <div style="font-size:10px; letter-spacing:.16em; color:{{ s.couleur }}">{{ s.statut }}</div>
+            </div>
+            <div style="font-size:14px; color:#4c5b66">{{ s.ligne }}</div>
+            <div style="height:6px; background:#0d223318">
+              <div style="height:6px; background:{{ s.couleur }}; width:{{ s.remplissage }}"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:13px; color:#4c5b66">
+              <span>{{ s.places }}</span>
+              <a href="#creneau" style="font-size:13px">Ouvrir →</a>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </section>
+
+    <section id="creneau" data-screen-label="G3 Créneau détaillé" style="padding:0 40px 44px">
+      <div style="border-top:1px solid #0d223326; padding-top:34px">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px">
+          <div>
+            <div style="font-size:11px; letter-spacing:.2em; color:#8a6a49; margin-bottom:10px">PLANNING · CRÉNEAU DU 20 JUILLET, 10 H 00</div>
+            <h2 style="font-size:38px; line-height:1.05; margin:0; font-weight:600; letter-spacing:-.015em">Le Grand Bleu — baleines</h2>
+          </div>
+          <div style="display:flex; gap:10px; font-size:14px">
+            <div style="border:1px solid #0d223333; padding:11px 18px">Exporter (PDF)</div>
+            <div style="border:1px solid #c9702a; color:#c9702a; padding:11px 18px">Mettre en alerte météo</div>
+            <div style="background:#8c2f2f; color:#f4f1e8; padding:11px 18px">Annuler le créneau</div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1.55fr .45fr; gap:26px; align-items:start">
+          <div>
+            <table style="width:100%; border-collapse:collapse; font-size:15px; background:#f4f1e8">
+              <thead>
+                <tr style="border-bottom:1px solid #0d2233; text-align:left">
+                  <th style="padding:11px 10px 11px 0; font-weight:400; font-size:10px; letter-spacing:.16em; color:#8a6a49">PASSAGER</th>
+                  <th style="padding:11px 10px; font-weight:400; font-size:10px; letter-spacing:.16em; color:#8a6a49">MOBILE</th>
+                  <th style="padding:11px 10px; font-weight:400; font-size:10px; letter-spacing:.16em; color:#8a6a49">COMPOSITION</th>
+                  <th style="padding:11px 10px; font-weight:400; font-size:10px; letter-spacing:.16em; color:#8a6a49; text-align:right">MONTANT</th>
+                  <th style="padding:11px 10px; font-weight:400; font-size:10px; letter-spacing:.16em; color:#8a6a49; text-align:right">SOLDE DÛ</th>
+                  <th style="padding:11px 0 11px 10px; font-weight:400; font-size:10px; letter-spacing:.16em; color:#8a6a49">ÉTAT</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ inscrits }}" as="i" hint-placeholder-count="7">
+                  <tr style="border-bottom:1px solid #0d223322">
+                    <td style="padding:13px 10px 13px 0">{{ i.nom }}</td>
+                    <td style="padding:13px 10px; color:#4c5b66; font-variant-numeric:tabular-nums">{{ i.tel }}</td>
+                    <td style="padding:13px 10px; color:#4c5b66">{{ i.composition }}</td>
+                    <td style="padding:13px 10px; text-align:right; font-variant-numeric:tabular-nums">{{ i.montant }}</td>
+                    <td style="padding:13px 10px; text-align:right; font-variant-numeric:tabular-nums">{{ i.solde }}</td>
+                    <td style="padding:13px 0 13px 10px; font-size:12.5px; color:{{ i.couleur }}">{{ i.etat }}</td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+            <div style="display:flex; justify-content:space-between; font-size:13px; color:#5b6b76; padding:14px 0 0">
+              <span>7 réservations · 11 inscrits · une réservation immobilisée, non comptée dans les inscrits</span>
+              <span>Solde à encaisser à bord : 431,00 €</span>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:14px">
+            <div style="border:1px solid #0d223326; padding:18px 20px">
+              <div style="font-size:10px; letter-spacing:.18em; color:#8a6a49; margin-bottom:14px">OCCUPATION</div>
+              <div style="font-size:36px; line-height:1">11 / 24</div>
+              <div style="height:8px; background:#0d223318; margin-top:12px"><div style="height:8px; background:#2f7d55; width:46%"></div></div>
+              <div style="font-size:12.5px; color:#5b6b76; margin-top:10px">Seuil de maintien atteint (6). 13 places encore à la vente.</div>
+            </div>
+            <div style="border:1px solid #0d223326; padding:18px 20px">
+              <div style="font-size:10px; letter-spacing:.18em; color:#8a6a49; margin-bottom:14px">MÉTÉO SAISIE</div>
+              <div style="font-size:22px">Vent 25 nœuds, houle 2,5 m</div>
+              <div style="font-size:12.5px; color:#5b6b76; margin-top:8px">Saisie le 19 juillet à 17 h 48. Aucune alerte envoyée pour l'instant.</div>
+              <div style="border:1px solid #0d223333; text-align:center; padding:10px; margin-top:14px; font-size:14px">Modifier la prévision</div>
+            </div>
+            <div style="border:1px solid #0d223326; padding:18px 20px">
+              <div style="font-size:10px; letter-spacing:.18em; color:#8a6a49; margin-bottom:14px">FERMETURE DES VENTES</div>
+              <div style="font-size:22px">19 juillet, 12 h 00</div>
+              <div style="font-size:12.5px; color:#5b6b76; margin-top:8px">Départ à 10 h : la vente ferme à midi la veille.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="meteo" data-screen-label="G4 Alerte météo" style="padding:0 40px 44px">
+      <div style="border-top:1px solid #0d223326; padding-top:34px">
+        <div style="font-size:11px; letter-spacing:.2em; color:#8a6a49; margin-bottom:10px">ALERTE MÉTÉO</div>
+        <h2 style="font-size:38px; line-height:1.05; margin:0 0 8px; font-weight:600; letter-spacing:-.015em">Signaler un risque, puis trancher</h2>
+        <p style="font-size:15px; line-height:1.7; color:#4c5b66; margin:0 0 26px; max-width:74ch">L'alerte n'annule rien : elle prévient. Elle part à 18 h la veille et vaut pour tout le créneau, les deux bateaux compris — la météo ne fait pas la différence. La décision définitive vous revient, deux heures avant le départ.</p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:26px; align-items:start">
+          <div style="background:#0f2436; color:#f4f1e8; padding:28px 30px 30px">
+            <div style="font-size:10px; letter-spacing:.18em; color:#e08c4d; margin-bottom:20px">METTRE EN ALERTE — 21 JUILLET, 10 H 00</div>
+            <div style="display:flex; flex-direction:column; gap:16px">
+              <div><label style="display:block; font-size:12px; color:#f4f1e888; margin-bottom:7px">Prévision saisie</label><div style="border:1px solid #ffffff33; height:48px; display:flex; align-items:center; padding:0 14px; font-size:16px">Vent 35 nœuds, houle 3,5 m, grains</div></div>
+              <div>
+                <label style="display:block; font-size:12px; color:#f4f1e888; margin-bottom:7px">Envoi de l'alerte</label>
+                <div style="display:flex; gap:10px">
+                  <div style="flex:1; border:2px solid #e08c4d; padding:12px 14px; font-size:15px">Ce soir à 18 h 00</div>
+                  <div style="flex:1; border:1px solid #ffffff33; padding:12px 14px; font-size:15px; color:#f4f1e8aa">Immédiatement</div>
+                </div>
+              </div>
+              <div style="border:1px solid #ffffff26; padding:14px 16px">
+                <div style="font-size:12px; color:#f4f1e888; margin-bottom:8px">MESSAGE ENVOYÉ AUX 9 INSCRITS (SMS ET COURRIEL)</div>
+                <p style="font-size:14px; line-height:1.6; margin:0; color:#f4f1e8cc">« Votre sortie du 21 juillet à 10 h 00 est en alerte météo. La décision vous sera communiquée 2 heures avant le départ. Cet envoi ne reçoit pas de réponse ; pour nous joindre, appelez l'entreprise. »</p>
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:22px">
+              <div style="background:#e08c4d; color:#0f2436; padding:13px 22px; font-size:15px">Mettre en alerte</div>
+              <div style="border:1px solid #ffffff33; padding:13px 22px; font-size:15px">Annuler</div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:10px; letter-spacing:.18em; color:#8a6a49; margin-bottom:14px">CRÉNEAUX EN ALERTE</div>
+            <div style="display:flex; flex-direction:column; gap:1px; background:#0d223322; border:1px solid #0d223322">
+              <div style="background:#f4f1e8; padding:16px 18px; display:flex; justify-content:space-between; align-items:center">
+                <div><div style="font-size:19px">20 juillet — 14 h 00</div><div style="font-size:13px; color:#5b6b76; margin-top:3px">Ti Kap · dauphins · 6 inscrits · alerte envoyée hier à 18 h 00</div></div>
+                <div style="display:flex; gap:8px; flex:none"><div style="border:1px solid #2f7d55; color:#2f7d55; padding:8px 14px; font-size:13px">Maintenir</div><div style="background:#8c2f2f; color:#f4f1e8; padding:8px 14px; font-size:13px">Annuler</div></div>
+              </div>
+              <div style="background:#f4f1e8; padding:16px 18px; display:flex; justify-content:space-between; align-items:center">
+                <div><div style="font-size:19px">21 juillet — 10 h 00</div><div style="font-size:13px; color:#5b6b76; margin-top:3px">Le Grand Bleu · baleines · 9 inscrits · alerte programmée ce soir</div></div>
+                <div style="display:flex; gap:8px; flex:none"><div style="border:1px solid #0d223333; padding:8px 14px; font-size:13px; color:#4c5b66">Voir</div></div>
+              </div>
+            </div>
+            <div style="border:1px solid #0d223326; padding:18px 20px; margin-top:16px">
+              <div style="font-size:10px; letter-spacing:.18em; color:#8a6a49; margin-bottom:12px">RÉGLAGES D'ENVOI</div>
+              <div style="display:flex; gap:30px">
+                <div><div style="font-size:22px">18 h 00</div><div style="font-size:11px; color:#5b6b76; margin-top:4px">Heure de l'alerte</div></div>
+                <div><div style="font-size:22px">2 h</div><div style="font-size:11px; color:#5b6b76; margin-top:4px">Avant décision</div></div>
+                <div><div style="font-size:22px">24 h</div><div style="font-size:11px; color:#5b6b76; margin-top:4px">Avant rappel</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="annulation" data-screen-label="G5 Annulation" style="padding:0 40px 44px">
+      <div style="border-top:1px solid #0d223326; padding-top:34px">
+        <div style="font-size:11px; letter-spacing:.2em; color:#8a6a49; margin-bottom:10px">ANNULATIONS</div>
+        <h2 style="font-size:38px; line-height:1.05; margin:0 0 26px; font-weight:600; letter-spacing:-.015em">Annuler un créneau, ou une place</h2>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:26px; align-items:start">
+          <div style="border:2px solid #8c2f2f; padding:28px 30px 30px">
+            <div style="font-size:10px; letter-spacing:.18em; color:#8c2f2f; margin-bottom:18px">ANNULER LE CRÉNEAU DU 20 JUILLET, 14 H 00</div>
+            <p style="font-size:15px; line-height:1.7; color:#4c5b66; margin:0 0 20px">Six réservations, dix inscrits. Chacun est remboursé de la totalité de ce qu'il a versé, sans démarche de sa part, et reçoit un SMS et un courriel de confirmation. L'opération ne se défait pas.</p>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:22px">
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid #0d223322; padding-bottom:10px; font-size:15px"><span style="color:#5b6b76">Réservations concernées</span><span>6</span></div>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid #0d223322; padding-bottom:10px; font-size:15px"><span style="color:#5b6b76">Total remboursé</span><span>486,00 €</span></div>
+              <div style="display:flex; justify-content:space-between; font-size:15px"><span style="color:#5b6b76">Messages envoyés</span><span>6 SMS · 6 courriels</span></div>
+            </div>
+            <div><label style="display:block; font-size:12px; color:#5b6b76; margin-bottom:7px">Motif consigné</label><div style="border:1px solid #0d223333; height:48px; display:flex; align-items:center; padding:0 14px; font-size:16px">Météo — houle 3,5 m</div></div>
+            <div style="display:flex; gap:10px; margin-top:20px">
+              <div style="background:#8c2f2f; color:#f4f1e8; padding:13px 22px; font-size:15px">Confirmer l'annulation</div>
+              <div style="border:1px solid #0d223333; padding:13px 22px; font-size:15px">Revenir</div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:10px; letter-spacing:.18em; color:#8a6a49; margin-bottom:14px">UN CLIENT ANNULE — CE QU'IL RÉCUPÈRE</div>
+            <div style="display:flex; flex-direction:column; gap:1px; background:#0d223322; border:1px solid #0d223322; margin-bottom:16px">
+              <div style="background:#f4f1e8; padding:15px 18px; display:flex; justify-content:space-between; align-items:baseline"><div><div style="font-size:17px">Plus de 7 jours avant</div><div style="font-size:12.5px; color:#5b6b76; margin-top:3px">Sur ce qu'il a versé</div></div><div style="font-size:22px">100 %</div></div>
+              <div style="background:#f4f1e8; padding:15px 18px; display:flex; justify-content:space-between; align-items:baseline"><div><div style="font-size:17px">Entre 7 jours et 48 h</div><div style="font-size:12.5px; color:#5b6b76; margin-top:3px">Sur ce qu'il a versé</div></div><div style="font-size:22px">75 %</div></div>
+              <div style="background:#f4f1e8; padding:15px 18px; display:flex; justify-content:space-between; align-items:baseline"><div><div style="font-size:17px">Moins de 48 h</div><div style="font-size:12.5px; color:#5b6b76; margin-top:3px">Versé moins 50 % du prix total, plancher à zéro</div></div><div style="font-size:22px">Variable</div></div>
+              <div style="background:#f4f1e8; padding:15px 18px; display:flex; justify-content:space-between; align-items:baseline"><div><div style="font-size:17px">Absent au départ</div><div style="font-size:12.5px; color:#5b6b76; margin-top:3px">Quoi qu'il ait versé</div></div><div style="font-size:22px">0 €</div></div>
+            </div>
+            <div style="background:#ece7d9; padding:20px 22px">
+              <div style="font-size:10px; letter-spacing:.18em; color:#8a6a49; margin-bottom:14px">ISSUE PROPOSÉE À MARIE DUPONT — 170,00 € VERSÉS</div>
+              <div style="display:flex; gap:10px">
+                <div style="flex:1; border:1px solid #0d223333; padding:14px; text-align:center"><div style="font-size:16px">Report</div><div style="font-size:12px; color:#5b6b76; margin-top:4px">Autre date</div></div>
+                <div style="flex:1; border:2px solid #1c4a68; padding:14px; text-align:center"><div style="font-size:16px">Avoir</div><div style="font-size:12px; color:#5b6b76; margin-top:4px">127,50 € · 1 an</div></div>
+                <div style="flex:1; border:1px solid #0d223333; padding:14px; text-align:center"><div style="font-size:16px">Remboursement</div><div style="font-size:12px; color:#5b6b76; margin-top:4px">127,50 €</div></div>
+              </div>
+              <div style="background:#0f2436; color:#f4f1e8; text-align:center; padding:13px; margin-top:14px; font-size:15px">Enregistrer l'issue</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="reglages" data-screen-label="G6 Tarifs, horaires, flotte" style="padding:0 40px 44px">
+      <div style="border-top:1px solid #0d223326; padding-top:34px">
+        <div style="font-size:11px; letter-spacing:.2em; color:#8a6a49; margin-bottom:10px">RÉGLAGES</div>
+        <h2 style="font-size:38px; line-height:1.05; margin:0 0 8px; font-weight:600; letter-spacing:-.015em">Tarifs, horaires, flotte</h2>
+        <p style="font-size:15px; line-height:1.7; color:#4c5b66; margin:0 0 26px; max-width:74ch">Un tarif modifié ne rattrape aucune réservation existante : le montant présenté au client est celui qui lui est appliqué. Les taux d'acompte, eux, ne se règlent pas ici — ils sont figés à 30 % et 50 %.</p>
+
+        <div style="display:grid; grid-template-columns:1.2fr .8fr; gap:26px; align-items:start">
+          <div>
+            <div style="font-size:10px; letter-spacing:.18em; color:#8a6a49; margin-bottom:14px">GRILLE TARIFAIRE</div>
+            <table style="width:100%; border-collapse:collapse; font-size:15px">
+              <thead><tr style="border-bottom:1px solid #0d2233; text-align:left">
+                <th style="padding:11px 10px 11px 0; font-weight:400; font-size:10px; letter-spacing:.16em; color:#8a6a49">TYPE DE SORTIE</th>
+                <th style="padding:11px 10px; font-weight:400; font-size:10px; letter-spacing:.16em; color:#8a6a49; text-align:right">PRIX ADULTE</th>
+                <th style="padding:11px 10px; font-weight:400; font-size:10px; letter-spacing:.16em; color:#8a6a49; text-align:right">PRIX ENFANT</th>
+                <th style="padding:11px 0 11px 10px; font-weight:400; font-size:10px; letter-spacing:.16em; color:#8a6a49; text-align:right">MODIFIÉ LE</th>
+              </tr></thead>
+              <tbody>
+                <tr style="border-bottom:1px solid #0d223322"><td style="padding:14px 10px 14px 0">Baleines à bosse</td><td style="padding:10px"><div style="border:1px solid #0d223333; height:42px; display:flex; align-items:center; justify-content:flex-end; padding:0 12px">65,00 €</div></td><td style="padding:10px"><div style="border:1px solid #0d223333; height:42px; display:flex; align-items:center; justify-content:flex-end; padding:0 12px">40,00 €</div></td><td style="padding:14px 0 14px 10px; text-align:right; color:#5b6b76; font-size:13px">12 juin 2026</td></tr>
+                <tr style="border-bottom:1px solid #0d223322"><td style="padding:14px 10px 14px 0">Dauphins à long bec</td><td style="padding:10px"><div style="border:1px solid #1c4a68; height:42px; display:flex; align-items:center; justify-content:flex-end; padding:0 12px">52,00 €</div></td><td style="padding:10px"><div style="border:1px solid #0d223333; height:42px; display:flex; align-items:center; justify-content:flex-end; padding:0 12px">30,00 €</div></td><td style="padding:14px 0 14px 10px; text-align:right; color:#c9702a; font-size:13px">non enregistré</td></tr>
+              </tbody>
+            </table>
+            <div style="display:flex; gap:10px; margin-top:16px"><div style="background:#0f2436; color:#f4f1e8; padding:12px 22px; font-size:15px">Enregistrer la grille</div><div style="border:1px solid #0d223333; padding:12px 22px; font-size:15px">Rétablir</div></div>
+
+            <div style="font-size:10px; letter-spacing:.18em; color:#8a6a49; margin:34px 0 14px">FLOTTE</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:#0d223322; border:1px solid #0d223322">
+              <div style="background:#f4f1e8; padding:18px 20px">
+                <div style="display:flex; justify-content:space-between; align-items:baseline"><div style="font-size:21px">Ti Kap</div><div style="font-size:11px; letter-spacing:.14em; color:#8a6a49">12 PLACES</div></div>
+                <div style="font-size:13px; color:#5b6b76; margin-top:8px">Forfait de privatisation : 600,00 €</div>
+                <div style="font-size:12.5px; color:#8a6a49; margin-top:10px">Un bateau créé ne se modifie plus — sauf son forfait.</div>
+              </div>
+              <div style="background:#f4f1e8; padding:18px 20px">
+                <div style="display:flex; justify-content:space-between; align-items:baseline"><div style="font-size:21px">Le Grand Bleu</div><div style="font-size:11px; letter-spacing:.14em; color:#8a6a49">24 PLACES</div></div>
+                <div style="font-size:13px; color:#5b6b76; margin-top:8px">Forfait de privatisation : 1 100,00 €</div>
+                <div style="font-size:12.5px; color:#8a6a49; margin-top:10px">Créé le 3 mai 2026.</div>
+              </div>
+            </div>
+            <div style="border:1px dashed #0d223344; text-align:center; padding:14px; margin-top:12px; font-size:15px; color:#4c5b66">+ Ajouter un bateau</div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:16px">
+            <div style="border:1px solid #0d223326; padding:20px 22px">
+              <div style="font-size:10px; letter-spacing:.18em; color:#8a6a49; margin-bottom:16px">HORAIRES D'EXPLOITATION</div>
+              <div style="display:flex; gap:12px; margin-bottom:16px">
+                <div style="flex:1"><label style="display:block; font-size:12px; color:#5b6b76; margin-bottom:6px">Ouverture</label><div style="border:1px solid #0d223333; height:44px; display:flex; align-items:center; padding:0 12px; font-size:16px">07:00</div></div>
+                <div style="flex:1"><label style="display:block; font-size:12px; color:#5b6b76; margin-bottom:6px">Fermeture</label><div style="border:1px solid #0d223333; height:44px; display:flex; align-items:center; padding:0 12px; font-size:16px">18:00</div></div>
+              </div>
+              <div style="font-size:13px; color:#5b6b76; line-height:1.6">Départs : 07 h 00 · 10 h 00 · 14 h 00. Les trois créneaux sont proposés tous les jours d'ouverture ; c'est le type de sortie qui varie avec la saison.</div>
+            </div>
+            <div style="border:1px solid #0d223326; padding:20px 22px">
+              <div style="font-size:10px; letter-spacing:.18em; color:#8a6a49; margin-bottom:16px">JOURS DE FERMETURE</div>
+              <div style="display:flex; flex-direction:column; gap:9px; font-size:15px">
+                <div style="display:flex; justify-content:space-between; align-items:center"><span>25 décembre 2026</span><span style="font-size:13px; color:#8c2f2f">Retirer</span></div>
+                <div style="display:flex; justify-content:space-between; align-items:center"><span>1<sup>er</sup> janvier 2027</span><span style="font-size:13px; color:#8c2f2f">Retirer</span></div>
+              </div>
+              <div style="border:1px dashed #0d223344; text-align:center; padding:11px; margin-top:14px; font-size:14px; color:#4c5b66">+ Ajouter un jour</div>
+              <div style="font-size:12.5px; color:#5b6b76; margin-top:12px; line-height:1.6">Un jour fermé ne propose aucun créneau, pas même grisé. Un jour portant déjà des réservations est refusé.</div>
+            </div>
+            <div id="codes" style="border:1px solid #0d223326; padding:20px 22px">
+              <div style="font-size:10px; letter-spacing:.18em; color:#8a6a49; margin-bottom:16px">BONS ET AVOIRS EN CIRCULATION</div>
+              <div style="display:flex; flex-direction:column; gap:11px; font-size:14px">
+                <div style="display:flex; justify-content:space-between"><span style="letter-spacing:.06em">TIB-2026-7QK4</span><span style="color:#4c5b66">130,00 € · bon · 12 juil. 2027</span></div>
+                <div style="display:flex; justify-content:space-between"><span style="letter-spacing:.06em">TIB-2026-M2A9</span><span style="color:#4c5b66">127,50 € · avoir · 20 juil. 2027</span></div>
+                <div style="display:flex; justify-content:space-between; color:#9aa4ab"><span style="letter-spacing:.06em">TIB-2025-B8XZ</span><span>65,00 € · utilisé le 4 mars</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:12.5px; color:#5b6b76; margin:30px 0 0"><a href="Ti Baleine — Parcours client.dc.html">← Voir le site public</a></p>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      sorties: [
+        { heure: '07 h 00', ligne: 'Baleines · Ti Kap · 12 places', statut: 'PARTIE', couleur: '#5b6b76', remplissage: '83%', places: '10 inscrits sur 12' },
+        { heure: '07 h 00', ligne: 'Baleines · Le Grand Bleu · 24 places', statut: 'PARTIE', couleur: '#5b6b76', remplissage: '54%', places: '13 inscrits sur 24' },
+        { heure: '10 h 00', ligne: 'Baleines · Le Grand Bleu · 24 places', statut: 'OUVERTE', couleur: '#2f7d55', remplissage: '46%', places: '11 inscrits sur 24' },
+        { heure: '10 h 00', ligne: 'Dauphins · Ti Kap · 12 places', statut: 'COMPLÈTE', couleur: '#1c4a68', remplissage: '100%', places: '12 inscrits sur 12' },
+        { heure: '14 h 00', ligne: 'Dauphins · Ti Kap · 12 places', statut: 'EN ALERTE', couleur: '#c9702a', remplissage: '33%', places: '4 inscrits sur 12 — seuil non atteint' },
+        { heure: '14 h 00', ligne: 'Baleines · Le Grand Bleu · 24 places', statut: 'OUVERTE', couleur: '#2f7d55', remplissage: '25%', places: '6 inscrits sur 24' },
+      ],
+      inscrits: [
+        { nom: 'Marie Dupont', tel: '0692 00 00 01', composition: '2 adultes, 1 enfant', montant: '170,00 €', solde: '119,00 €', etat: 'Confirmée', couleur: '#2f7d55' },
+        { nom: 'John Smith', tel: '0692 00 00 02', composition: '2 adultes', montant: '130,00 €', solde: '0,00 €', etat: 'Soldée', couleur: '#2f7d55' },
+        { nom: 'Karim Benali', tel: '0692 00 00 03', composition: '1 adulte', montant: '65,00 €', solde: '45,50 €', etat: 'Confirmée', couleur: '#2f7d55' },
+        { nom: 'Léa Hoarau', tel: '0692 00 00 07', composition: '2 adultes, 2 enfants', montant: '210,00 €', solde: '147,00 €', etat: 'Confirmée', couleur: '#2f7d55' },
+        { nom: 'Paul Grondin', tel: '0692 00 00 11', composition: '1 adulte, 1 enfant', montant: '105,00 €', solde: '73,50 €', etat: 'Confirmée', couleur: '#2f7d55' },
+        { nom: 'Anne Técher', tel: '0692 00 00 14', composition: '2 adultes', montant: '130,00 €', solde: '0,00 €', etat: 'Bon cadeau', couleur: '#1c4a68' },
+        { nom: '— (panier en cours)', tel: '0692 00 00 22', composition: '1 adulte', montant: '65,00 €', solde: '65,00 €', etat: 'Immobilisée 4 min', couleur: '#c9702a' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
