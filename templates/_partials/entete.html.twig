@@ -4,6 +4,12 @@
         <img src="{{ asset('logo-ti-baleine.jpg') }}" alt="{{ 'site.nom'|trans }}">
         <span>{{ 'site.nom'|trans }}</span>
     </a>
+
+    <input type="checkbox" id="entete-menu" class="entete__case-menu">
+    <label for="entete-menu" class="entete__bouton-menu" aria-label="{{ 'site.nav.menu'|trans }}">
+        <span></span><span></span><span></span>
+    </label>
+
     <nav class="entete__nav">
         <a href="{{ path('sorties', {_locale: locale}) }}">{{ 'site.nav.sorties'|trans }}</a>
         <a href="{{ path('flotte', {_locale: locale}) }}">{{ 'site.nav.bateau'|trans }}</a>

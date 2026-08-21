@@ -62,6 +62,78 @@
   color: var(--marine);
 }
 
+/* Case cachée qui porte l'état ouvert/fermé du menu mobile, sans script :
+   un lecteur d'écran ou une navigation au clavier la voit et l'actionne
+   comme n'importe quelle case, seul son rendu visuel disparaît. */
+.entete__case-menu {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.entete__bouton-menu {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+}
+
+.entete__bouton-menu span {
+  display: block;
+  height: 2px;
+  background: var(--papier);
+}
+
+.entete__case-menu:focus-visible + .entete__bouton-menu {
+  outline: 2px solid var(--ambre);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .entete__bouton-menu {
+    display: flex;
+  }
+
+  .entete__nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    background: var(--marine);
+    border-bottom: var(--filet-clair);
+    padding: var(--e-2) 34px var(--e-3);
+  }
+
+  .entete__nav a {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+  }
+
+  .entete__nav .selecteur-langue {
+    border-left: 0;
+    padding: 12px 0;
+  }
+
+  .entete__reserver {
+    margin-top: var(--e-2);
+    text-align: center;
+  }
+
+  .entete__case-menu:checked ~ .entete__nav {
+    display: flex;
+  }
+}
+
 /* Sélecteur de langue */
 
 .selecteur-langue {
@@ -242,9 +314,9 @@
     grid-template-columns: 1fr;
   }
 
-  .entete__nav {
-    gap: 14px;
-    font-size: 12px;
+  .medaillon {
+    width: 220px;
+    height: 220px;
   }
 }
 
@@ -566,6 +638,7 @@
   display: flex;
   gap: var(--e-2);
   align-items: flex-end;
+  flex-wrap: wrap;
 }
 
 .reservation__code label {
@@ -753,6 +826,12 @@
   margin: var(--e-3) 0;
 }
 
+@media (max-width: 900px) {
+  .bon-cadeau__colonnes {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Pages éditoriales */
 
 .editorial {
@@ -915,9 +994,14 @@
   background: var(--vert-clair);
 }
 
-.tarifs__table {
+.tarifs__defilement {
   max-width: var(--largeur-page);
   margin: var(--e-4) auto 0;
+  overflow-x: auto;
+}
+
+.tarifs__table {
+  margin: 0;
   width: 100%;
   border-collapse: collapse;
 }
