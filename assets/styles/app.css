@@ -212,11 +212,25 @@
   max-width: var(--largeur-page);
   margin: 0 auto;
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   justify-content: space-between;
   font-size: var(--t-kicker);
   letter-spacing: .1em;
   color: color-mix(in srgb, var(--papier) 40%, transparent);
   padding-top: 20px;
+}
+
+@media (max-width: 900px) {
+  .pied__colonnes {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .pied__colonnes {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Écran Accueil */
@@ -235,6 +249,7 @@
 
 .heros__bandeau {
   display: flex;
+  flex-wrap: wrap;
   gap: 14px;
   align-items: center;
   font-size: var(--t-kicker);
@@ -314,6 +329,11 @@
     grid-template-columns: 1fr;
   }
 
+  .heros__chiffres {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--e-3);
+  }
+
   .medaillon {
     width: 220px;
     height: 220px;
@@ -382,6 +402,7 @@
 
 .calendrier__filtres {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--e-2);
   margin-left: auto;
 }
@@ -512,6 +533,7 @@
 
 .calendrier__legende {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--e-4);
   margin-top: var(--e-4);
   font-size: var(--t-note);
@@ -897,6 +919,7 @@
 
 .editorial__stats {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--e-4);
   margin: var(--e-2) 0;
 }
@@ -920,6 +943,8 @@
 
 .frise__entete {
   display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2);
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: var(--e-2);
@@ -927,6 +952,7 @@
 
 .frise__legende {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--e-3);
   font-size: var(--t-note);
 }
